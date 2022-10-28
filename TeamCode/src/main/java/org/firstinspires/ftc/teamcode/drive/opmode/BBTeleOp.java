@@ -180,10 +180,10 @@ public class BBTeleOp extends LinearOpMode {
                 }
             }
             //driver 2 - fine movements for the back arm
-            if(gp2.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
+            if(gp2.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
                 //raise the back arm
                 mecDrive.DecrementIntakePosition(0.01);
-            }else if(gp2.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
+            }else if(gp2.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
                 //lower the back arm
                 mecDrive.IncrementIntakePosition(0.01);
             }
