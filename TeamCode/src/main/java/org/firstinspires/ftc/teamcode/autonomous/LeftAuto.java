@@ -6,6 +6,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
         import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
         import org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline;
         import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+        import org.firstinspires.ftc.teamcode.drive.DriveConstants;
         import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
         import org.openftc.apriltag.AprilTagDetection;
         import org.openftc.easyopencv.OpenCvCamera;
@@ -42,6 +43,9 @@ public class LeftAuto extends LinearOpMode
     public void runOpMode()
     {
         BotBuildersMecanumDrive drive = new BotBuildersMecanumDrive(hardwareMap);
+        drive.midPointIntake();
+        drive.ClawArmIntakeSet();
+
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -53,7 +57,7 @@ public class LeftAuto extends LinearOpMode
             @Override
             public void onOpened()
             {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -65,14 +69,67 @@ public class LeftAuto extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
-        Pose2d startPose = new Pose2d();
+        Pose2d startPose = new Pose2d(6,62, Math.toRadians(90));
+
+        drive.setPoseEstimate(startPose);
 
         TrajectorySequence tsPos1 = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(25)
-                .forward(48)
-                //unload the cone
-                .turn(Math.PI / 2)
-                .forward(25)
+                .strafeRight(30)
+                .forward(50)
+                        //unload the cone
+                //.turn(Math.PI / 2)
+                .turn(Math.toRadians(90))
+                .back(6)
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                    drive.intakeOutReady();
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.8, () ->{
+
+                    drive.LiftDr4B(0.6);
+                })
+                .waitSeconds(2)
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()->{
+
+                    if (drive.isLiftArmUp()) {
+                        drive.midPointIntake();
+                        drive.ClawWristTurnedSide();
+
+                    }
+
+                })
+                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    drive.ClawArmDeliver1();
+                })
+                .waitSeconds(0.5)
+                .forward(3)
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+
+                    drive.OpenClaw();
+
+                })
+                .turn(Math.toRadians(-30))
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    drive.ClawArmIntakeSet();
+                })
+                .waitSeconds(1.5)
+                .turn(Math.toRadians(30))
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    drive.ClawWristInPlace();
+                    drive.intakeOutReady();
+                })
+                .waitSeconds(0.5)
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () ->{
+                    drive.DropDr4B(0.2);
+                })
+                .waitSeconds(3)
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    drive.midPointIntake();
+                })
+
+
+
+                /*.forward(25)
 
                 .turn(Math.PI / 2)
                 .forward(12)
@@ -87,7 +144,7 @@ public class LeftAuto extends LinearOpMode
                 //offload
                 .forward(15)
                 //pickup
-
+                */
                 .build();
 
         int parkingPos = 1;
@@ -172,6 +229,8 @@ public class LeftAuto extends LinearOpMode
          * during the init loop.
          */
         waitForStart();
+        drive.CloseClaw();
+        drive.midPointIntake();
         /* Update the telemetry */
         if(tagOfInterest != null)
         {
@@ -187,6 +246,25 @@ public class LeftAuto extends LinearOpMode
 
         if(parkingPos == 1) {
             drive.followTrajectorySequence(tsPos1);
+            TrajectorySequence forward = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .forward(47)
+                    .build();
+                drive.followTrajectorySequence(forward);
+        }else if(parkingPos == 2){
+
+                drive.followTrajectorySequence(tsPos1);
+                TrajectorySequence forward = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                        .forward(20)
+                        .build();
+                drive.followTrajectorySequence(forward);
+
+        }else{
+
+            drive.followTrajectorySequence(tsPos1);
+            TrajectorySequence forward = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .forward(5)
+                    .build();
+            drive.followTrajectorySequence(forward);
         }
 
     }

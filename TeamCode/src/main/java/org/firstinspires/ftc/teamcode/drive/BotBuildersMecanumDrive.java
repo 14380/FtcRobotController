@@ -59,8 +59,8 @@ import java.util.List;
  */
 @Config
 public class BotBuildersMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(9, 0, 0.01);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0.08);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -98,7 +98,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     public static int SLIDE_MAX_HEIGHT = 2000;
 
-    public static int MAX_ARM_POS = 1350;
+    public static int MAX_ARM_POS = 1150;
 
     public BotBuildersMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -122,6 +122,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
         rightServo = hardwareMap.get(Servo.class, "rightServo");
         leftServo = hardwareMap.get(Servo.class, "leftServo");
 
@@ -147,19 +148,6 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        //leftSlide.setTargetPosition(0);
-        //rightSlide.setTargetPosition(0);
-
-
-        //leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-       // rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       // leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
 
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
