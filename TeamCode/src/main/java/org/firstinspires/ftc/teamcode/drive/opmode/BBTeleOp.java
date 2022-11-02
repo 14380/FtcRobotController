@@ -39,6 +39,7 @@ public class BBTeleOp extends LinearOpMode {
         timer.startTime();
 
         mecDrive.midPointIntake();
+        mecDrive.OpenClaw();
 
         waitForStart();
         while (!isStopRequested()) { // while robot is running and stop button is not pressed
@@ -48,14 +49,29 @@ public class BBTeleOp extends LinearOpMode {
             gp1.readButtons();
             gp2.readButtons();
 
+            //SPECIAL - Re-Align
             if (gamepad1.a && gamepad1.b) {
                 telemetry.addData("Cleared IMU", "Done");
                 mecDrive.ReAlignIMU();
             }
+            //SPECIAL - Set upper and lower limits on the arm
+            //this helps in case it's too low or too high.
+            if(mecDrive.isLiftArmUp())
+            {
+                if(gamepad1.right_bumper && gamepad1.dpad_up){
+                    BotBuildersMecanumDrive.MAX_ARM_POS = BotBuildersMecanumDrive.MAX_ARM_POS + 5;
+                }
+                else if(gamepad1.right_bumper && gamepad1.dpad_down){
+                    BotBuildersMecanumDrive.MAX_ARM_POS = BotBuildersMecanumDrive.MAX_ARM_POS - 5;
+                }
+            }
+
+
             //----------------------------------------------
 
-            if(gp1.isDown(GamepadKeys.Button.DPAD_LEFT) ) {
+            if(gp2.isDown(GamepadKeys.Button.DPAD_LEFT) ) {
                 armIsReady = false;
+                clawGripped = true;
                 LiftArmToHigh(mecDrive, 1); //LOW POS
                 //move the intake to the mid point to keep out of the way
                 sleep(300);
@@ -63,14 +79,16 @@ public class BBTeleOp extends LinearOpMode {
 
             }else if(gp1.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
                 armIsReady = false;
+                clawGripped = true;
                 LiftArmToHigh(mecDrive, 3); //HIGHEST POS
                 //move the intake to the mid point to keep out of the way
                 sleep(300);
                 //give some time for the arm to go up.
                 mecDrive.midPointIntake();
-            }else if(gp1.wasJustReleased(GamepadKeys.Button.DPAD_RIGHT)){
+            }else if(gp1.wasJustReleased(GamepadKeys.Button.DPAD_RIGHT) || gp1.wasJustReleased(GamepadKeys.Button.DPAD_LEFT)){
 
                 armIsReady = false;
+                clawGripped = true;
                 LiftArmToHigh(mecDrive, 2); //MID POS
                 //move the intake to the mid point to keep out of the way
                 sleep(300);
@@ -175,7 +193,7 @@ public class BBTeleOp extends LinearOpMode {
                     mecDrive.ClawArmDeliver1();
                 } else {
 
-                        mecDrive.ClawArmIntakePickUp();
+                    mecDrive.ClawArmIntakePickUp();
 
                 }
             }
@@ -188,7 +206,7 @@ public class BBTeleOp extends LinearOpMode {
                 mecDrive.IncrementIntakePosition(0.01);
             }
 
-           mecDrive.DumpData(telemetry);
+           //mecDrive.DumpData(telemetry);
 
             //A and B control the intake mech
             if(gamepad1.b || gamepad2.b){
@@ -223,10 +241,6 @@ public class BBTeleOp extends LinearOpMode {
             mecDrive.setWeightedDrivePower(vel);
             mecDrive.update();
 
-           // telemetry.addData("Wrist In", wristInside);
-           // telemetry.addData("Claw Gripped", clawGripped);
-           // telemetry.addData("Arm Out", armOut);
-           // telemetry.update();
         }
 
 
@@ -234,6 +248,8 @@ public class BBTeleOp extends LinearOpMode {
 
     private void LiftArmToHigh(BotBuildersMecanumDrive mecDrive, int pos) {
 
+        mecDrive.CloseClaw();
+        sleep(200);
         if(pos == 3) {
             mecDrive.LiftDr4B(0.6);
         }else if(pos == 2){

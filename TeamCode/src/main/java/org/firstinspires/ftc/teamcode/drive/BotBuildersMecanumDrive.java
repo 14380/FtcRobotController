@@ -98,7 +98,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     public static int SLIDE_MAX_HEIGHT = 2000;
 
-    public static int MAX_ARM_POS = 1150;
+    public static int MAX_ARM_POS = 1250;
 
     public BotBuildersMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -202,6 +202,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.PNP);
 
     }
+
     public void setServoPosition(double pos){
         leftServo.setPosition(pos);
         rightServo.setPosition(pos);
@@ -216,8 +217,8 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     public void intakeOutConePos(int coneHeight){
         //TODO: find the heights of the cone positions
-        leftServo.setPosition(0.7f);
-        rightServo.setPosition(0.3);
+        leftServo.setPosition(0.87f);
+        rightServo.setPosition(0.13);
     }
     public void intakeDeliver(){
         leftServo.setPosition(0.4f);
@@ -229,9 +230,11 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         rightServo.setPosition(0.5);
     }
 
-    public void CloseClaw(){
-        claw.setPosition(0.25);
+    public void CloseClaw()
+    {
+        claw.setPosition(0.28);
     }
+
     public void OpenClaw(){
         claw.setPosition(0);
     }
@@ -296,6 +299,21 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         return false;
     }
 
+    public void UncontrolledDown(double speed){
+        dr4bRight.setPower(speed * -1);
+        dr4bLeft.setPower(speed * -1);
+    }
+
+    public void UncontrolledUp(double speed){
+        dr4bRight.setPower(speed);
+        dr4bLeft.setPower(speed);
+    }
+
+    public void HoldArm(){
+        dr4bRight.setPower(0);
+        dr4bLeft.setPower(0);
+    }
+
     public boolean isLiftArmDown(){
 
         if(dr4bRight.getCurrentPosition() < 100 || dr4bLeft.getCurrentPosition() < 100){
@@ -343,6 +361,12 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
         dr4bRight.setPower(speed);
         dr4bLeft.setPower(speed);
+    }
+
+    public void ResetArmEncoders(){
+
+        dr4bLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        dr4bRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void LiftDr4BMid(double speed){
