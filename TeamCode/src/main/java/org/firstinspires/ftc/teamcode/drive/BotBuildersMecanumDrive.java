@@ -215,6 +215,14 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     }
 
+    public void intakeGroundDropOff(){
+
+
+        leftServo.setPosition(0.87f);
+        rightServo.setPosition(0.13);
+
+    }
+
     public void intakeOutConePos(int coneHeight){
         //TODO: find the heights of the cone positions
         leftServo.setPosition(0.87f);
