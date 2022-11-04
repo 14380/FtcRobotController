@@ -104,7 +104,7 @@ public class RightBackSingle extends LinearOpMode
                     drive.ClawArmDeliver1();
                 })
                 .waitSeconds(1)
-                .turn(Math.toRadians(40))
+                .turn(Math.toRadians(47))
                 .waitSeconds(1)
                 .UNSTABLE_addTemporalMarkerOffset(0.1, () -> {
 
@@ -112,7 +112,7 @@ public class RightBackSingle extends LinearOpMode
 
                 })
                 .waitSeconds(1)
-                .turn(Math.toRadians(53))
+                .turn(Math.toRadians(47))
                 .waitSeconds(1)
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
                     drive.ClawArmIntakeSet();
@@ -128,6 +128,12 @@ public class RightBackSingle extends LinearOpMode
                 .UNSTABLE_addTemporalMarkerOffset(1.4,() ->{
 
                     drive.DropDr4B(0.2);
+
+
+                })
+                .UNSTABLE_addTemporalMarkerOffset(2,() ->{
+
+
                     drive.midPointIntake();
 
                 })
@@ -138,7 +144,7 @@ public class RightBackSingle extends LinearOpMode
 
 
         TrajectorySequence Pos1 = drive.trajectorySequenceBuilder(tsPos1.end())
-                .strafeRight(25)
+                .strafeLeft(32)
                 .build();
 
         TrajectorySequence Pos2 = drive.trajectorySequenceBuilder(tsPos1.end())
@@ -146,7 +152,8 @@ public class RightBackSingle extends LinearOpMode
                 .build();
 
         TrajectorySequence Pos3 = drive.trajectorySequenceBuilder(tsPos1.end())
-                .strafeLeft(32)
+
+                .strafeRight(25)
                 .build();
 
         int parkingPos = 1;
