@@ -74,7 +74,7 @@ public class LeftAutoParkOnly extends LinearOpMode
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence tsPos1 = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(30)
+                .strafeRight(28)
                 .forward(50)
 
                 .build();
@@ -180,14 +180,14 @@ public class LeftAutoParkOnly extends LinearOpMode
         if(parkingPos == 1) {
             drive.followTrajectorySequence(tsPos1);
             TrajectorySequence forward = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .strafeLeft(52)
+                    .strafeLeft(54)
                     .build();
                 drive.followTrajectorySequence(forward);
         }else if(parkingPos == 2){
 
                 drive.followTrajectorySequence(tsPos1);
                 TrajectorySequence forward = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                        .strafeLeft(25)
+                        .strafeLeft(27)
                         .build();
                 drive.followTrajectorySequence(forward);
 

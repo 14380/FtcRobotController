@@ -98,7 +98,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     public static int SLIDE_MAX_HEIGHT = 2000;
 
-    public static int MAX_ARM_POS = 1250;
+    public static int MAX_ARM_POS = 950;
 
     public BotBuildersMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
