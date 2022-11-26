@@ -76,17 +76,19 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
     private TrajectoryFollower follower;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    private DcMotorEx dr4bLeft;
-    private DcMotorEx dr4bRight;
 
+    private DcMotorEx turretMotor;
+
+    //arm servos
     private Servo rightServo, leftServo;
+
     private CRServo intakeServo;
+
     private List<Servo> servoList;
     private List<CRServo> CRServoList;
     private List<DcMotorEx> motors;
 
-    private Servo clawArm;
-    private Servo clawWrist;
+    //claw servo
     private Servo claw;
 
     private DcMotorEx leftSlide;
@@ -96,9 +98,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public static int SLIDE_MAX_HEIGHT = 2000;
-
-    public static int MAX_ARM_POS = 950;
+    public static int SLIDE_MAX_HEIGHT = 1000;
 
     public BotBuildersMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -126,33 +126,36 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         rightServo = hardwareMap.get(Servo.class, "rightServo");
         leftServo = hardwareMap.get(Servo.class, "leftServo");
 
-        intakeServo = hardwareMap.get(CRServo.class, "IntakeServo");
 
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
 
-        dr4bLeft = hardwareMap.get(DcMotorEx.class, "dr4vLeft");
-        dr4bRight = hardwareMap.get(DcMotorEx.class, "dr4vRight");
-
-        claw = hardwareMap.get(Servo.class, "claw");
-        clawArm = hardwareMap.get(Servo.class, "clawArm");
-        clawWrist = hardwareMap.get(Servo.class, "clawWrist");
+        turretMotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
 
 
-        dr4bRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        dr4bLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        claw = hardwareMap.get(Servo.class, "clawServo");
 
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+      //  leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+       // rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setPower(0);
+
+
+
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setTargetPosition(0);
+
+        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turretMotor.setPower(0.2);
+
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        servoList = Arrays.asList(rightServo, leftServo);
-        CRServoList = Arrays.asList(intakeServo);
+
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
@@ -176,11 +179,9 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
        // rightFront.setDirection(DcMotorSimple.Direction.FORWARD );
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightServo.setDirection(Servo.Direction.REVERSE);
-        leftServo.setDirection(Servo.Direction.REVERSE);
-        intakeServo.setDirection(CRServo.Direction.REVERSE);
 
-        //retractIntake();
+        rightServo.setDirection(Servo.Direction.REVERSE);
+        //leftServo.setDirection(Servo.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
@@ -203,219 +204,32 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     }
 
-    public void setServoPosition(double pos){
-        leftServo.setPosition(pos);
-        rightServo.setPosition(pos);
-    }
-    public void intakeOutReady(){
-
-
-        leftServo.setPosition(0.89f);
-        rightServo.setPosition(0.11);
-
-    }
-
-    public void intakeGroundDropOff(){
-
-
-        leftServo.setPosition(0.87f);
-        rightServo.setPosition(0.13);
-
-    }
-
-    public void intakeOutConePos(int coneHeight){
-        //TODO: find the heights of the cone positions
-        leftServo.setPosition(0.87f);
-        rightServo.setPosition(0.13);
-    }
-    public void intakeDeliver(){
-        leftServo.setPosition(0.4f);
-        rightServo.setPosition(0.6f);
-    }
-
-    public void midPointIntake(){
-        leftServo.setPosition(0.5);
-        rightServo.setPosition(0.5);
-    }
 
     public void CloseClaw()
     {
-        claw.setPosition(0.28);
+        claw.setPosition(0.4);
     }
 
     public void OpenClaw(){
-        claw.setPosition(0);
+        claw.setPosition(1);
     }
 
-    ///Set ready for the claw to close
-    public void ClawArmSet(){
-        clawArm.setPosition(1);
+
+    public void ArmUp(){
+        leftServo.setPosition(0);
+        rightServo.setPosition(0);
     }
 
-    //further away from the delivery area.
-    public void ClawArmIntakeSet(){
-        clawArm.setPosition(0.7);
-    }
-
-    //position of the arm for pickup pickup waiting
-    public void ClawArmIntakePickUp(){clawArm.setPosition(0.55);};
-
-    //position of the arm for delivery
-    public void ClawArmDeliver1(){
-        clawArm.setPosition(0.15);
-    }
-
-    public void ClawWristInPlace(){
-        clawWrist.setPosition(1);
-    }
-
-    public boolean IsSlideIn(){
-
-        if(rightSlide.getCurrentPosition() < 100){
-            return true;
-        }
-        return false;
-    }
-
-    public void SlideIn(double speed){
-
-        if(rightSlide.getCurrentPosition() > 0 && leftSlide.getCurrentPosition() > 0){
-            rightSlide.setPower(speed * -1);
-            leftSlide.setPower(speed * -1);
-        }else{
-            rightSlide.setPower(0);
-            leftSlide.setPower(0);
-        }
-
-    }
-
-    public void SlideOut(double speed){
-
-        if(rightSlide.getCurrentPosition() < SLIDE_MAX_HEIGHT && leftSlide.getCurrentPosition() < SLIDE_MAX_HEIGHT){
-            rightSlide.setPower(speed);
-            leftSlide.setPower(speed);
-        }else{
-            rightSlide.setPower(0);
-            leftSlide.setPower(0);
-        }
-    }
-
-    public boolean isLiftArmUp(){
-        if(dr4bRight.getCurrentPosition() > 600 || dr4bLeft.getCurrentPosition() > 600){
-            return true;
-        }
-        return false;
-    }
-
-    public void UncontrolledDown(double speed){
-        dr4bRight.setPower(speed * -1);
-        dr4bLeft.setPower(speed * -1);
-    }
-
-    public void UncontrolledUp(double speed){
-        dr4bRight.setPower(speed);
-        dr4bLeft.setPower(speed);
-    }
-
-    public void HoldArm(){
-        dr4bRight.setPower(0);
-        dr4bLeft.setPower(0);
-    }
-
-    public boolean isLiftArmDown(){
-
-        if(dr4bRight.getCurrentPosition() < 100 || dr4bLeft.getCurrentPosition() < 100){
-            return true;
-        }
-        return false;
-    }
-
-    public void ClawWristTurned(){
-        //only turn this if the lift arm is up past a certain point
-        if(dr4bRight.getCurrentPosition() > 600) {
-            clawWrist.setPosition(0);
-        }
-    }
-
-    public void ClawWristTurnedSide(){
-        //only turn this if the lift arm is up past a certain point
-        if(dr4bRight.getCurrentPosition() > 600) {
-            clawWrist.setPosition(0.4);
-        }
-    }
-
-    public void DecrementIntakePosition(double amount){
-        leftServo.setPosition(leftServo.getPosition() + amount);
-        rightServo.setPosition(rightServo.getPosition() - amount);
-    }
-
-    public void IncrementIntakePosition(double amount){
-        leftServo.setPosition(leftServo.getPosition() - amount);
-        rightServo.setPosition(rightServo.getPosition() + amount);
-    }
-    public void turnOnIntake(double magnitude){
-
-        intakeServo.setPower(magnitude);
-
-    }
-
-    public void DropDr4B(double speed){
-
-        dr4bLeft.setTargetPosition(0);
-        dr4bRight.setTargetPosition(0);
-
-        dr4bLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dr4bRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        dr4bRight.setPower(speed);
-        dr4bLeft.setPower(speed);
-    }
-
-    public void ResetArmEncoders(){
-
-        dr4bLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        dr4bRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public void LiftDr4BMid(double speed){
-        dr4bLeft.setTargetPosition(MAX_ARM_POS - 150);
-        dr4bRight.setTargetPosition(MAX_ARM_POS - 150);
-
-        dr4bLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dr4bRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        dr4bRight.setPower(speed);
-        dr4bLeft.setPower(speed);
-    }
-
-    public void LiftDr4BLow(double speed){
-        dr4bLeft.setTargetPosition(MAX_ARM_POS - 220);
-        dr4bRight.setTargetPosition(MAX_ARM_POS - 220);
-
-        dr4bLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dr4bRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        dr4bRight.setPower(speed);
-        dr4bLeft.setPower(speed);
-    }
-
-    public void LiftDr4B(double speed){
-
-        dr4bLeft.setTargetPosition(MAX_ARM_POS);
-        dr4bRight.setTargetPosition(MAX_ARM_POS);
-
-        dr4bLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dr4bRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        dr4bRight.setPower(speed);
-        dr4bLeft.setPower(speed);
+    public void ArmDown(){
+        leftServo.setPosition(1);
+        rightServo.setPosition(1);
     }
 
     public void DumpData(Telemetry telemetry){
-        telemetry.addData("Left 4B", dr4bLeft.getCurrentPosition());
-        telemetry.addData("Right 4B", dr4bRight.getCurrentPosition());
+
         telemetry.addData("Left Slide", leftSlide.getCurrentPosition());
         telemetry.addData("Right Slide", rightSlide.getCurrentPosition());
+        telemetry.addData("Turret", turretMotor.getCurrentPosition());
 
         telemetry.addData("Right Front", rightFront.getCurrentPosition());
         telemetry.addData("Left Front", leftFront.getCurrentPosition());

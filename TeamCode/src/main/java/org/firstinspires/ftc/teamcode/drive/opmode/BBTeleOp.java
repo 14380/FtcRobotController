@@ -1,271 +1,134 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretFrontOutTopCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftUpCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearDownCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRightUpCommand;
+import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
+
+import java.util.function.BooleanSupplier;
 
 @Config
 @TeleOp(group = "drive")
-public class BBTeleOp extends LinearOpMode {
-    private boolean clawGripped = false;
-    private boolean wristInside = true;
-    private boolean armOut = false;
+public class BBTeleOp extends CommandOpMode {
 
-    private boolean armIsReady = false;
+    private DriveCommand driveCommand;
+    private GamepadEx gp1;
+    private BotBuildersMecanumDrive mecDrive;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        BotBuildersMecanumDrive mecDrive = new BotBuildersMecanumDrive(hardwareMap);
+    public void initialize() {
 
-        mecDrive.ReAlignIMU();
+        mecDrive = new BotBuildersMecanumDrive(hardwareMap);
 
-        GamepadEx gp1 = new GamepadEx(gamepad1);
-        GamepadEx gp2 = new GamepadEx(gamepad2);
+        gp1 = new GamepadEx(gamepad1);
+        GamepadEx gp2 = new GamepadEx(gamepad1);
+
+        DriveSubsystem driveSystem = new DriveSubsystem(
+               mecDrive, gp1, telemetry);
+
+        ClawSubsystem claw = new ClawSubsystem(
+                hardwareMap,
+                telemetry
+        );
+
+        SlideSubsystem slide = new SlideSubsystem(
+                hardwareMap,
+                telemetry
+        );
+
+        TurretSubsystem turret = new TurretSubsystem(
+                hardwareMap,
+                telemetry
+        );
+
+        ArmSubsystem arm = new ArmSubsystem(
+                hardwareMap,
+                telemetry
+        );
+
+        // sets the default command to the drive command so that it is always looking
+        // at the value on the joysticks
+        //driveSystem.setDefaultCommand(new DriveCommand(driveSystem));
+        //driveSystem.setDefaultCommand(new DriveCommand(driveSystem));
+
+        driveCommand = new DriveCommand(
+                driveSystem, () -> -gp1.getLeftY(),
+                gp1::getLeftX, gp1::getRightX
+        );
+
+        schedule(driveCommand);
+
+        //realign IMU
+        /*gp1.getGamepadButton(GamepadKeys.Button.X).and(
+                new GamepadButton(gp1, GamepadKeys.Button.Y).whenPressed(
+                        new InstantCommand(driveSystem::Realign)
+                )
+        );*/
+
+        gp1.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(new InstantCommand(claw::Open));
+
+        gp1.getGamepadButton(GamepadKeys.Button.Y)
+                .whenPressed(new InstantCommand(claw::Close));
+
+        gp1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
+                new TurretFrontOutTopCommand(arm, slide, turret)
+        );
+
+        gp1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
+                new TurretRearDownCommand(arm, slide, turret)
+        );
+
+        gp1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
+                new TurretLeftUpCommand(arm, slide, turret)
+        );
+        gp1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
+                new TurretRightUpCommand(arm, slide, turret)
+        );
 
 
-        ElapsedTime timer = new ElapsedTime();
-        //used to keep track of the last time the up button was pressed.
-
-        double velocity = 0.5;
-
-
-        timer.startTime();
-
-        mecDrive.ClawWristInPlace();
-        mecDrive.midPointIntake();
-        mecDrive.OpenClaw();
-
-        waitForStart();
-        while (!isStopRequested()) { // while robot is running and stop button is not pressed
-
-            Pose2d poseEstimate = mecDrive.getPoseEstimate();
-
-            gp1.readButtons();
-            gp2.readButtons();
-
-            //SPECIAL - Re-Align
-            if (gamepad1.a && gamepad1.b) {
-                telemetry.addData("Cleared IMU", "Done");
-                mecDrive.ReAlignIMU();
+        new Trigger(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
             }
-            //SPECIAL - Set upper and lower limits on the arm
-            //this helps in case it's too low or too high.
-            if(mecDrive.isLiftArmUp())
-            {
-                if(gamepad1.right_bumper && gamepad1.dpad_up){
-                    BotBuildersMecanumDrive.MAX_ARM_POS = BotBuildersMecanumDrive.MAX_ARM_POS + 20;
-                    telemetry.addData("MaxPos increased to: ", BotBuildersMecanumDrive.MAX_ARM_POS);
-                    telemetry.update();
-                }
-                else if(gamepad1.right_bumper && gamepad1.dpad_down){
-                    BotBuildersMecanumDrive.MAX_ARM_POS = BotBuildersMecanumDrive.MAX_ARM_POS - 20;
-                    telemetry.addData("MaxPos decreased to: ", BotBuildersMecanumDrive.MAX_ARM_POS);
-                    telemetry.update();
-                }
+        }).whenActive(new SlideUpTopCommand(slide));
+
+        new Trigger(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
             }
+        }).whenActive(new SlideToMidCommand(slide));
 
 
-            //----------------------------------------------
-
-            if(gp1.isDown(GamepadKeys.Button.DPAD_LEFT) || gp1.isDown(GamepadKeys.Button.DPAD_RIGHT) ) {
-                armIsReady = false;
-                clawGripped = true;
-                LiftArmToHigh(mecDrive, 1); //LOW POS
-                //move the intake to the mid point to keep out of the way
-                sleep(300);
+        // update telemetry every loop
+        schedule(new RunCommand(telemetry::update));
 
 
-            }else if(gp1.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
-                armIsReady = false;
-                clawGripped = true;
-                LiftArmToHigh(mecDrive, 3); //HIGHEST POS
-                //move the intake to the mid point to keep out of the way
-                sleep(300);
-                //give some time for the arm to go up.
-                mecDrive.midPointIntake();
-            }
-
-            //bring the arm down
-            if(gamepad1.dpad_down){
-
-                if(wristInside == false){
-                    //the wrist is out, give us some time to bring it in
-
-                    mecDrive.ClawArmIntakeSet();
-                    sleep(200);
-
-                    mecDrive.ClawWristInPlace();
-
-                    sleep(500);
-                    mecDrive.OpenClaw();
-
-
-                }
-                clawGripped = false;
-                wristInside = true;
-                armOut = false;
-                armIsReady = false;
-
-                mecDrive.DropDr4B(0.2);
-
-            }
-
-            //X picks up and drops the cone.
-            if(gp1.wasJustPressed(GamepadKeys.Button.X)) {
-                clawGripped = !clawGripped;
-                if(clawGripped == false && mecDrive.isLiftArmDown()){
-                    //if the arm is down, then we are a little distance back
-                    //to ensure that we don't contact the arm
-                    //so we need to slide forward first before gripping.
-                    //setting the above variable clawGripped will cause the
-                    //claw to take the action we need.
-                    mecDrive.ClawArmSet();
-
-
-                }
-            }
-
-            //if the lift arm is high, and the Y button is pressed
-            //we will move the wrist to the front of the robot
-            //default is to the right
-            if(gp1.wasJustPressed(GamepadKeys.Button.Y) && mecDrive.isLiftArmUp()){
-
-                if(mecDrive.isLiftArmUp()){
-                    //we should also take the claw out
-                    mecDrive.ClawWristTurned();
-                    sleep(100);
-                    mecDrive.ClawArmDeliver1();
-                    wristInside = false;
-                    armOut = true;
-                }
-            }
-
-
-            if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-                mecDrive.turnOnIntake(-1);
-                sleep(350);
-                mecDrive.intakeOutReady();
-                sleep(100);
-                armIsReady = true;
-            }
-
-            if(gp1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
-                mecDrive.intakeDeliver();
-                armIsReady = false;
-            }
-
-            if(gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5 || gp2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5){
-                mecDrive.SlideOut(0.5);
-            }else if(gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5 || gp2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5){
-                mecDrive.SlideIn(0.5);
-
-            }else{
-                mecDrive.SlideOut(0);
-            }
-
-            if(clawGripped){
-               // telemetry.addData("Claw", "Trigger Close");
-                mecDrive.CloseClaw();
-
-            }else{
-                //telemetry.addData("Claw", "Trigger Open");
-                mecDrive.OpenClaw();
-            }
-            telemetry.addData("armIsReady", armIsReady);
-            telemetry.update();
-            if(armIsReady) {
-                mecDrive.ClawArmIntakeSet();
-            }else {
-                if (armOut) {
-                    mecDrive.ClawArmDeliver1();
-                } else {
-
-                    mecDrive.ClawArmIntakePickUp();
-
-                }
-            }
-            //driver 2 - fine movements for the back arm
-            if(gp2.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
-                //raise the back arm
-                mecDrive.DecrementIntakePosition(0.01);
-            }else if(gp2.wasJustReleased(GamepadKeys.Button.DPAD_UP)){
-                //lower the back arm
-                mecDrive.IncrementIntakePosition(0.01);
-            }
-
-           //mecDrive.DumpData(telemetry);
-
-            //A and B control the intake mech
-            if(gamepad1.b || gamepad2.b || gamepad2.left_bumper){
-                mecDrive.turnOnIntake(1.f);
-            }
-            else  if(gamepad1.a || gamepad2.a){
-                mecDrive.turnOnIntake(-1.f);
-            }else{
-                mecDrive.turnOnIntake(0.f);
-            }
-
-            //-----------------------------------------------
-            Vector2d input = new Vector2d(
-                    -gamepad1.left_stick_y * velocity,
-                    -gamepad1.left_stick_x * velocity
-
-            ).rotated(-poseEstimate.getHeading());
-
-            if (gp1.isDown(GamepadKeys.Button.X)) {
-                input = new Vector2d(
-                        -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x).rotated(-poseEstimate.getHeading());
-
-            }
-
-            Pose2d vel = new Pose2d(
-                    input.getX(),
-                    input.getY(),
-                    -gamepad1.right_stick_x * velocity
-            );
-
-            mecDrive.setWeightedDrivePower(vel);
-            mecDrive.update();
-
-        }
-
-
+        register(claw, driveSystem, slide, turret, arm);
     }
 
-    private void LiftArmToHigh(BotBuildersMecanumDrive mecDrive, int pos) {
 
-        mecDrive.CloseClaw();
-        sleep(200);
-        if(pos == 3) {
-            mecDrive.LiftDr4B(0.6);
-        }else if(pos == 2){
-            mecDrive.LiftDr4BMid(0.6);
-        }
-        else if(pos == 1){
-            mecDrive.LiftDr4BLow(0.6);
-        }
-        if(pos > 1) {
-            if (mecDrive.isLiftArmUp()) {
-                wristInside = false;
-                sleep(100);
-                armOut = true;
-
-                mecDrive.ClawWristTurnedSide();  //ClawWristTurned();
-                sleep(500);
-                mecDrive.ClawArmDeliver1();
-
-                clawGripped = true;
-            }
-        }
-    }
 
 }
 

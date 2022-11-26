@@ -43,8 +43,7 @@ public class LeftAutoParkOnly extends LinearOpMode
     public void runOpMode()
     {
         BotBuildersMecanumDrive drive = new BotBuildersMecanumDrive(hardwareMap);
-        drive.midPointIntake();
-        drive.ClawArmIntakeSet();
+
 
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -161,8 +160,7 @@ public class LeftAutoParkOnly extends LinearOpMode
          * during the init loop.
          */
         waitForStart();
-        drive.CloseClaw();
-        drive.midPointIntake();
+
         /* Update the telemetry */
         if(tagOfInterest != null)
         {
