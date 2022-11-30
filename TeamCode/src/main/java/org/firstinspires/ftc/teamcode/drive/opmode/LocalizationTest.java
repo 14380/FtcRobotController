@@ -42,6 +42,7 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+            drive.DumpData(telemetry);
             telemetry.update();
 
             if(gamepad1.a){
@@ -49,6 +50,14 @@ public class LocalizationTest extends LinearOpMode {
             }
             if(gamepad1.b){
                 drive.ArmDown();
+                drive.TurretHome();
+            }
+
+            if(gamepad1.x){
+                drive.TurretLeft();
+            }
+            if(gamepad1.y){
+                drive.TurretRight();
             }
         }
     }

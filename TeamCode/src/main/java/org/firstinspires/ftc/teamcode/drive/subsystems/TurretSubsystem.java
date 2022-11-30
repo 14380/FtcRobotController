@@ -10,12 +10,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TurretSubsystem extends SubsystemBase {
 
-    private final DcMotorEx turretMotor;
+    private final Servo turretMotor;
     private final Telemetry telemetry;
+    private final DcMotorEx turretEnc;
 
     public TurretSubsystem(HardwareMap map, Telemetry tele)
     {
-        turretMotor = map.get(DcMotorEx.class, "turretMotor");
+        turretMotor = map.get(Servo.class, "turretServo");
+        turretEnc = map.get(DcMotorEx.class, "turretEnc");
         telemetry = tele;
     }
 
@@ -23,11 +25,9 @@ public class TurretSubsystem extends SubsystemBase {
     {
         //need to make sure we rotate the correct way
         telemetry.addData("ROTATE", "FRONT");
-        turretMotor.setTargetPosition(0);
 
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        turretMotor.setPower(0.5);
+        turretMotor.setPosition(0.51);
 
 
     }
@@ -35,48 +35,45 @@ public class TurretSubsystem extends SubsystemBase {
     public void RotateToRear(){
 
         telemetry.addData("ROTATE", "REAR");
+        turretMotor.setPosition(0.38);
     }
 
     public void RotateLeft(){
-        //TODO: Lets get the other stuff working first.
+
         telemetry.addData("ROTATE", "LEFT");
-        turretMotor.setTargetPosition(-320);
 
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        turretMotor.setPower(0.5);
+        turretMotor.setPosition(0.6);
     }
 
     public void RotateRight()
     {
         telemetry.addData("ROTATE", "RIGHT");
 
-        turretMotor.setTargetPosition(320);
 
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        turretMotor.setPower(0.5);
+        turretMotor.setPosition(0.43);
 
     }
 
     public boolean IsAtRear(){
-        //TODO: Check encoders
+
         return true;
     }
 
     public boolean IsAtRight(){
-        //TODO: Check encoders.
-        return turretMotor.getCurrentPosition() > 320;
+
+        return turretMotor.getPosition() > 0.3 && turretMotor.getPosition() < 0.5;
     }
 
     public boolean IsAtLeft(){
-        //TODO: Check encoders.
-        return turretMotor.getCurrentPosition() < -320;
+
+        return turretMotor.getPosition() > 0.55 && turretMotor.getPosition() < 0.8;
     }
 
     public boolean IsAtFront(){
-        //TODO: Check encoders.
-        return turretMotor.getCurrentPosition() < 20 && turretMotor.getCurrentPosition() > -20;
+
+        return
+                (Math.abs(turretEnc.getCurrentPosition()) >= 0 && Math.abs(turretEnc.getCurrentPosition()) < 300);
+
     }
 
 

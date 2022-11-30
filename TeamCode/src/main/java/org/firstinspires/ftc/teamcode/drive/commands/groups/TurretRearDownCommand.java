@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.commands.groups;
 
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
@@ -24,10 +25,12 @@ public class TurretRearDownCommand extends SequentialCommandGroup {
         addCommands(
                         new ParallelCommandGroup(
                                 new TurretFrontOut(turret),
-                                new SlideToConeCommand(slide)
+                                new WaitCommand(350),
+                                new SlideToConeCommand(slide, arm)
 
-                        ),
-                        new ArmClawReadyCommand(arm)
+                        )//,
+                     //   new WaitCommand(350),
+                       // new ArmClawReadyCommand(arm)
 
         );
 

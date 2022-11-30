@@ -31,24 +31,18 @@ public class DriveSubsystem extends SubsystemBase {
         //telemetry.addData("DRIVE","Driving");
         Pose2d poseEstimate = driveBase.getPoseEstimate();
         double velocity = 0.5;
+
         Vector2d input = new Vector2d(
-                -gp1.getLeftY() * 0.75,
-                -gp1.getLeftX() * 0.75
+                -gp1.gamepad.left_stick_y * 0.75,
+                -gp1.gamepad.left_stick_x * 0.75
 
         ).rotated(-poseEstimate.getHeading());
 
-        //X is the go slow
-        if (gp1.isDown(GamepadKeys.Button.X)) {
-            input = new Vector2d(
-                    -gp1.getLeftY() * velocity,
-                    -gp1.getLeftX() * velocity).rotated(-poseEstimate.getHeading());
-
-        }
 
         Pose2d vel = new Pose2d(
                 input.getX(),
                 input.getY(),
-                -gp1.getRightX() * velocity
+                -gp1.gamepad.right_stick_x * velocity
         );
 
         driveBase.DumpData(telemetry);

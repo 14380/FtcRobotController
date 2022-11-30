@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.commands.groups;
 
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
@@ -17,6 +18,7 @@ public class SlideUpArmOutTopCommand extends SequentialCommandGroup {
 
 
         addCommands(    new ArmMidCommand(arm),
+                        new WaitCommand(100),
                         new SlideUpTopCommand(slide)
         );
 

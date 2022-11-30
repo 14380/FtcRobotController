@@ -23,8 +23,8 @@ public class SlideSubsystem extends SubsystemBase {
 
     public void SlideToTop(){
         telemetry.addData("SLIDE", "Top");
-        leftSlide.setTargetPosition(2000);
-        rightSlide.setTargetPosition(2000);
+        leftSlide.setTargetPosition(1500);
+        rightSlide.setTargetPosition(1500);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -49,8 +49,8 @@ public class SlideSubsystem extends SubsystemBase {
     public void SlideToMid(){
         telemetry.addData("SLIDE", "MID");
 
-        leftSlide.setTargetPosition(1600);
-        rightSlide.setTargetPosition(1600);
+        leftSlide.setTargetPosition(500);
+        rightSlide.setTargetPosition(500);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -60,19 +60,38 @@ public class SlideSubsystem extends SubsystemBase {
 
     }
 
+    public void SlideToGrasp(){
+        telemetry.addData("SLIDE", "GRASP");
+
+        leftSlide.setTargetPosition(400);
+        rightSlide.setTargetPosition(400);
+
+        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftSlide.setPower(0.8);
+        rightSlide.setPower(0.8);
+    }
+
     public boolean IsSlideAtTop(){
-        //TODO: Is at the top
-        return true;
+        // Is at the top
+        return leftSlide.getCurrentPosition() >  1400 && rightSlide.getCurrentPosition() > 1400;
     }
 
     public boolean IsSlideAtBottom(){
-        //TODO: Is at the bottom
-        return true;
+        // Is at the bottom
+        return leftSlide.getCurrentPosition() < 100 && rightSlide.getCurrentPosition() < 100;
     }
 
     public boolean IsSlideAtMid(){
-        //TODO: Is at the mid
-        return true;
+        // Is at the top
+        return leftSlide.getCurrentPosition() >  460 && rightSlide.getCurrentPosition() > 460 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
+    }
+
+    public boolean IsAtGrasp(){
+
+        return leftSlide.getCurrentPosition() >  390 && rightSlide.getCurrentPosition() > 390 && leftSlide.getCurrentPosition() <  430 && rightSlide.getCurrentPosition() < 430;
+
     }
 
 }

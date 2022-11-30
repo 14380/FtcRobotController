@@ -10,23 +10,24 @@ import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOut;
+import org.firstinspires.ftc.teamcode.drive.commands.TurretRear;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
 import java.util.function.BooleanSupplier;
 
-public class TurretFrontOutTopCommand extends SequentialCommandGroup {
+public class TurretRearOutTopCommand extends SequentialCommandGroup {
 
-    public TurretFrontOutTopCommand(
+    public TurretRearOutTopCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
             TurretSubsystem turret)
     {
 
 
-        addCommands(    new ArmMidCommand(arm),
-                        new WaitCommand(100),
+        addCommands(    new ArmHighCommand(arm),
+                        new WaitCommand(200),
                         new ParallelCommandGroup(
                                 new ConditionalCommand(
                                         new SlideUpTopCommand(slide),
@@ -34,12 +35,11 @@ public class TurretFrontOutTopCommand extends SequentialCommandGroup {
                                         new BooleanSupplier() {
                                             @Override
                                             public boolean getAsBoolean() {
-                                                return slide.IsSlideAtTop() || slide.IsSlideAtBottom();
+                                                return slide.IsSlideAtTop() || slide.IsSlideAtBottom() || slide.IsAtGrasp();
                                             }
-                                        }), new TurretFrontOut(turret)
-                        )
-
-        );
+                                        }),
+                                new TurretRear(turret)
+                        ));
 
         addRequirements( arm, slide, turret);
     }

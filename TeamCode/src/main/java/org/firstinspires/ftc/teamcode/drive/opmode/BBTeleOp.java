@@ -11,12 +11,21 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideUpMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawReturnCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretFrontOutTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftUpCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearDownCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearOutTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRightUpCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
@@ -65,11 +74,6 @@ public class BBTeleOp extends CommandOpMode {
                 telemetry
         );
 
-        // sets the default command to the drive command so that it is always looking
-        // at the value on the joysticks
-        //driveSystem.setDefaultCommand(new DriveCommand(driveSystem));
-        //driveSystem.setDefaultCommand(new DriveCommand(driveSystem));
-
         driveCommand = new DriveCommand(
                 driveSystem, () -> -gp1.getLeftY(),
                 gp1::getLeftX, gp1::getRightX
@@ -78,20 +82,30 @@ public class BBTeleOp extends CommandOpMode {
         schedule(driveCommand);
 
         //realign IMU
-        /*gp1.getGamepadButton(GamepadKeys.Button.X).and(
-                new GamepadButton(gp1, GamepadKeys.Button.Y).whenPressed(
-                        new InstantCommand(driveSystem::Realign)
-                )
-        );*/
+        gp1.getGamepadButton(GamepadKeys.Button.X).and(
+                new GamepadButton(gp1, GamepadKeys.Button.Y)
+        ).whenActive(
+                new InstantCommand(driveSystem::Realign)
+        );
 
-        gp1.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new InstantCommand(claw::Open));
 
-        gp1.getGamepadButton(GamepadKeys.Button.Y)
-                .whenPressed(new InstantCommand(claw::Close));
+        gp1.getGamepadButton(GamepadKeys.Button.X).toggleWhenPressed(
+                new ClawReturnCommand(arm, slide, claw),
+                new ClawGrabCommand(arm, slide,claw)
+        );
+
+        gp1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new ArmClawReadyCommand(arm, turret));
+
+        gp1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new ArmMidCommand(arm));
+
+
+        gp1.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(new InstantCommand(claw::Report));
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-                new TurretFrontOutTopCommand(arm, slide, turret)
+                new TurretRearOutTopCommand(arm, slide, turret)
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
@@ -109,16 +123,18 @@ public class BBTeleOp extends CommandOpMode {
         new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
-                return gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
+                return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
             }
-        }).whenActive(new SlideUpTopCommand(slide));
+        }).whenActive(new SlideUpMidCommand(slide));
 
-        new Trigger(new BooleanSupplier() {
+
+
+        /*new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
                 return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
             }
-        }).whenActive(new SlideToMidCommand(slide));
+        }).whenActive(new ArmClawReadyCommand(arm, turret));*/
 
 
         // update telemetry every loop

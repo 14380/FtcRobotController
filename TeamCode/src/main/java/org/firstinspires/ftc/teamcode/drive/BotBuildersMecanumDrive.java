@@ -77,7 +77,8 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
-    private DcMotorEx turretMotor;
+   // private DcMotorEx turretMotor;
+    private Servo turretServo;
 
     //arm servos
     private Servo rightServo, leftServo;
@@ -94,6 +95,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
     private DcMotorEx leftSlide;
     private DcMotorEx rightSlide;
 
+    private DcMotorEx turretEnc;
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -130,7 +132,8 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
 
-        turretMotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
+        //turretMotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
+        turretServo = hardwareMap.get(Servo.class, "turretServo");
 
 
         claw = hardwareMap.get(Servo.class, "clawServo");
@@ -142,17 +145,21 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
        // rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-        turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        turretMotor.setPower(0);
+        //turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //turretMotor.setPower(0);
 
+        turretEnc = hardwareMap.get(DcMotorEx.class, "turretEnc");
 
+        rightServo.setDirection(Servo.Direction.REVERSE);
+       // leftServo.setDirection(Servo.Direction.REVERSE);
 
-        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turretMotor.setTargetPosition(0);
+        turretEnc.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       // turretMotor.setTargetPosition(0);
 
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.2);
+       // turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       // turretMotor.setPower(0.2);
 
+        turretServo.setPosition(0.51);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -188,9 +195,6 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
-
-
-
     }
 
 
@@ -199,8 +203,8 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-
-        BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.PNP);
+        //YXZ
+       // BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.PNP);
 
     }
 
@@ -216,20 +220,36 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
 
     public void ArmUp(){
-        leftServo.setPosition(0);
-        rightServo.setPosition(0);
+        leftServo.setPosition(0.5);
+        rightServo.setPosition(0.5);
     }
 
     public void ArmDown(){
-        leftServo.setPosition(1);
-        rightServo.setPosition(1);
+        leftServo.setPosition(0.02);
+        rightServo.setPosition(0.02);
+    }
+
+    public void TurretLeft(){
+        turretServo.setPosition(1);
+    }
+
+    public void TurretRight(){
+        turretServo.setPosition(0.39);
+    }
+
+    public void TurretHome(){
+        turretServo.setPosition(0.51);
     }
 
     public void DumpData(Telemetry telemetry){
 
         telemetry.addData("Left Slide", leftSlide.getCurrentPosition());
         telemetry.addData("Right Slide", rightSlide.getCurrentPosition());
-        telemetry.addData("Turret", turretMotor.getCurrentPosition());
+        telemetry.addData("Turret", turretServo.getPosition());
+        telemetry.addData("Claw", claw.getPosition());
+        telemetry.addData("Arm 1", leftServo.getPosition());
+        telemetry.addData("Arm 2", rightServo.getPosition());
+        telemetry.addData("Turrnet ENC", turretEnc.getCurrentPosition());
 
         telemetry.addData("Right Front", rightFront.getCurrentPosition());
         telemetry.addData("Left Front", leftFront.getCurrentPosition());

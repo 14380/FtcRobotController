@@ -15,6 +15,7 @@ public class ClawSubsystem extends SubsystemBase {
     {
         clawServo = map.get(Servo.class, "clawServo");
         telemetry = tele;
+
     }
 
     public void Open(){
@@ -24,7 +25,16 @@ public class ClawSubsystem extends SubsystemBase {
 
     public void Close(){
         telemetry.addData("CLAW", "CLOSE");
-        clawServo.setPosition(0.4);
+
+        clawServo.setPosition(0.38);
+    }
+
+    public boolean IsClosed(){
+        return clawServo.getPosition() < 0.41;
+    }
+
+    public void Report(){
+        telemetry.addData("CLAW", clawServo.getPosition());
     }
 
 }
