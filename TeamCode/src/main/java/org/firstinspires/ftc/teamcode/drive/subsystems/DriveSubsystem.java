@@ -2,12 +2,19 @@ package org.firstinspires.ftc.teamcode.drive.subsystems;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.localization.Localizer;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+
+import java.util.List;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -25,6 +32,68 @@ public class DriveSubsystem extends SubsystemBase {
     public void Realign(){
         telemetry.addData("IMU", "RESET");
         driveBase.ReAlignIMU();
+    }
+
+    public void setPoseEstimate(Pose2d pose) {
+        driveBase.setPoseEstimate(pose);
+    }
+
+    public void update() {
+        driveBase.update();
+    }
+
+    public void updatePoseEstimate() {
+        driveBase.updatePoseEstimate();
+    }
+
+    public Pose2d getPoseEstimate() {
+        return driveBase.getPoseEstimate();
+    }
+
+    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
+        return driveBase.trajectoryBuilder(startPose);
+    }
+
+    public TrajectorySequenceBuilder trajectorySequenceBuilder(Pose2d startPose){
+        return driveBase.trajectorySequenceBuilder(startPose);
+    }
+
+    public void followTrajectorySequence(TrajectorySequence seq){
+         driveBase.followTrajectorySequence(seq);
+    }
+
+    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
+        return driveBase.trajectoryBuilder(startPose, reversed);
+    }
+
+    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
+        return driveBase.trajectoryBuilder(startPose, startHeading);
+    }
+
+    public void followTrajectory(Trajectory trajectory) {
+        driveBase.followTrajectoryAsync(trajectory);
+    }
+
+    public boolean isBusy() {
+        return driveBase.isBusy();
+    }
+
+    public void turn(double radians) {
+        driveBase.turnAsync(radians);
+    }
+
+    public List<Double> getWheelVelocities() {
+        return driveBase.getWheelVelocities();
+    }
+
+
+
+    public Pose2d getPoseVelocity() {
+        return driveBase.getPoseVelocity();
+    }
+
+    public Localizer getLocalizer() {
+        return driveBase.getLocalizer();
     }
 
     public void drive() {

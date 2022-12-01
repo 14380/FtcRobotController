@@ -119,13 +119,12 @@ public class BBTeleOp extends CommandOpMode {
                 new TurretRightUpCommand(arm, slide, turret)
         );
 
+        gp1.getGamepadButton(GamepadKeys.Button.A).whenPressed(
+                new SlideUpMidCommand(slide)
+        );
 
-        new Trigger(new BooleanSupplier() {
-            @Override
-            public boolean getAsBoolean() {
-                return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
-            }
-        }).whenActive(new SlideUpMidCommand(slide));
+
+
 
 
 
