@@ -104,8 +104,6 @@ public class LeftSingleCone  extends AutoOpBase {
         bkFollower = new TrajectorySequenceFollowerCommand(drive, bk);
 
 
-
-        //TODO: use the vision output
         schedule(new WaitUntilCommand(this::isStarted).andThen(
                  new ClawGrabCommand(arm, slide, claw),
                         parkFollower
