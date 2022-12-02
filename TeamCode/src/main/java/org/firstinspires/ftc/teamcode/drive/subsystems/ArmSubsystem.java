@@ -33,6 +33,20 @@ public class ArmSubsystem extends SubsystemBase {
         telemetry.addData("ARM", "MID");
     }
 
+    public void MidStack1(){
+        leftServo.setPosition(0.40);
+        rightServo.setPosition(0.40);
+
+        telemetry.addData("ARM", "MID Stack 1");
+    }
+
+    public void MidStack2(){
+        leftServo.setPosition(0.45);
+        rightServo.setPosition(0.45);
+
+        telemetry.addData("ARM", "MID Stack 2");
+    }
+
     public boolean isAtTop(){
         return leftServo.getPosition() > 0.73 && rightServo.getPosition() > 0.73;
     }
@@ -42,6 +56,20 @@ public class ArmSubsystem extends SubsystemBase {
         // Return when the mid point is located
 
         return leftServo.getPosition() > 0.5 && rightServo.getPosition() > 0.5 && rightServo.getPosition() < 0.6 && leftServo.getPosition() < 0.6;
+    }
+
+    public boolean isAtMidStack1()
+    {
+        // Return when the mid point is located
+
+        return leftServo.getPosition() > 0.3 && rightServo.getPosition() > 0.3 && rightServo.getPosition() < 0.4 && leftServo.getPosition() < 0.4;
+    }
+
+    public boolean isAtMidStack2()
+    {
+        // Return when the mid point is located
+
+        return leftServo.getPosition() > 0.4 && rightServo.getPosition() > 0.4 && rightServo.getPosition() < 0.5 && leftServo.getPosition() < 0.5;
     }
 
     public boolean isAtCone(){

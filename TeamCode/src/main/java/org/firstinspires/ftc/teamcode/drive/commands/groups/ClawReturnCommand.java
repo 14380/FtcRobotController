@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.RobotSlideGraspCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 
 public class ClawReturnCommand extends SequentialCommandGroup {
@@ -17,13 +18,14 @@ public class ClawReturnCommand extends SequentialCommandGroup {
     public ClawReturnCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
-            ClawSubsystem claw)
+            ClawSubsystem claw,
+            RobotStateSubsytem robotState)
     {
 
 
         addCommands(
 
-                new RobotClawOpen(claw, arm, slide ),
+                new RobotClawOpen(claw, arm, slide, robotState ),
 
                 new ConditionalCommand(
                         new SlideToConeCommand(slide, arm),

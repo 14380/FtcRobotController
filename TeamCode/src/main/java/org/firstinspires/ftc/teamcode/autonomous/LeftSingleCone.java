@@ -1,29 +1,14 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
-import com.arcrobotics.ftclib.command.FunctionalCommand;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.commands.DebugCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideUpMidCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.VisionCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawReturnCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftUpCommand;
@@ -31,16 +16,13 @@ import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearDownComman
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.HashMap;
-import java.util.function.BooleanSupplier;
 
 @Autonomous(group = "drive")
 public class LeftSingleCone  extends AutoOpBase {
@@ -51,6 +33,7 @@ public class LeftSingleCone  extends AutoOpBase {
     private ArmSubsystem arm;
     private TurretSubsystem turret;
     private VisionSubsystem vision;
+    private RobotStateSubsytem rState;
 
     private TrajectorySequenceFollowerCommand parkFollower;
     private TrajectorySequenceFollowerCommand bkFollower;
@@ -71,6 +54,8 @@ public class LeftSingleCone  extends AutoOpBase {
         turret = new TurretSubsystem(hardwareMap, telemetry);
 
         vision = new VisionSubsystem(hardwareMap,telemetry);
+
+        rState = new RobotStateSubsytem();
 
 
 
@@ -105,13 +90,13 @@ public class LeftSingleCone  extends AutoOpBase {
 
 
         schedule(new WaitUntilCommand(this::isStarted).andThen(
-                 new ClawGrabCommand(arm, slide, claw),
+                 new ClawGrabCommand(arm, slide, claw, rState),
                         parkFollower
                        .andThen(
                                new TurretLeftUpCommand(arm, slide, turret).andThen(
                                new WaitCommand(1800)).andThen(
                                        bkFollower ).andThen(
-                               new ClawReturnCommand(arm, slide, claw)).andThen(
+                               new ClawReturnCommand(arm, slide, claw, rState)).andThen(
                                new WaitCommand(500)).andThen(
                                new TurretRearDownCommand(arm, slide, turret)).andThen(
                                        new WaitCommand(500)

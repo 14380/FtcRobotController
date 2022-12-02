@@ -5,9 +5,8 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideUpMidCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOut;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
@@ -30,7 +29,7 @@ public class TurretFrontOutTopCommand extends SequentialCommandGroup {
                         new ParallelCommandGroup(
                                 new ConditionalCommand(
                                         new SlideUpTopCommand(slide),
-                                        new SlideUpMidCommand(slide),
+                                        new SlideMid1StackCommand(slide),
                                         new BooleanSupplier() {
                                             @Override
                                             public boolean getAsBoolean() {

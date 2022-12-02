@@ -12,17 +12,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmStackMid1Command;
 import org.firstinspires.ftc.teamcode.drive.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideUpMidCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawReturnCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretFrontOutTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftUpCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearDownCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearOutTopCommand;
@@ -30,6 +25,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRightUpCommand
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
@@ -42,6 +38,8 @@ public class BBTeleOp extends CommandOpMode {
     private DriveCommand driveCommand;
     private GamepadEx gp1;
     private BotBuildersMecanumDrive mecDrive;
+    private RobotStateSubsytem rState;
+    private ArmSubsystem arm;
 
     @Override
     public void initialize() {
@@ -69,10 +67,12 @@ public class BBTeleOp extends CommandOpMode {
                 telemetry
         );
 
-        ArmSubsystem arm = new ArmSubsystem(
+        arm = new ArmSubsystem(
                 hardwareMap,
                 telemetry
         );
+
+        rState = new RobotStateSubsytem();
 
         driveCommand = new DriveCommand(
                 driveSystem, () -> -gp1.getLeftY(),
@@ -90,12 +90,13 @@ public class BBTeleOp extends CommandOpMode {
 
 
         gp1.getGamepadButton(GamepadKeys.Button.X).toggleWhenPressed(
-                new ClawReturnCommand(arm, slide, claw),
-                new ClawGrabCommand(arm, slide,claw)
+                new ClawGrabCommand(arm, slide,claw, rState),
+                new ClawReturnCommand(arm, slide, claw, rState)
+
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new ArmClawReadyCommand(arm, turret));
+                .whenPressed(new ArmClawReadyCommand(arm, turret, rState));
 
         gp1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new ArmMidCommand(arm));
@@ -120,20 +121,15 @@ public class BBTeleOp extends CommandOpMode {
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.A).whenPressed(
-                new SlideUpMidCommand(slide)
+                new SlideMid1StackCommand(slide)
         );
 
-
-
-
-
-
-        /*new Trigger(new BooleanSupplier() {
+        new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
-                return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
+                return gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
             }
-        }).whenActive(new ArmClawReadyCommand(arm, turret));*/
+        }).whenActive(new ArmStackMid1Command(arm, rState));
 
 
         // update telemetry every loop

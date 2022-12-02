@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretRight;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
@@ -20,14 +21,14 @@ public class ClawGrabCommand extends SequentialCommandGroup {
     public ClawGrabCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
-            ClawSubsystem claw)
+            ClawSubsystem claw,
+            RobotStateSubsytem robotState)
     {
 
 
         addCommands(    new RobotClawClose(claw, arm, slide ),
-                        //new WaitUntilCommand(claw::IsClosed),
                         new WaitCommand(200),
-                        new RobotSlideGraspCommand(slide, arm, claw)
+                        new RobotSlideGraspCommand(slide, arm, claw, robotState)
         );
 
 

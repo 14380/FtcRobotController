@@ -107,6 +107,13 @@ public class DriveSubsystem extends SubsystemBase {
 
         ).rotated(-poseEstimate.getHeading());
 
+        if(gp1.gamepad.b){
+            input = new Vector2d(
+                    -gp1.gamepad.left_stick_y,
+                    -gp1.gamepad.left_stick_x
+
+            ).rotated(-poseEstimate.getHeading());
+        }
 
         Pose2d vel = new Pose2d(
                 input.getX(),
@@ -114,7 +121,7 @@ public class DriveSubsystem extends SubsystemBase {
                 -gp1.gamepad.right_stick_x * velocity
         );
 
-        driveBase.DumpData(telemetry);
+        //driveBase.DumpData(telemetry);
         driveBase.setWeightedDrivePower(vel);
         driveBase.update();
 

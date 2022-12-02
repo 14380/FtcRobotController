@@ -35,7 +35,7 @@ public class TurretSubsystem extends SubsystemBase {
     public void RotateToRear(){
 
         telemetry.addData("ROTATE", "REAR");
-        turretMotor.setPosition(0.38);
+        turretMotor.setPosition(0.39);
     }
 
     public void RotateLeft(){
