@@ -49,8 +49,8 @@ public class SlideSubsystem extends SubsystemBase {
     public void SlideToMid(){
         telemetry.addData("SLIDE", "MID");
 
-        leftSlide.setTargetPosition(500);
-        rightSlide.setTargetPosition(500);
+        leftSlide.setTargetPosition(460);
+        rightSlide.setTargetPosition(460);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -60,7 +60,21 @@ public class SlideSubsystem extends SubsystemBase {
 
     }
 
-    public void SlideToMid1Stack(){
+    public void SlideToMidAuto() {
+        telemetry.addData("SLIDE", "MID AUTO");
+
+        leftSlide.setTargetPosition(350);
+        rightSlide.setTargetPosition(350);
+
+        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftSlide.setPower(0.8);
+        rightSlide.setPower(0.8);
+    }
+
+    public void SlideToMid1Stack()
+    {
         telemetry.addData("SLIDE", "MIDSTACK1");
 
         leftSlide.setTargetPosition(800);
@@ -98,7 +112,12 @@ public class SlideSubsystem extends SubsystemBase {
 
     public boolean IsSlideAtMid(){
 
-        return leftSlide.getCurrentPosition() >  460 && rightSlide.getCurrentPosition() > 460 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
+        return leftSlide.getCurrentPosition() >  400 && rightSlide.getCurrentPosition() > 400 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
+    }
+
+    public boolean IsSlideAtMidAuto(){
+
+        return leftSlide.getCurrentPosition() >  250 && rightSlide.getCurrentPosition() > 250 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
     }
 
     public boolean IsSlideAtMidStack1(){
@@ -108,7 +127,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     public boolean IsAtGrasp(){
 
-        return leftSlide.getCurrentPosition() >  390 && rightSlide.getCurrentPosition() > 390 && leftSlide.getCurrentPosition() <  430 && rightSlide.getCurrentPosition() < 430;
+        return leftSlide.getCurrentPosition() >  390 && rightSlide.getCurrentPosition() > 390 && leftSlide.getCurrentPosition() <  480 && rightSlide.getCurrentPosition() < 480;
 
     }
 

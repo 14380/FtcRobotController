@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmStackMid1Command;
 import org.firstinspires.ftc.teamcode.drive.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawReturnCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftUpCommand;
@@ -82,12 +83,14 @@ public class BBTeleOp extends CommandOpMode {
         schedule(driveCommand);
 
         //realign IMU
-        gp1.getGamepadButton(GamepadKeys.Button.X).and(
+        /*gp1.getGamepadButton(GamepadKeys.Button.X).and(
                 new GamepadButton(gp1, GamepadKeys.Button.Y)
         ).whenActive(
                 new InstantCommand(driveSystem::Realign)
+        );*/
+        gp1.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
+                new InstantCommand(driveSystem::Realign)
         );
-
 
         gp1.getGamepadButton(GamepadKeys.Button.X).toggleWhenPressed(
                 new ClawGrabCommand(arm, slide,claw, rState),
@@ -121,7 +124,7 @@ public class BBTeleOp extends CommandOpMode {
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.A).whenPressed(
-                new SlideMid1StackCommand(slide)
+                new SlideToMidCommand(slide)
         );
 
         new Trigger(new BooleanSupplier() {

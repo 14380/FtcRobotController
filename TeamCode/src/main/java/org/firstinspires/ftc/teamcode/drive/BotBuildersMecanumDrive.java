@@ -142,7 +142,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
       //  leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-       // rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         //turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -45,6 +45,13 @@ public class TurretSubsystem extends SubsystemBase {
         turretMotor.setPosition(0.6);
     }
 
+    public void RotateAutoLeft(){
+        telemetry.addData("ROTATE", "AUTO LEFT");
+    //higher number brings it closer to the front of the robot
+        //only change by 0.01 at a time .. huge movement at this band
+        turretMotor.setPosition(0.36);
+    }
+
     public void RotateRight()
     {
         telemetry.addData("ROTATE", "RIGHT");
@@ -62,6 +69,11 @@ public class TurretSubsystem extends SubsystemBase {
     public boolean IsAtRight(){
 
         return turretMotor.getPosition() > 0.3 && turretMotor.getPosition() < 0.5;
+    }
+
+    public boolean IsAtAutoLeft(){
+
+        return turretMotor.getPosition() > 0.2 && turretMotor.getPosition() < 0.4;
     }
 
     public boolean IsAtLeft(){
