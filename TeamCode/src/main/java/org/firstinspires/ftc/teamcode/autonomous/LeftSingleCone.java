@@ -93,12 +93,12 @@ public class LeftSingleCone  extends AutoOpBase {
                  new ClawGrabCommand(arm, slide, claw, rState),
                         parkFollower
                        .andThen(
-                               new TurretLeftUpCommand(arm, slide, turret).andThen(
+                               new TurretLeftUpCommand(arm, slide, turret,rState).andThen(
                                new WaitCommand(1800)).andThen(
                                        bkFollower ).andThen(
                                new ClawReturnCommand(arm, slide, claw, rState)).andThen(
                                new WaitCommand(500)).andThen(
-                               new TurretRearDownCommand(arm, slide, turret)).andThen(
+                               new TurretRearDownCommand(arm, slide, turret,rState)).andThen(
                                        new WaitCommand(500)
                                ),
                                  new SelectCommand(

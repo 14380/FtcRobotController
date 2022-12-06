@@ -5,10 +5,12 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretLeft;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
@@ -19,11 +21,14 @@ public class TurretLeftUpCommand extends SequentialCommandGroup {
     public TurretLeftUpCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
-            TurretSubsystem turret)
+            TurretSubsystem turret,
+            RobotStateSubsytem rState)
     {
 
 
-        addCommands(    new ArmHighCommand(arm),
+        addCommands(
+                new AutoSlideModeCommand(rState),
+                new ArmHighCommand(arm),
                 new ParallelCommandGroup(
                         new ConditionalCommand(
                                 new SlideUpTopCommand(slide),

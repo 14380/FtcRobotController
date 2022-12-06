@@ -27,7 +27,7 @@ public class ClawGrabCommand extends SequentialCommandGroup {
 
 
         addCommands(    new RobotClawClose(claw, arm, slide ),
-                        new WaitCommand(200),
+                        new WaitCommand(250),
                         new RobotSlideGraspCommand(slide, arm, claw, robotState)
         );
 

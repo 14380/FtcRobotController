@@ -22,8 +22,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void Top(){
         telemetry.addData("ARM", "TOP");
-        leftServo.setPosition(0.70);
-        rightServo.setPosition(0.70);
+        leftServo.setPosition(0.71);
+        rightServo.setPosition(0.71);
     }
 
     public void TopAuto(){
@@ -32,23 +32,30 @@ public class ArmSubsystem extends SubsystemBase {
         rightServo.setPosition(0.65);
     }
 
+
+    public void TopAuto2(){
+        telemetry.addData("ARM", "TOP AUTO 2");
+        leftServo.setPosition(0.67);
+        rightServo.setPosition(0.67);
+    }
+
     public void Mid(){
-        leftServo.setPosition(0.53);
-        rightServo.setPosition(0.53);
+        leftServo.setPosition(0.54);
+        rightServo.setPosition(0.54);
 
         telemetry.addData("ARM", "MID");
     }
     //the stack
     public void MidStack1(){
-        leftServo.setPosition(0.38);
-        rightServo.setPosition(0.38);
+        leftServo.setPosition(0.42);
+        rightServo.setPosition(0.42);
 
         telemetry.addData("ARM", "MID Stack 1");
     }
 
     public void MidStack2(){
-        leftServo.setPosition(0.36);
-        rightServo.setPosition(0.36);
+        leftServo.setPosition(0.38);
+        rightServo.setPosition(0.38);
 
         telemetry.addData("ARM", "MID Stack 2");
     }

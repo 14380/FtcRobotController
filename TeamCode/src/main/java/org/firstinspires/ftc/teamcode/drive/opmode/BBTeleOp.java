@@ -15,6 +15,9 @@ import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmStackMid1Command;
 import org.firstinspires.ftc.teamcode.drive.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ManualSlideDownCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ManualSlideHoldCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ManualSlideUpCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
@@ -104,23 +107,19 @@ public class BBTeleOp extends CommandOpMode {
         gp1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new ArmMidCommand(arm));
 
-
-        gp1.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new InstantCommand(claw::Report));
-
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-                new TurretRearOutTopCommand(arm, slide, turret)
+                new TurretRearOutTopCommand(arm, slide, turret, rState)
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-                new TurretRearDownCommand(arm, slide, turret)
+                new TurretRearDownCommand(arm, slide, turret, rState)
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                new TurretLeftUpCommand(arm, slide, turret)
+                new TurretLeftUpCommand(arm, slide, turret, rState)
         );
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
-                new TurretRightUpCommand(arm, slide, turret)
+                new TurretRightUpCommand(arm, slide, turret, rState)
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.A).whenPressed(
@@ -132,7 +131,21 @@ public class BBTeleOp extends CommandOpMode {
             public boolean getAsBoolean() {
                 return gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
             }
-        }).whenActive(new ArmStackMid1Command(arm, rState));
+        }).whenActive(new ManualSlideUpCommand(slide, arm, rState));
+
+        new Trigger(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
+            }
+        }).whenActive(new ManualSlideDownCommand(slide, arm, rState));
+
+        new Trigger(new BooleanSupplier() {
+            @Override
+            public boolean getAsBoolean() {
+                return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) < 0.5 && gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) < 0.5;
+            }
+        }).whenActive(new ManualSlideHoldCommand(slide, arm, rState));
 
 
         // update telemetry every loop

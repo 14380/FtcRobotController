@@ -60,11 +60,55 @@ public class SlideSubsystem extends SubsystemBase {
 
     }
 
+    public void ManualSlideUp(double speed){
+
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if(rightSlide.getCurrentPosition() < 1500 && leftSlide.getCurrentPosition() < 1500){
+            rightSlide.setPower(speed);
+            leftSlide.setPower(speed);
+        }else{
+            rightSlide.setPower(0);
+            leftSlide.setPower(0);
+        }
+    }
+
+    public void ManualSlideDown(double speed){
+
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        if(rightSlide.getCurrentPosition() > 0 && leftSlide.getCurrentPosition() > 0){
+            rightSlide.setPower(speed * -1);
+            leftSlide.setPower(speed * -1);
+        }else{
+            rightSlide.setPower(0);
+            leftSlide.setPower(0);
+        }
+
+    }
+
+    public void SlideToMidAuto2(){
+
+        telemetry.addData("SLIDE", "MID AUTO");
+
+        leftSlide.setTargetPosition(1150);
+        rightSlide.setTargetPosition(1150);
+
+        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftSlide.setPower(0.8);
+        rightSlide.setPower(0.8);
+
+    }
+
     public void SlideToMidAuto() {
         telemetry.addData("SLIDE", "MID AUTO");
 
-        leftSlide.setTargetPosition(350);
-        rightSlide.setTargetPosition(350);
+        leftSlide.setTargetPosition(750);
+        rightSlide.setTargetPosition(750);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -117,7 +161,12 @@ public class SlideSubsystem extends SubsystemBase {
 
     public boolean IsSlideAtMidAuto(){
 
-        return leftSlide.getCurrentPosition() >  250 && rightSlide.getCurrentPosition() > 250 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
+        return leftSlide.getCurrentPosition() >  450 && rightSlide.getCurrentPosition() > 450 && leftSlide.getCurrentPosition() <  800 && rightSlide.getCurrentPosition() < 800;
+    }
+
+    public boolean IsSlideAtMidAuto2(){
+
+        return leftSlide.getCurrentPosition() >  950 && rightSlide.getCurrentPosition() > 950 && leftSlide.getCurrentPosition() <  1200 && rightSlide.getCurrentPosition() < 1200;
     }
 
     public boolean IsSlideAtMidStack1(){

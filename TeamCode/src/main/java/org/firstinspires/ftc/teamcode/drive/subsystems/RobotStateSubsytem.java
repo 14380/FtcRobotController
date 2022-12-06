@@ -9,7 +9,13 @@ public class RobotStateSubsytem extends SubsystemBase {
         STACK
     }
 
+    public enum SlideControlMode{
+        AUTO,
+        MANUAL
+    }
+
     private ArmCollectionState armState = ArmCollectionState.NORMAL;
+    private SlideControlMode slideState = SlideControlMode.AUTO;
 
     public RobotStateSubsytem(){
 
@@ -19,8 +25,17 @@ public class RobotStateSubsytem extends SubsystemBase {
         this.armState = state;
     }
 
+    public void setSlideState(SlideControlMode mode)
+    {
+        this.slideState = mode;
+    }
+
     public ArmCollectionState getArmState(){
         return this.armState;
+    }
+
+    public SlideControlMode getSlideState(){
+        return this.slideState;
     }
 
 }
