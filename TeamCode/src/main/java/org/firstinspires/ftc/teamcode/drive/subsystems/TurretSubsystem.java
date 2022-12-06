@@ -49,7 +49,12 @@ public class TurretSubsystem extends SubsystemBase {
         telemetry.addData("ROTATE", "AUTO LEFT");
     //higher number brings it closer to the front of the robot
         //only change by 0.01 at a time .. huge movement at this band
-        turretMotor.setPosition(0.36);
+        turretMotor.setPosition(0.359);
+    }
+
+    //First turret move of the High stack auto
+    public void RotateAutoLeftFM(){
+        turretMotor.setPosition(0.365);
     }
 
     public void RotateRight()
@@ -65,8 +70,8 @@ public class TurretSubsystem extends SubsystemBase {
     {
         telemetry.addData("ROTATE", "RIGHT 2");
 
-
-        turretMotor.setPosition(0.415);
+        //smaller number moves to the front
+        turretMotor.setPosition(0.419);
 
     }
 

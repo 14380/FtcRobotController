@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -14,11 +13,9 @@ import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmStackMid1Command;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmStackMid2Command;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
-import org.firstinspires.ftc.teamcode.drive.commands.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawReturnCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftAutoUpCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearDownCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRightMidAuto2Command;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRightMidAutoCommand;
@@ -34,7 +31,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.HashMap;
 
 @Autonomous(group = "drive")
-public class LeftMidStackAuto extends AutoOpBase {
+public class RightMidStackAuto extends AutoOpBase {
 
     private DriveSubsystem drive;
     private SlideSubsystem slide;
@@ -78,7 +75,7 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                 .setConstraints(BotBuildersMecanumDrive.getVelocityConstraint(44, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToSplineHeading(new Pose2d(-35, 16, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-35, 16, Math.toRadians(180)))
 
                 .build();
 
@@ -87,36 +84,35 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                 .setConstraints(BotBuildersMecanumDrive.getVelocityConstraint(44, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToSplineHeading(new Pose2d(-33, 60, Math.toRadians(0)))
-                .forward(2)
+                .lineToSplineHeading(new Pose2d(-33, 60, Math.toRadians(180)))
+                .back(2)
                 .build();
 
 
 
         //first move over to the stack - 1st pickup
         TrajectorySequence backToCone = drive.trajectorySequenceBuilder(traj2.end())
-                .strafeRight(3)
-                .back(22)
+                .strafeLeft(3)
+                .forward(22)
                 .build();
 
         //now move to towards the mid cone - use the arm length to make travel distance smaller
         TrajectorySequence toMidConeFromStack = drive.trajectorySequenceBuilder(backToCone.end())
-                .forward(17)
+                .back(17)
                 .build();
 
         //move back to the stack again for the 2nd cone
         TrajectorySequence toStack2 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-
-                .back(18)
+                .forward(18)
                 .build();
 
         //final time towards the stack
         TrajectorySequence toStack3 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .back(18)
+                .forward(18)
                 .build();
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .back(22,BotBuildersMecanumDrive.getVelocityConstraint(38, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(28,BotBuildersMecanumDrive.getVelocityConstraint(38, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
                 .build();
@@ -124,11 +120,11 @@ public class LeftMidStackAuto extends AutoOpBase {
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
 
                 .turn(Math.toRadians(90))
-                .strafeRight(4)
+                .strafeLeft(4)
                 .build();
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .forward(27)
+                .back(20)
                 .turn(Math.toRadians(90))
                 .build();
 
@@ -151,7 +147,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                                 parkFollower2.andThen(
 
 
-                         new WaitCommand(1100)).andThen(
+                         new WaitCommand(1250)).andThen(
 
                          new ClawReturnCommand(arm, slide, claw, rState)).andThen(
                                new WaitCommand(500)).andThen(
@@ -164,7 +160,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                                  new WaitCommand(500).andThen(
                                   backToMidFollower.andThen(
                                        new TurretRightMidAuto2Command(arm, slide, turret).andThen(
-                                 new WaitCommand(1450).andThen(
+                                 new WaitCommand(1300).andThen(
                                  new RobotClawOpen(claw, arm, slide, rState).andThen(
                                  new WaitCommand(350).andThen(
                                  new TurretRearDownCommand(arm, slide, turret, rState).andThen(
@@ -175,7 +171,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                                  new WaitCommand(250).andThen(
                                  backToMid2Follower.andThen(
                                         new TurretRightMidAuto2Command(arm, slide, turret).andThen(
-                                 new WaitCommand(1500).andThen(
+                                 new WaitCommand(1300).andThen(
                                  new RobotClawOpen(claw, arm, slide, rState).andThen(
                                  new WaitCommand(350).andThen(
                                  new TurretRearDownCommand(arm, slide, turret, rState).andThen(

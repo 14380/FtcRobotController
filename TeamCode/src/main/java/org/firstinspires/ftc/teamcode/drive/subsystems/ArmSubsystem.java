@@ -47,8 +47,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
     //the stack
     public void MidStack1(){
-        leftServo.setPosition(0.42);
-        rightServo.setPosition(0.42);
+        leftServo.setPosition(0.43);
+        rightServo.setPosition(0.43);
 
         telemetry.addData("ARM", "MID Stack 1");
     }

@@ -120,7 +120,7 @@ public class LeftStackAuto extends AutoOpBase {
                 .build();
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .back(28,BotBuildersMecanumDrive.getVelocityConstraint(38, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .back(13,BotBuildersMecanumDrive.getVelocityConstraint(38, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
                 .build();
@@ -131,7 +131,7 @@ public class LeftStackAuto extends AutoOpBase {
                 .build();
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .forward(18)
+                .forward(35)
                 .turn(Math.toRadians(90))
                 .build();
 
@@ -184,22 +184,6 @@ public class LeftStackAuto extends AutoOpBase {
                                  new TurretRearDownCommand(arm, slide, turret, rState).andThen(
                                          new WaitCommand(500).andThen(
                                                  new ArmClawReadyCommand(arm, turret, rState).andThen(
-                                /* new WaitCommand(500).andThen(
-                                 new ArmStackMid1Command(arm, rState).andThen(
-                                         new WaitCommand(200).andThen(
-                                                 thirdToStackFollower.andThen(
-                                                 new ArmStackMid1Command(arm, rState).andThen(
-                                                         new WaitCommand(250).andThen(
-                                                 new ClawGrabCommand(arm, slide,claw, rState).andThen(
-                                                         new WaitCommand(250).andThen(
-                                                                 new TurretRightMidAutoCommand(arm, slide, turret).andThen(
-                                                                         new WaitCommand(1200).andThen(
-                                                                                 new RobotClawOpen(claw, arm, slide, rState).andThen(
-                                                                                         new WaitCommand(100).andThen(
-                                                                                                 new TurretRearDownCommand(arm, slide, turret).andThen(
-                                                                                                         new WaitCommand(500).andThen(
-                                                                                                                 new ArmClawReadyCommand(arm, turret, rState).andThen(
-                                                                                                                 */
 
                                  new SelectCommand(
                                 // the first parameter is a map of commands
@@ -213,7 +197,6 @@ public class LeftStackAuto extends AutoOpBase {
                                 vision::getConePosition
                         ))
 
-                //)))))))))))))))))))))))))))))))))))))))))));
                                  ))))))))))))))))))))))))))))));
 
     }
