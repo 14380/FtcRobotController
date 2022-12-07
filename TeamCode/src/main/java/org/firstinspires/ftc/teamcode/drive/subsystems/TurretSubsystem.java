@@ -43,7 +43,7 @@ public class TurretSubsystem extends SubsystemBase {
         telemetry.addData("ROTATE", "LEFT");
 
         turretMotor.setPosition(0.6);
-        
+
     }
 
     public void RotateLeftAuto2(){

@@ -88,6 +88,7 @@ public class LeftHighStackAuto extends AutoOpBase {
                 .setConstraints(BotBuildersMecanumDrive.getVelocityConstraint(44, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .lineToSplineHeading(new Pose2d(-33, 61, Math.toRadians(0)))
+                .back(2)//micromovement to
                 .build();
 
 
@@ -109,7 +110,7 @@ public class LeftHighStackAuto extends AutoOpBase {
 
         //move back to the stack again for the 2nd cone
         TrajectorySequence toStack2 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .back(20)
+                .back(21.5)
                 .build();
 
         TrajectorySequence toMidConeFromStack2 = drive.trajectorySequenceBuilder(backToCone.end())
