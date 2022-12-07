@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawReturnCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftMidAuto2Command;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftMidAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearDownCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRightMidAuto2Command;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRightMidAutoCommand;
@@ -67,7 +69,7 @@ public class RightMidStackAuto extends AutoOpBase {
 
         vision = new VisionSubsystem(hardwareMap,telemetry);
 
-        rState = new RobotStateSubsytem();
+        rState = new RobotStateSubsytem(hardwareMap);
 
         drive.setPoseEstimate(new Pose2d(-35, 0, Math.toRadians(-90)));
 
@@ -84,8 +86,8 @@ public class RightMidStackAuto extends AutoOpBase {
 
                 .setConstraints(BotBuildersMecanumDrive.getVelocityConstraint(44, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToSplineHeading(new Pose2d(-33, 60, Math.toRadians(180)))
-                .back(2)
+                .lineToSplineHeading(new Pose2d(-38, 58.5, Math.toRadians(180)))
+                .forward(2)
                 .build();
 
 
@@ -93,39 +95,35 @@ public class RightMidStackAuto extends AutoOpBase {
         //first move over to the stack - 1st pickup
         TrajectorySequence backToCone = drive.trajectorySequenceBuilder(traj2.end())
                 .strafeLeft(3)
-                .forward(22)
+                .back(22)
                 .build();
 
         //now move to towards the mid cone - use the arm length to make travel distance smaller
         TrajectorySequence toMidConeFromStack = drive.trajectorySequenceBuilder(backToCone.end())
-                .back(17)
+                .forward(18)
                 .build();
 
         //move back to the stack again for the 2nd cone
         TrajectorySequence toStack2 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .forward(18)
+
+                .back(18)
                 .build();
 
-        //final time towards the stack
-        TrajectorySequence toStack3 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .forward(18)
-                .build();
+
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .forward(28,BotBuildersMecanumDrive.getVelocityConstraint(38, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(25,BotBuildersMecanumDrive.getVelocityConstraint(38, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-
+                .turn(Math.toRadians(-90))
                 .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-
-                .turn(Math.toRadians(90))
-                .strafeLeft(4)
+                //.turn(Math.toRadians(-90))
+                .back(1)
                 .build();
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(toMidConeFromStack.end())
-                .back(20)
-                .turn(Math.toRadians(90))
+                .back(24)
                 .build();
 
 
@@ -136,61 +134,61 @@ public class RightMidStackAuto extends AutoOpBase {
         backToMidFollower = new TrajectorySequenceFollowerCommand(drive, toMidConeFromStack);
         backToMid2Follower = new TrajectorySequenceFollowerCommand(drive, toMidConeFromStack);
         secToStackFollower = new TrajectorySequenceFollowerCommand(drive, toStack2);
-        thirdToStackFollower = new TrajectorySequenceFollowerCommand(drive, toStack3);
+
 
 
         schedule(new WaitUntilCommand(this::isStarted).andThen(
-                 new ClawGrabCommand(arm, slide, claw, rState).andThen(
-                                parkFollower.andThen(
-                                new TurretRightMidAutoCommand(arm, slide, turret).andThen(
-                                new WaitCommand(200).andThen(
-                                parkFollower2.andThen(
+                new ClawGrabCommand(arm, slide, claw, rState).andThen(
+                        parkFollower.andThen(
+                                new TurretLeftMidAutoCommand(arm, slide, turret).andThen(
+                                        new WaitCommand(200).andThen(
+                                                parkFollower2.andThen(
 
 
-                         new WaitCommand(1250)).andThen(
+                                                        new WaitCommand(1100)).andThen(
 
-                         new ClawReturnCommand(arm, slide, claw, rState)).andThen(
-                               new WaitCommand(500)).andThen(
-                               new TurretRearDownCommand(arm, slide, turret, rState)).andThen(
-                               new WaitCommand(500).andThen(
-                               new ArmStackMid1Command(arm, rState).andThen(
-                               backToConeFollower).andThen(
-                                 new WaitCommand(250).andThen(
-                                 new ClawGrabCommand(arm, slide,claw, rState).andThen(
-                                 new WaitCommand(500).andThen(
-                                  backToMidFollower.andThen(
-                                       new TurretRightMidAuto2Command(arm, slide, turret).andThen(
-                                 new WaitCommand(1300).andThen(
-                                 new RobotClawOpen(claw, arm, slide, rState).andThen(
-                                 new WaitCommand(350).andThen(
-                                 new TurretRearDownCommand(arm, slide, turret, rState).andThen(
-                                 new WaitCommand(500).andThen(
-                                 new ArmStackMid2Command(arm, rState).andThen(
-                                 secToStackFollower.andThen(
-                                 new ClawGrabCommand(arm, slide,claw, rState).andThen(
-                                 new WaitCommand(250).andThen(
-                                 backToMid2Follower.andThen(
-                                        new TurretRightMidAuto2Command(arm, slide, turret).andThen(
-                                 new WaitCommand(1300).andThen(
-                                 new RobotClawOpen(claw, arm, slide, rState).andThen(
-                                 new WaitCommand(350).andThen(
-                                 new TurretRearDownCommand(arm, slide, turret, rState).andThen(
-                                         new WaitCommand(500).andThen(
-                                                 new ArmClawReadyCommand(arm, turret, rState).andThen(
-                                 new SelectCommand(
-                                // the first parameter is a map of commands
-                                new HashMap<Object, Command>() {{
-                                    put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos1));
-                                    put(VisionSubsystem.ConePos.ONE, new TrajectorySequenceFollowerCommand(drive, pos1));
-                                    put(VisionSubsystem.ConePos.TWO, new TrajectorySequenceFollowerCommand(drive, pos2));
-                                    put(VisionSubsystem.ConePos.THREE, new TrajectorySequenceFollowerCommand(drive, pos3));
-                                }},
-                                // the selector
-                                vision::getConePosition
-                        ))
+                                                        new ClawReturnCommand(arm, slide, claw, rState)).andThen(
+                                                        new WaitCommand(500)).andThen(
+                                                        new TurretRearDownCommand(arm, slide, turret, rState)).andThen(
+                                                        new WaitCommand(500).andThen(
+                                                                new ArmStackMid1Command(arm, rState).andThen(
+                                                                        backToConeFollower).andThen(
+                                                                        new WaitCommand(250).andThen(
+                                                                                new ClawGrabCommand(arm, slide,claw, rState).andThen(
+                                                                                        new WaitCommand(500).andThen(
+                                                                                                backToMidFollower.andThen(
+                                                                                                        new TurretLeftMidAuto2Command(arm, slide, turret).andThen(
+                                                                                                                new WaitCommand(1450).andThen(
+                                                                                                                        new RobotClawOpen(claw, arm, slide, rState).andThen(
+                                                                                                                                new WaitCommand(350).andThen(
+                                                                                                                                        new TurretRearDownCommand(arm, slide, turret, rState).andThen(
+                                                                                                                                                new WaitCommand(500).andThen(
+                                                                                                                                                        new ArmStackMid2Command(arm, rState).andThen(
+                                                                                                                                                                secToStackFollower.andThen(
+                                                                                                                                                                        new ClawGrabCommand(arm, slide,claw, rState).andThen(
+                                                                                                                                                                                new WaitCommand(250).andThen(
+                                                                                                                                                                                        backToMid2Follower.andThen(
+                                                                                                                                                                                                new TurretLeftMidAuto2Command(arm, slide, turret).andThen(
+                                                                                                                                                                                                        new WaitCommand(1500).andThen(
+                                                                                                                                                                                                                new RobotClawOpen(claw, arm, slide, rState).andThen(
+                                                                                                                                                                                                                        new WaitCommand(350).andThen(
+                                                                                                                                                                                                                                new TurretRearDownCommand(arm, slide, turret, rState).andThen(
+                                                                                                                                                                                                                                        new WaitCommand(500).andThen(
+                                                                                                                                                                                                                                                new ArmClawReadyCommand(arm, turret, rState).andThen(
+                                                                                                                                                                                                                                                        new SelectCommand(
+                                                                                                                                                                                                                                                                // the first parameter is a map of commands
+                                                                                                                                                                                                                                                                new HashMap<Object, Command>() {{
+                                                                                                                                                                                                                                                                    put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos1));
+                                                                                                                                                                                                                                                                    put(VisionSubsystem.ConePos.ONE, new TrajectorySequenceFollowerCommand(drive, pos1));
+                                                                                                                                                                                                                                                                    put(VisionSubsystem.ConePos.TWO, new TrajectorySequenceFollowerCommand(drive, pos2));
+                                                                                                                                                                                                                                                                    put(VisionSubsystem.ConePos.THREE, new TrajectorySequenceFollowerCommand(drive, pos3));
+                                                                                                                                                                                                                                                                }},
+                                                                                                                                                                                                                                                                // the selector
+                                                                                                                                                                                                                                                                vision::getConePosition
+                                                                                                                                                                                                                                                        ))
 
 
-                                 ))))))))))))))))))))))))))))));
+                                                                                                                                                                                                                                        ))))))))))))))))))))))))))))));
 
     }
 

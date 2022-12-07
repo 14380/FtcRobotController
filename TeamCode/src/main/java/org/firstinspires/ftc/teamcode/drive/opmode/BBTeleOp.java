@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.PerpetualCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmStackMid1Command;
+import org.firstinspires.ftc.teamcode.drive.commands.BlinkinCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ManualSlideDownCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ManualSlideHoldCommand;
@@ -76,7 +78,7 @@ public class BBTeleOp extends CommandOpMode {
                 telemetry
         );
 
-        rState = new RobotStateSubsytem();
+        rState = new RobotStateSubsytem(hardwareMap);
 
         driveCommand = new DriveCommand(
                 driveSystem, () -> -gp1.getLeftY(),
@@ -151,6 +153,7 @@ public class BBTeleOp extends CommandOpMode {
         // update telemetry every loop
         schedule(new RunCommand(telemetry::update));
 
+        rState.setDefaultCommand(new PerpetualCommand(new BlinkinCommand(rState)));
 
         register(claw, driveSystem, slide, turret, arm);
     }

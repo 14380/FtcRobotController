@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
@@ -25,6 +26,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.HashMap;
 
 @Autonomous(group = "drive")
+@Disabled
 public class LeftSingleCone  extends AutoOpBase {
 
     private DriveSubsystem drive;
@@ -55,7 +57,7 @@ public class LeftSingleCone  extends AutoOpBase {
 
         vision = new VisionSubsystem(hardwareMap,telemetry);
 
-        rState = new RobotStateSubsytem();
+        rState = new RobotStateSubsytem(hardwareMap);
 
 
 

@@ -100,7 +100,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         if(disabled) return;
 
-        tele.addData("Polling", "Now" + Math.random());
+       // tele.addData("Polling", "Now" + Math.random());
 
         ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
@@ -121,6 +121,15 @@ public class VisionSubsystem extends SubsystemBase {
         tele.addData("Found:", tagFound);
         if(tagFound) {
             tele.addData("Tag ID:", tagOfInterest.id);
+            if(tagOfInterest.id == 0){
+                tele.addData("Pos", "1");
+            }
+            if(tagOfInterest.id == 12){
+                tele.addData("Pos", "2");
+            }
+            if(tagOfInterest.id == 1){
+                tele.addData("Pos", "3");
+            }
         }
         tele.update();
     }

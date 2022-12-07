@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.drive.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RobotStateSubsytem extends SubsystemBase {
 
@@ -17,8 +19,29 @@ public class RobotStateSubsytem extends SubsystemBase {
     private ArmCollectionState armState = ArmCollectionState.NORMAL;
     private SlideControlMode slideState = SlideControlMode.AUTO;
 
-    public RobotStateSubsytem(){
+    private RevBlinkinLedDriver blinkinLedDriver;
 
+    public RobotStateSubsytem(HardwareMap hardwareMap){
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+    }
+
+    public void setPattern(double elapsedTime){
+
+        if(elapsedTime > 60){
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+        }
+        else if(elapsedTime >= 40){
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+        }
+        else if(elapsedTime > 30){
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.HOT_PINK);
+        }
+        else if(elapsedTime > 5){
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+        }
+        else{
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+        }
     }
 
     public void setArmState(ArmCollectionState state){

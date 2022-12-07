@@ -74,7 +74,7 @@ public class LeftStackAuto extends AutoOpBase {
 
         vision = new VisionSubsystem(hardwareMap,telemetry);
 
-        rState = new RobotStateSubsytem();
+        rState = new RobotStateSubsytem(hardwareMap);
 
         drive.setPoseEstimate(new Pose2d(-35, 0, Math.toRadians(-90)));
 

@@ -120,8 +120,8 @@ public class SlideSubsystem extends SubsystemBase {
     public void SlideToMidAuto() {
         telemetry.addData("SLIDE", "MID AUTO");
 
-        leftSlide.setTargetPosition(750);
-        rightSlide.setTargetPosition(750);
+        leftSlide.setTargetPosition(700);
+        rightSlide.setTargetPosition(700);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -179,7 +179,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     public boolean IsSlideAtMidAuto(){
 
-        return leftSlide.getCurrentPosition() >  450 && rightSlide.getCurrentPosition() > 450 && leftSlide.getCurrentPosition() <  800 && rightSlide.getCurrentPosition() < 800;
+        return leftSlide.getCurrentPosition() >  550 && rightSlide.getCurrentPosition() > 550 && leftSlide.getCurrentPosition() <  800 && rightSlide.getCurrentPosition() < 800;
     }
 
     public boolean IsSlideAtMidAuto2(){
