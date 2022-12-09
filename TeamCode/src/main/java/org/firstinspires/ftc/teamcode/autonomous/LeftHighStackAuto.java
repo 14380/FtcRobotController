@@ -88,7 +88,7 @@ public class LeftHighStackAuto extends AutoOpBase {
                 .setConstraints(BotBuildersMecanumDrive.getVelocityConstraint(44, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .lineToSplineHeading(new Pose2d(-33, 61, Math.toRadians(0)))
-                .back(2)//micromovement to
+                .back(2)//WP: micro movement to align cone
                 .build();
 
 

@@ -51,6 +51,14 @@ public class TurretSubsystem extends SubsystemBase {
         turretMotor.setPosition(0.605);
     }
 
+    public void RotateAutoRightFM(){
+        turretMotor.setPosition(0.35);
+    }
+
+    public boolean IsAtAutoRight(){
+        return turretMotor.getPosition() > 0.25 && turretMotor.getPosition() < 0.4;
+    }
+
     public void RotateAutoLeft(){
         telemetry.addData("ROTATE", "AUTO LEFT");
     //higher number brings it closer to the front of the robot
