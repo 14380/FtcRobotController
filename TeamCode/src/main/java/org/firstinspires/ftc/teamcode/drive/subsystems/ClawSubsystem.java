@@ -26,7 +26,7 @@ public class ClawSubsystem extends SubsystemBase {
     public void Close(){
         telemetry.addData("CLAW", "CLOSE");
 
-        clawServo.setPosition(0.38);
+        clawServo.setPosition(0.39);
     }
 
     public boolean IsClosed(){

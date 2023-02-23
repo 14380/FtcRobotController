@@ -85,7 +85,7 @@ public class TurretSubsystem extends SubsystemBase {
         telemetry.addData("ROTATE", "RIGHT 2");
 
         //smaller number moves to the front
-        turretMotor.setPosition(0.419);
+        turretMotor.setPosition(0.418);
 
     }
 

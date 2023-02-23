@@ -23,8 +23,9 @@ public class SlideSubsystem extends SubsystemBase {
 
     public void SlideToTop(){
         telemetry.addData("SLIDE", "Top");
-        leftSlide.setTargetPosition(1500);
-        rightSlide.setTargetPosition(1500);
+        //WP: These two numbers control the top height - larger is higher
+        leftSlide.setTargetPosition(1575);
+        rightSlide.setTargetPosition(1575);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -106,8 +107,10 @@ public class SlideSubsystem extends SubsystemBase {
 
         telemetry.addData("SLIDE", "MID AUTO");
 
-        leftSlide.setTargetPosition(1150);
-        rightSlide.setTargetPosition(1150);
+        //WP: Mid Auto second and third cone
+
+        leftSlide.setTargetPosition(1200);
+        rightSlide.setTargetPosition(1200);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -120,8 +123,9 @@ public class SlideSubsystem extends SubsystemBase {
     public void SlideToMidAuto() {
         telemetry.addData("SLIDE", "MID AUTO");
 
-        leftSlide.setTargetPosition(700);
-        rightSlide.setTargetPosition(700);
+        //WP: Change these for Mid Auto
+        leftSlide.setTargetPosition(800);
+        rightSlide.setTargetPosition(800);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -159,7 +163,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     public boolean IsSlideAtTop(){
         // Is at the top
-        return leftSlide.getCurrentPosition() >  1400 && rightSlide.getCurrentPosition() > 1400;
+        return leftSlide.getCurrentPosition() >  1500 && rightSlide.getCurrentPosition() > 1500;
     }
 
     public boolean IsSlideAtTop2(){

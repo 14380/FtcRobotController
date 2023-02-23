@@ -47,15 +47,21 @@ public class ArmSubsystem extends SubsystemBase {
     }
     //the stack
     public void MidStack1(){
-        leftServo.setPosition(0.43);
-        rightServo.setPosition(0.43);
+        //WP: these two numbers control the height of the arm when picking up the first cone
+        // larger number is higher - only change in 0.01 increments and test
+        leftServo.setPosition(0.44);
+        rightServo.setPosition(0.44);
 
         telemetry.addData("ARM", "MID Stack 1");
     }
 
     public void MidStack2(){
-        leftServo.setPosition(0.38);
-        rightServo.setPosition(0.38);
+
+        //WP: these two numbers control the height of the arm when picking up the first cone
+        // larger number is higher - only change in 0.01 increments and test
+
+        leftServo.setPosition(0.39);
+        rightServo.setPosition(0.39);
 
         telemetry.addData("ARM", "MID Stack 2");
     }
