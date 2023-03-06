@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode.drive.commands;
+package org.firstinspires.ftc.teamcode.drive.commands.auto;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 
 
-public class ArmHighAutoCommand extends CommandBase {
+public class ArmSuperHighAutoCommand extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
 
-    public ArmHighAutoCommand(ArmSubsystem subsystem) {
+    public ArmSuperHighAutoCommand(ArmSubsystem subsystem) {
         armSubsystem = subsystem;
         addRequirements(armSubsystem);
     }
@@ -17,7 +17,7 @@ public class ArmHighAutoCommand extends CommandBase {
     @Override
     public void initialize() {
 
-        armSubsystem.TopAuto();
+        armSubsystem.SuperTopAuto();
     }
 
     @Override

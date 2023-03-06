@@ -92,15 +92,15 @@ public class LeftSingleCone  extends AutoOpBase {
 
 
         schedule(new WaitUntilCommand(this::isStarted).andThen(
-                 new ClawGrabCommand(arm, slide, claw, rState),
+                 new ClawGrabCommand(arm, slide, claw, turret, rState),
                         parkFollower
                        .andThen(
-                               new TurretLeftUpCommand(arm, slide, turret,rState).andThen(
+                               new TurretLeftUpCommand(arm, slide, turret, claw, rState).andThen(
                                new WaitCommand(1800)).andThen(
                                        bkFollower ).andThen(
                                new ClawReturnCommand(arm, slide, claw, rState)).andThen(
                                new WaitCommand(500)).andThen(
-                               new TurretRearDownCommand(arm, slide, turret,rState)).andThen(
+                               new TurretRearDownCommand(arm, slide, turret, claw, rState)).andThen(
                                        new WaitCommand(500)
                                ),
                                  new SelectCommand(

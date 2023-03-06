@@ -29,6 +29,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -37,7 +38,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -78,19 +81,21 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
    // private DcMotorEx turretMotor;
-    private Servo turretServo;
+   // private Servo turretServo;
+
+    private ServoImplEx linkageServo;
 
     //arm servos
-    private Servo rightServo, leftServo;
+    //private Servo rightServo, leftServo;
+    private DcMotorEx armMotor;
 
-    private CRServo intakeServo;
-
-    private List<Servo> servoList;
-    private List<CRServo> CRServoList;
     private List<DcMotorEx> motors;
 
     //claw servo
-    private Servo claw;
+    private ServoImplEx claw;
+
+    //claw vertical
+    private Servo verticalClaw;
 
     private DcMotorEx leftSlide;
     private DcMotorEx rightSlide;
@@ -125,32 +130,40 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        rightServo = hardwareMap.get(Servo.class, "rightServo");
-        leftServo = hardwareMap.get(Servo.class, "leftServo");
+        armMotor = hardwareMap.get(DcMotorEx.class, "armMotor");
 
+        linkageServo = hardwareMap.get(ServoImplEx.class, "linkageServo");
+        verticalClaw = hardwareMap.get(Servo.class, "clawVertServo");
 
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
 
         //turretMotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
-        turretServo = hardwareMap.get(Servo.class, "turretServo");
+       // turretServo = hardwareMap.get(Servo.class, "turretServo");
 
 
-        claw = hardwareMap.get(Servo.class, "clawServo");
+        claw = hardwareMap.get(ServoImplEx.class, "clawServo");
 
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-      //  leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        linkageServo.setDirection(Servo.Direction.REVERSE);
+        linkageServo.setPwmRange(new PwmControl.PwmRange(505, 2495));
+
+        claw.setPwmRange(new PwmControl.PwmRange(505, 2495));
 
 
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //turretMotor.setPower(0);
 
         turretEnc = hardwareMap.get(DcMotorEx.class, "turretEnc");
 
-        rightServo.setDirection(Servo.Direction.REVERSE);
+       // rightServo.setDirection(Servo.Direction.REVERSE);
        // leftServo.setDirection(Servo.Direction.REVERSE);
 
         turretEnc.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -159,7 +172,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
        // turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
        // turretMotor.setPower(0.2);
 
-        turretServo.setPosition(0.51);
+        //turretServo.setPosition(0.51);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -187,7 +200,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        rightServo.setDirection(Servo.Direction.REVERSE);
+       // rightServo.setDirection(Servo.Direction.REVERSE);
         //leftServo.setDirection(Servo.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
@@ -197,6 +210,10 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     }
 
+    public void PitchUp(){
+        verticalClaw.setPosition(0);
+    }
+
 
     public void ReAlignIMU(){
 
@@ -204,7 +221,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
         //YXZ
-       // BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.PNP);
+        //BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.PNP);
 
     }
 
@@ -215,40 +232,69 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
     }
 
     public void OpenClaw(){
-        claw.setPosition(1);
+        claw.setPosition(0.8);
     }
 
+    public void ReadyForCone(){
+
+        armMotor.setTargetPosition(50);
+
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        armMotor.setPower(0.8);
+    }
 
     public void ArmUp(){
-        leftServo.setPosition(0.5);
-        rightServo.setPosition(0.5);
+        armMotor.setTargetPosition(400);
+
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        armMotor.setPower(0.8);
     }
 
     public void ArmDown(){
-        leftServo.setPosition(0.02);
-        rightServo.setPosition(0.02);
+        armMotor.setTargetPosition(0);
+
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        armMotor.setPower(0.8);
+    }
+
+    public void LinkageOut(){
+        linkageServo.setPosition(1);
+    }
+
+    public void LinkageIn(){
+        linkageServo.setPosition(0);
+    }
+
+    public void ClawVertUp(){
+        verticalClaw.setPosition(0);
+    }
+    public void ClawVertDown(){
+        verticalClaw.setPosition(0.4);
     }
 
     public void TurretLeft(){
-        turretServo.setPosition(1);
+        //turretServo.setPosition(1);
     }
 
     public void TurretRight(){
-        turretServo.setPosition(0.39);
+       // turretServo.setPosition(0.39);
     }
 
     public void TurretHome(){
-        turretServo.setPosition(0.51);
+      //  turretServo.setPosition(0.51);
     }
 
     public void DumpData(Telemetry telemetry){
 
         telemetry.addData("Left Slide", leftSlide.getCurrentPosition());
         telemetry.addData("Right Slide", rightSlide.getCurrentPosition());
-        telemetry.addData("Turret", turretServo.getPosition());
+       // telemetry.addData("Turret", turretServo.getPosition());
         telemetry.addData("Claw", claw.getPosition());
-        telemetry.addData("Arm 1", leftServo.getPosition());
-        telemetry.addData("Arm 2", rightServo.getPosition());
+        telemetry.addData("Arm", armMotor.getCurrentPosition());
+
         telemetry.addData("Turrnet ENC", turretEnc.getCurrentPosition());
 
         telemetry.addData("Right Front", rightFront.getCurrentPosition());

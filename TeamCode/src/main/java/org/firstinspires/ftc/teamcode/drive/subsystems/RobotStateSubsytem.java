@@ -16,8 +16,20 @@ public class RobotStateSubsytem extends SubsystemBase {
         MANUAL
     }
 
+    public enum  TurretControlMode{
+        AUTO,
+        MANUAL
+    }
+
+    public enum ExtenoState{
+        IN,
+        OUT
+    }
+
     private ArmCollectionState armState = ArmCollectionState.NORMAL;
     private SlideControlMode slideState = SlideControlMode.AUTO;
+    private TurretControlMode turretMode = TurretControlMode.AUTO;
+    private ExtenoState extendoMode = ExtenoState.IN;
 
     private RevBlinkinLedDriver blinkinLedDriver;
 
@@ -53,6 +65,16 @@ public class RobotStateSubsytem extends SubsystemBase {
         this.slideState = mode;
     }
 
+    public void setTurretMode(TurretControlMode mode)
+    {
+        this.turretMode = mode;
+    }
+
+    public void setExtendoMode(ExtenoState mode)
+    {
+        this.extendoMode = mode;
+    }
+
     public ArmCollectionState getArmState(){
         return this.armState;
     }
@@ -60,5 +82,9 @@ public class RobotStateSubsytem extends SubsystemBase {
     public SlideControlMode getSlideState(){
         return this.slideState;
     }
+
+    public TurretControlMode getTurretState() {return this.turretMode;}
+
+    public ExtenoState getExtendoState() {return this.extendoMode;}
 
 }

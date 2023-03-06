@@ -5,10 +5,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighAuto2Command;
-import org.firstinspires.ftc.teamcode.drive.commands.ArmHighAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidAuto2Command;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidAutoCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.TurretRight;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretRight2;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;

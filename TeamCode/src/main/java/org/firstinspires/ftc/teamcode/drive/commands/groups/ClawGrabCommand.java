@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotSlideGraspCommand;
@@ -22,11 +23,13 @@ public class ClawGrabCommand extends SequentialCommandGroup {
             ArmSubsystem arm,
             SlideSubsystem slide,
             ClawSubsystem claw,
+            TurretSubsystem turret,
             RobotStateSubsytem robotState)
     {
 
 
-        addCommands(    new RobotClawClose(claw, arm, slide ),
+        addCommands(    new ArmClawReadyCommand(arm, turret,robotState),
+                        new RobotClawClose(claw, arm, slide ),
                         new WaitCommand(250),
                         new RobotSlideGraspCommand(slide, arm, claw, robotState)
         );

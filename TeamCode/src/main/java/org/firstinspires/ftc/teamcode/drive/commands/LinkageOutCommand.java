@@ -7,31 +7,33 @@ import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 
-public class RobotClawOpen extends CommandBase {
+public class LinkageOutCommand extends CommandBase {
 
     private final ClawSubsystem clawSubsystem;
-    private final SlideSubsystem slideSubsystem;
     private final ArmSubsystem armSubsystem;
-    private final RobotStateSubsytem rState;
+    private final SlideSubsystem slideSubsystem;
+    private final RobotStateSubsytem stateSubsytem;
 
-    public RobotClawOpen(ClawSubsystem subsystem, ArmSubsystem arm, SlideSubsystem slide, RobotStateSubsytem robotState) {
+    public LinkageOutCommand(ClawSubsystem subsystem, ArmSubsystem arm, SlideSubsystem slide, RobotStateSubsytem rState) {
         clawSubsystem = subsystem;
-        armSubsystem =arm;
+        armSubsystem = arm;
         slideSubsystem = slide;
-        rState = robotState;
+        stateSubsytem = rState;
 
-        addRequirements(clawSubsystem, armSubsystem, slideSubsystem, rState);
+        addRequirements(clawSubsystem, armSubsystem, slideSubsystem, stateSubsytem);
     }
 
     @Override
     public void initialize() {
-       // rState.setArmState(RobotStateSubsytem.ArmCollectionState.NORMAL);
+        stateSubsytem.setExtendoMode(RobotStateSubsytem.ExtenoState.OUT);
+        clawSubsystem.LinkageOut();
 
-        clawSubsystem.Open();
+
     }
 
     @Override
     public boolean isFinished() {
+
         return true;
     }
 }

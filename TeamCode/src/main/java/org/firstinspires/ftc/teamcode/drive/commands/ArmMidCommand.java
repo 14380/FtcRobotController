@@ -9,15 +9,17 @@ import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 public class ArmMidCommand extends CommandBase {
 
     private final ArmSubsystem armSubsystem;
+    private final ClawSubsystem clawSubsystem;
 
-    public ArmMidCommand(ArmSubsystem subsystem) {
+    public ArmMidCommand(ArmSubsystem subsystem, ClawSubsystem cSubsystem) {
         armSubsystem = subsystem;
+        clawSubsystem = cSubsystem;
         addRequirements(armSubsystem);
     }
 
     @Override
     public void initialize() {
-
+        clawSubsystem.PitchMid();
         armSubsystem.Mid();
     }
 

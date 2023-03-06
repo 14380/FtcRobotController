@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
@@ -29,7 +30,7 @@ public class TurretRightMidCommand extends SequentialCommandGroup {
 
 
         addCommands(
-                new AutoSlideModeCommand(rState),
+                new AutoSlideModeCommand(rState), new AutoTurretModeCommand(rState),
                         new ArmHighCommand(arm),
                         new WaitCommand(150),
                 new ParallelCommandGroup(

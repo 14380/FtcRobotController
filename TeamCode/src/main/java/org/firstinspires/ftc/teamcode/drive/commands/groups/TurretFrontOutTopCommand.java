@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOut;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
@@ -20,11 +21,12 @@ public class TurretFrontOutTopCommand extends SequentialCommandGroup {
     public TurretFrontOutTopCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
+            ClawSubsystem claw,
             TurretSubsystem turret)
     {
 
 
-        addCommands(    new ArmMidCommand(arm),
+        addCommands(    new ArmMidCommand(arm, claw),
                         new WaitCommand(100),
                         new ParallelCommandGroup(
                                 new ConditionalCommand(

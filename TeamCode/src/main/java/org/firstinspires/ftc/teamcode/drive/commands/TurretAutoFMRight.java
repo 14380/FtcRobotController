@@ -16,7 +16,7 @@ public class TurretAutoFMRight extends CommandBase {
     @Override
     public void initialize() {
 
-        turret.RotateAutoRightFM();
+       // turret.RotateAutoRightFM();
     }
 
     @Override

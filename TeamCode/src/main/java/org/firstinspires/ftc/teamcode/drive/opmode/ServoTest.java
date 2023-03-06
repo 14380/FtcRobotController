@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
 
@@ -17,13 +19,21 @@ import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
 @TeleOp(group = "drive")
-@Disabled
+//@Disabled
 public class ServoTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Servo s1 = hardwareMap.get(Servo.class, "rightServo");
-        Servo s2 = hardwareMap.get(Servo.class, "leftServo");
+        ServoImplEx s1 = hardwareMap.get(ServoImplEx.class, "rightServo");
+        ServoImplEx s2 = hardwareMap.get(ServoImplEx.class, "leftServo");
+
+        Servo link = hardwareMap.get(Servo.class, "linkageServo");
+        Servo clawV = hardwareMap.get(Servo.class, "clawVertServo");
+
+        s1.setDirection(Servo.Direction.REVERSE);
+        s1.setPwmRange(new PwmControl.PwmRange(505, 2495));
+
+        s2.setPwmRange(new PwmControl.PwmRange(505, 2495));
 
 
         waitForStart();
@@ -34,12 +44,28 @@ public class ServoTest extends LinearOpMode {
 
 
             if(gamepad1.a){
-               s1.setPosition(1);
-               s2.setPosition(1);
+               s1.setPosition(0.5);
+               s2.setPosition(0.5);
             }
             if(gamepad1.b){
                 s1.setPosition(0);
                 s2.setPosition(0);
+            }
+
+            if(gamepad1.x){
+                link.setPosition(1);
+
+            }
+            if(gamepad1.y){
+                link.setPosition(0);
+
+            }
+
+            if(gamepad1.left_bumper){
+                clawV.setPosition(0);
+            }
+            if(gamepad1.right_bumper){
+                clawV.setPosition(1);
             }
         }
     }

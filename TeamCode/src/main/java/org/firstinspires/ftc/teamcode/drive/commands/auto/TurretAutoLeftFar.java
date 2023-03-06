@@ -1,14 +1,14 @@
-package org.firstinspires.ftc.teamcode.drive.commands;
+package org.firstinspires.ftc.teamcode.drive.commands.auto;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
-public class TurretLeftAuto2 extends CommandBase {
+public class TurretAutoLeftFar extends CommandBase {
 
     private final TurretSubsystem turret;
 
-    public TurretLeftAuto2(TurretSubsystem subsystem) {
+    public TurretAutoLeftFar(TurretSubsystem subsystem) {
         turret = subsystem;
         addRequirements(turret);
     }
@@ -16,11 +16,11 @@ public class TurretLeftAuto2 extends CommandBase {
     @Override
     public void initialize() {
 
-       // turret.RotateLeftAuto2();
+        turret.RotateAutoLeftClose();
     }
 
     @Override
     public boolean isFinished() {
-        return turret.IsAtLeft();
+        return turret.IsAtAutoLeftClose();
     }
 }

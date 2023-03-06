@@ -147,7 +147,7 @@ public class LeftStackAuto extends AutoOpBase {
 
 
         schedule(new WaitUntilCommand(this::isStarted).andThen(
-                 new ClawGrabCommand(arm, slide, claw, rState).andThen(
+                 new ClawGrabCommand(arm, slide, claw, turret, rState).andThen(
                                 parkFollower.andThen(
                                 new TurretLeftAutoUpCommand(arm, slide, turret).andThen(
                                 new WaitCommand(200).andThen(
@@ -158,30 +158,30 @@ public class LeftStackAuto extends AutoOpBase {
 
                          new ClawReturnCommand(arm, slide, claw, rState)).andThen(
                                new WaitCommand(500)).andThen(
-                               new TurretRearDownCommand(arm, slide, turret, rState)).andThen(
+                               new TurretRearDownCommand(arm, slide, turret,claw, rState)).andThen(
                                new WaitCommand(500).andThen(
                                new ArmStackMid1Command(arm, rState).andThen(
                                backToConeFollower).andThen(
                                  new WaitCommand(250).andThen(
-                                 new ClawGrabCommand(arm, slide,claw, rState).andThen(
+                                 new ClawGrabCommand(arm, slide,claw, turret, rState).andThen(
                                  new WaitCommand(500).andThen(
                                   backToMidFollower.andThen(
                                        new  TurretRightMidAutoCommand(arm, slide, turret).andThen(
                                  new WaitCommand(1300).andThen(
                                  new RobotClawOpen(claw, arm, slide, rState).andThen(
                                  new WaitCommand(350).andThen(
-                                 new TurretRearDownCommand(arm, slide, turret,rState).andThen(
+                                 new TurretRearDownCommand(arm, slide, turret,claw,rState).andThen(
                                  new WaitCommand(500).andThen(
                                  new ArmStackMid2Command(arm, rState).andThen(
                                  secToStackFollower.andThen(
-                                 new ClawGrabCommand(arm, slide,claw, rState).andThen(
+                                 new ClawGrabCommand(arm, slide,claw, turret, rState).andThen(
                                  new WaitCommand(250).andThen(
                                  backToMid2Follower.andThen(
                                         new TurretRightMidAutoCommand(arm, slide, turret).andThen(
                                  new WaitCommand(1300).andThen(
                                  new RobotClawOpen(claw, arm, slide, rState).andThen(
                                  new WaitCommand(350).andThen(
-                                 new TurretRearDownCommand(arm, slide, turret, rState).andThen(
+                                 new TurretRearDownCommand(arm, slide, turret,claw, rState).andThen(
                                          new WaitCommand(500).andThen(
                                                  new ArmClawReadyCommand(arm, turret, rState).andThen(
 

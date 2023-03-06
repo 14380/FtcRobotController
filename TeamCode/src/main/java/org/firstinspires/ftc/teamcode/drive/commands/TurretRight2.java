@@ -16,7 +16,7 @@ public class TurretRight2 extends CommandBase {
     @Override
     public void initialize() {
 
-        turret.RotateRight2();
+       // turret.RotateRight2();
     }
 
     @Override

@@ -7,10 +7,13 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretRear;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
@@ -23,13 +26,16 @@ public class TurretRearOutTopCommand extends SequentialCommandGroup {
             ArmSubsystem arm,
             SlideSubsystem slide,
             TurretSubsystem turret,
+            ClawSubsystem claw,
             RobotStateSubsytem rState)
     {
 
 
         addCommands(
                         new AutoSlideModeCommand(rState),
+                        new AutoTurretModeCommand(rState),
                         new ArmHighCommand(arm),
+                        new RobotClawHighPitchCommand(claw, rState),
                         new WaitCommand(200),
                         new ParallelCommandGroup(
                                 new ConditionalCommand(
