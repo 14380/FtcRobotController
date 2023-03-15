@@ -1,115 +1,135 @@
 package org.firstinspires.ftc.teamcode.drive.subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+@Config
 public class ArmSubsystem extends SubsystemBase {
 
-    private DcMotor armMotor;
+    private DcMotorEx armMotor;
+    private VoltageSensor voltageSensor;
+    private PIDController controller;
+    private ElapsedTime voltageTimer;
 
-    private final Telemetry telemetry;
+    private double voltage;
+    public static double
+            p=0.00099,
+            i=0.0019,
+            d=0.00000001;
+    public static double f = 0.109;
+
+    public static int target = 0;
+
+    private final double ticks_in_degree = 4096 / 180;
 
 
-
-    public ArmSubsystem(HardwareMap map, Telemetry tele)
+    public ArmSubsystem(HardwareMap map)
     {
 
-        telemetry = tele;
+        armMotor = map.get(DcMotorEx.class, "armMotor");
+        voltageSensor = map.voltageSensor.iterator().next();
+        controller = new PIDController(p,i,d);
+        this.voltage = voltageSensor.getVoltage();
+        this.voltageTimer = new ElapsedTime();
+        this.voltageTimer.reset();
+    }
 
-        armMotor = map.get(DcMotor.class, "armMotor");
-        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public void loop()
+    {
+
+        if(this.voltageTimer.seconds() > 5){
+            this.voltage = voltageSensor.getVoltage();
+            this.voltageTimer.reset();
+        }
+        controller.setPID(p,i,d);
+        int armPos = armMotor.getCurrentPosition();
+
+        double pid = controller.calculate(armPos, target);// / (this.voltage * 12);
+        double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+        double power = pid + ff / voltage * 12.0;
+        armMotor.setPower(power);
 
     }
 
     public void Top(){
-        telemetry.addData("ARM", "TOP");
-        armMotor.setTargetPosition(700);
 
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        target = 2300;
 
-        armMotor.setPower(0.8);
     }
 
     public void TopAuto(){
-        telemetry.addData("ARM", "TOP AUTO");
-        telemetry.addData("ARM", "TOP");
-        armMotor.setTargetPosition(850);
 
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        armMotor.setPower(0.9);
     }
 
     public void SuperTopAuto(){
-        armMotor.setTargetPosition(950);
 
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        armMotor.setPower(1);
     }
 
+    public void RunToHitTurret(){
+
+    }
+    public void ResetEncoder(){
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 
     public void Mid(){
-        armMotor.setTargetPosition(400);
+        /*armMotor.setTargetPosition(980);
 
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        armMotor.setPower(0.8);
-
-        telemetry.addData("ARM", "MID");
+        armMotor.setPower(0.9);*/
+        target = 600;
     }
 
     public void MidStack5(int position){
 
-        armMotor.setTargetPosition(position);
 
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        armMotor.setPower(0.8);
 
     }
 
     //the stack
     public void MidStack1(){
 
-
-        telemetry.addData("ARM", "MID Stack 1");
     }
 
     public void MidStack2(){
 
-        telemetry.addData("ARM", "MID Stack 2");
+
     }
 
     public boolean isAtTop(){
-        return  armMotor.getCurrentPosition()  > 700;
+        return  armMotor.getCurrentPosition()   > 2050;
     }
 
     public boolean isAtTopAuto(){
-        return  armMotor.getCurrentPosition()  > 750;
+        return  armMotor.getCurrentPosition()  > 1450;
     }
 
     public boolean isAtMid()
     {
         // Return when the mid point is located
 
-        return armMotor.getCurrentPosition()  > 350 && armMotor.getCurrentPosition() < 450;
+        return armMotor.getCurrentPosition()   > 500 && armMotor.getCurrentPosition() < 700;
     }
 
     public boolean isAtMid5(int position)
     {
         // Return when the mid point is located
 
-        return armMotor.getCurrentPosition()  > position - 100 && armMotor.getCurrentPosition() < position + 100;
+        return armMotor.getCurrentPosition()  > position - 30 && armMotor.getCurrentPosition() < position + 30;
     }
 
     public boolean isAtMidStack1()
@@ -128,25 +148,21 @@ public class ArmSubsystem extends SubsystemBase {
 
     public boolean isAtCone(){
         // Return true when the arm is at the bottom.
-        return true;//armMotor.getCurrentPosition() > -10 && armMotor.getCurrentPosition() < 10;
+        return armMotor.getCurrentPosition() < 120;
     }
 
 
     public void ReadyForCone(){
-        telemetry.addData("ARM", "Ready For Cone");
-        armMotor.setTargetPosition(50);
 
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        armMotor.setPower(0.8);
+        target = 50;
     }
     public void SlowDown(){
-        telemetry.addData("ARM", "Ready For Cone");
-        armMotor.setTargetPosition(100);
 
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        armMotor.setPower(0.8);
+    }
+
+    public int getPosition(){
+        return armMotor.getCurrentPosition();
     }
 
 }

@@ -38,7 +38,7 @@ public class TurretSubsystem extends SubsystemBase {
 
         telemetry.addData("ROTATE", "REAR");
        // turretMotor.setPosition(0.39);
-        turretEnc.setTargetPosition(-2400);
+        turretEnc.setTargetPosition(-960);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -49,7 +49,7 @@ public class TurretSubsystem extends SubsystemBase {
 
         telemetry.addData("ROTATE", "LEFT");
 
-        turretEnc.setTargetPosition(1400);
+        turretEnc.setTargetPosition(700);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -65,7 +65,7 @@ public class TurretSubsystem extends SubsystemBase {
 
         telemetry.addData("ROTATE", "LEFT");
 
-        turretEnc.setTargetPosition(1900);
+        turretEnc.setTargetPosition(500);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -74,7 +74,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
     public void RotateAutoRightClose(){
 
-        turretEnc.setTargetPosition(-1900);
+        turretEnc.setTargetPosition(-500);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -110,7 +110,7 @@ public class TurretSubsystem extends SubsystemBase {
         telemetry.addData("ROTATE", "RIGHT");
 
 
-        turretEnc.setTargetPosition(-2300);
+        turretEnc.setTargetPosition(-805);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -120,23 +120,23 @@ public class TurretSubsystem extends SubsystemBase {
 
     public boolean IsAtRear(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 2200 && Math.abs(turretEnc.getCurrentPosition()) < 2700;
+        return Math.abs(turretEnc.getCurrentPosition()) > 900 && Math.abs(turretEnc.getCurrentPosition()) < 1100;
     }
 
     public boolean IsAtRight(){
 
-        return turretEnc.getCurrentPosition() < 0 && Math.abs(turretEnc.getCurrentPosition()) > 1200 && Math.abs(turretEnc.getCurrentPosition()) < 2400;
+        return turretEnc.getCurrentPosition() < 0 && Math.abs(turretEnc.getCurrentPosition()) > 700 && Math.abs(turretEnc.getCurrentPosition()) < 950;
     }
 
 
     public boolean IsAtLeft(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 1200 && Math.abs(turretEnc.getCurrentPosition()) < 1500;
+        return Math.abs(turretEnc.getCurrentPosition()) > 600 && Math.abs(turretEnc.getCurrentPosition()) < 800;
     }
 
     public boolean IsAtAutoLeftClose(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 1300;
+        return Math.abs(turretEnc.getCurrentPosition()) > 1800;
     }
 
     public boolean IsAtAutoRightClose(){

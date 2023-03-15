@@ -87,6 +87,7 @@ public class EncoderTest extends LinearOpMode {
             if(gamepad1.left_bumper){
                 drive.OpenClaw();
             }
+            drive.DumpData(telemetry);
             telemetry.update();
         }
     }

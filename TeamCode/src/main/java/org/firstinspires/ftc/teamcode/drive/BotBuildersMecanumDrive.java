@@ -46,6 +46,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -84,6 +85,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
    // private Servo turretServo;
 
     private ServoImplEx linkageServo;
+    private ServoImplEx linkageServo2;
 
     //arm servos
     //private Servo rightServo, leftServo;
@@ -106,6 +108,8 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
     private VoltageSensor batteryVoltageSensor;
 
     public static int SLIDE_MAX_HEIGHT = 1000;
+
+    public ArmSubsystem arm;
 
     public BotBuildersMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -131,16 +135,14 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         armMotor = hardwareMap.get(DcMotorEx.class, "armMotor");
+       // armMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION,new PIDFCoefficients(10,0,5,0));
 
         linkageServo = hardwareMap.get(ServoImplEx.class, "linkageServo");
+        linkageServo2 = hardwareMap.get(ServoImplEx.class, "linkage2Servo");
         verticalClaw = hardwareMap.get(Servo.class, "clawVertServo");
 
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-
-        //turretMotor = hardwareMap.get(DcMotorEx.class, "turretMotor");
-       // turretServo = hardwareMap.get(Servo.class, "turretServo");
-
 
         claw = hardwareMap.get(ServoImplEx.class, "clawServo");
 
@@ -150,29 +152,28 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        linkageServo.setDirection(Servo.Direction.REVERSE);
+
         linkageServo.setPwmRange(new PwmControl.PwmRange(505, 2495));
+
+        linkageServo2.setDirection(Servo.Direction.REVERSE);
+        linkageServo2.setPwmRange(new PwmControl.PwmRange(505, 2495));
+
 
         claw.setPwmRange(new PwmControl.PwmRange(505, 2495));
 
 
-        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //turretMotor.setPower(0);
+       // armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+       // armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         turretEnc = hardwareMap.get(DcMotorEx.class, "turretEnc");
 
-       // rightServo.setDirection(Servo.Direction.REVERSE);
-       // leftServo.setDirection(Servo.Direction.REVERSE);
 
         turretEnc.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       // turretMotor.setTargetPosition(0);
 
-       // turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       // turretMotor.setPower(0.2);
 
-        //turretServo.setPosition(0.51);
+        arm = new ArmSubsystem(hardwareMap);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -195,23 +196,22 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         // TODO: reverse any motors using DcMotor.setDirection()
 
 
-        //rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
-       // rightFront.setDirection(DcMotorSimple.Direction.FORWARD );
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
-       // rightServo.setDirection(Servo.Direction.REVERSE);
-        //leftServo.setDirection(Servo.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
+        //setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 
     }
 
     public void PitchUp(){
-        verticalClaw.setPosition(0);
+
+        verticalClaw.setPosition(0.43);
     }
 
 
@@ -237,35 +237,50 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     public void ReadyForCone(){
 
-        armMotor.setTargetPosition(50);
+        arm.ReadyForCone();
+
+        /*armMotor.setTargetPosition(60);
 
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        armMotor.setPower(0.8);
+        armMotor.setPower(0.8);*/
+       /* arm.ReadyForCone();
+
+        turretEnc.setTargetPosition(0);
+
+        turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        turretEnc.setPower(0.8);*/
     }
 
     public void ArmUp(){
-        armMotor.setTargetPosition(400);
+        /*armMotor.setTargetPosition(400);
 
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        armMotor.setPower(0.8);
+        armMotor.setPower(0.8);*/
     }
 
     public void ArmDown(){
-        armMotor.setTargetPosition(0);
+       /* armMotor.setTargetPosition(0);
 
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        armMotor.setPower(0.8);
-    }
-
-    public void LinkageOut(){
-        linkageServo.setPosition(1);
+        armMotor.setPower(0.8);*/
     }
 
     public void LinkageIn(){
+
+        linkageServo.setPosition(1);
+
+        linkageServo2.setPosition(1);
+    }
+
+    public void LinkageOut(){
+
         linkageServo.setPosition(0);
+
+        linkageServo2.setPosition(0);
     }
 
     public void ClawVertUp(){
@@ -475,7 +490,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
         // Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
         // flat on a surface
 
-        return (double) imu.getAngularVelocity().zRotationRate;
+        return (double) imu.getAngularVelocity().yRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {

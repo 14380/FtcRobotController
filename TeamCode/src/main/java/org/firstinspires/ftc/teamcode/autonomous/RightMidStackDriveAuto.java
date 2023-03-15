@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -8,19 +9,14 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHigherPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAutoCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightMedCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoRightDriveMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseHighCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpCloseAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
@@ -32,7 +28,7 @@ import org.firstinspires.ftc.teamcode.drive.subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group = "drive")
-public class RightMidStackAuto extends AutoOpBase {
+public class RightMidStackDriveAuto extends AutoOpBase {
 
     private DriveSubsystem drive;
     private SlideSubsystem slide;
@@ -45,6 +41,7 @@ public class RightMidStackAuto extends AutoOpBase {
 
     private TrajectorySequenceFollowerCommand parkFollower;
     private TrajectorySequenceFollowerCommand traj2Follower;
+    private TrajectorySequenceFollowerCommand traj3Follower;
 
 
     @Override
@@ -64,9 +61,6 @@ public class RightMidStackAuto extends AutoOpBase {
 
         rState = new RobotStateSubsytem(hardwareMap);
 
-        //drive.setPoseEstimate(new Pose2d(-35, 0, Math.toRadians(-90)));
-
-
         drive.setPoseEstimate(new Pose2d(72, 0, Math.toRadians(0)));
 
         TrajectorySequence traj = drive.trajectorySequenceBuilder(new Pose2d(72, 0, Math.toRadians(0)))
@@ -83,10 +77,17 @@ public class RightMidStackAuto extends AutoOpBase {
                 .turn(Math.toRadians(-90))
                 .build();
 
+        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
+                .setReversed(true)
+                //.lineTo(new Vector2d(26, 10))
+                .forward(5)
+                .build();
+
 
 
         parkFollower = new TrajectorySequenceFollowerCommand(drive, traj);
         traj2Follower = new TrajectorySequenceFollowerCommand(drive, traj2);
+        traj3Follower = new TrajectorySequenceFollowerCommand(drive, traj3);
 
 
         schedule(new WaitUntilCommand(this::isStarted).andThen(
@@ -115,12 +116,14 @@ public class RightMidStackAuto extends AutoOpBase {
                                                 new ArmHighAuto5Command(800, arm)
                                         ),
 
+                                        traj3Follower,
+                                        new AutoRightDriveMidCommand(500,arm, slide,claw, turret, rState)
                                         //This is the start of the cycling
-                                        new Stack5RightCloseClawGrabCommand(1050,0.3, arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(1030,0.3,arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(990,0.25,arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(950,0.2, arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(940,0.1, arm, slide, claw, turret, rState)
+                                       // new Stack5RightCloseClawGrabCommand(1050,0.3, arm, slide, claw, turret, rState),
+                                       // new Stack5RightCloseClawGrabCommand(1030,0.3,arm, slide, claw, turret, rState),
+                                       // new Stack5RightCloseClawGrabCommand(990,0.25,arm, slide, claw, turret, rState),
+                                       // new Stack5RightCloseClawGrabCommand(950,0.2, arm, slide, claw, turret, rState),
+                                       // new Stack5RightCloseClawGrabCommand(940,0.1, arm, slide, claw, turret, rState)
                                                 )
 
 

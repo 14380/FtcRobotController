@@ -39,17 +39,18 @@ public class ClawReturnCommand extends SequentialCommandGroup {
 
                             return robotState.getExtendoState() == RobotStateSubsytem.ExtenoState.IN;
                         }
-                ),
+                )//,
 
 
-                new ConditionalCommand(
+                /*new ConditionalCommand(
                         new SlideToConeCommand(slide, arm),
                         new InstantCommand(claw::Open),
                         () -> {
 
                             return !slide.IsSlideAtTop() && !slide.IsSlideAtMid();
                         }
-                ));
+                ));*/
+        );
 
 
 

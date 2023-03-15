@@ -28,21 +28,10 @@ public class TurretRightUpCloseAutoCommand extends SequentialCommandGroup {
         addCommands(
                 new AutoSlideModeCommand(rState),
                 new AutoTurretModeCommand(rState),
-                new ArmHighAuto5Command(1050,arm),
+                new ArmHighAuto5Command(1550,arm),
                 new RobotClawHighPitchCommand(claw,rState),
                 new TurretAutoRightClose(turret)
-              /*  new ParallelCommandGroup(
-                        new ConditionalCommand(
-                                new SlideUpTopCommand(slide),
-                                new SlideMid1StackCommand(slide),
-                                new BooleanSupplier() {
-                                    @Override
-                                    public boolean getAsBoolean() {
-                                        return slide.IsSlideAtTop() || slide.IsSlideAtBottom() || slide.IsAtGrasp();
-                                    }
-                                }),
-                                new TurretAutoLeft(turret)
-                )*/
+
 
         );
 

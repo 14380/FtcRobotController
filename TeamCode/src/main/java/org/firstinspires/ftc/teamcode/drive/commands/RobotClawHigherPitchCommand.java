@@ -22,7 +22,7 @@ public class RobotClawHigherPitchCommand extends CommandBase {
     @Override
     public void initialize() {
 
-        clawSubsystem.HighPitch();
+        clawSubsystem.TopConePitch();//HighPitch();
     }
 
     @Override

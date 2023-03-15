@@ -64,7 +64,7 @@ public class LeftMidStackAuto extends AutoOpBase {
 
         claw = new ClawSubsystem(hardwareMap, telemetry);
 
-        arm = new ArmSubsystem(hardwareMap, telemetry);
+        arm = new ArmSubsystem(hardwareMap);
 
         turret = new TurretSubsystem(hardwareMap, telemetry);
 

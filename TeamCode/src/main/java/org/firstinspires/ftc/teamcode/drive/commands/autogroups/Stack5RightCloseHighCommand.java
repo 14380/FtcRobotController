@@ -38,29 +38,30 @@ public class Stack5RightCloseHighCommand extends SequentialCommandGroup {
                         //new WaitCommand(250),
                         //new LinkageOutCommand(claw,arm,slide, robotState),
                         new LinkageMoveCommand(linkagePos, claw, arm, slide, robotState),
-                        new WaitCommand(800),
+                        new WaitCommand(400),
                         new RobotClawClose(claw, arm, slide ),
                         new WaitCommand(400),
                         new RobotClawHomePitchCommand(claw,robotState),
                        // new LinkageInSmallCommand(claw, arm, slide, robotState),
-                        new LinkageMoveCommand((linkagePos - 0.1), claw, arm, slide, robotState),
+                        new LinkageMoveCommand((linkagePos - 0.2), claw, arm, slide, robotState),
                         new WaitCommand(200),
                         new ArmHighCommand(arm),
                        // new WaitCommand(200),
                         new LinkageInCommand(claw,arm,slide, robotState),
 
                         new TurretRightUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                        new LinkageMoveCommand(0.7, claw, arm, slide, robotState),
+                        new LinkageMoveCommand(0.4, claw, arm, slide, robotState),
                         new WaitCommand(250),
                         new RobotClawHigherPitchCommand(claw,robotState),
                         new WaitCommand(250),
-                       // new RobotClawHigherPitchCommand(claw,robotState),
-                       // new WaitCommand(300),
+
                         new RobotClawOpen(claw, arm, slide, robotState),
 
                         new WaitCommand(250),
                         new LinkageInCommand(claw,arm,slide,robotState),
+
                         new TurretRearDownAutoCommand(arm, slide, turret, claw, robotState),
+                        new RobotClawHomePitchCommand(claw,robotState),
                        // new WaitCommand(500),
                         new ArmHighAuto5Command(armPos, arm)
 

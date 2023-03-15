@@ -52,6 +52,18 @@ public class SlideSubsystem extends SubsystemBase {
         rightSlide.setPower(0.9);
     }
 
+    public void SlideToLinkageOut(){
+        telemetry.addData("SLIDE", "Out");
+        leftSlide.setTargetPosition(1400);
+        rightSlide.setTargetPosition(1400);
+
+        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftSlide.setPower(0.9);
+        rightSlide.setPower(0.9);
+    }
+
     public void SlideToBottom(){
         telemetry.addData("SLIDE", "Bottom");
 
@@ -176,6 +188,9 @@ public class SlideSubsystem extends SubsystemBase {
         return leftSlide.getCurrentPosition() >  1500 && rightSlide.getCurrentPosition() > 1500;
     }
 
+    public boolean IsSlideToLinkageOut(){
+        return leftSlide.getCurrentPosition() >  1300 && rightSlide.getCurrentPosition() > 1300;
+    }
     public boolean IsSlideAtBottom(){
         // Is at the bottom
         return leftSlide.getCurrentPosition() < 100 && rightSlide.getCurrentPosition() < 100;

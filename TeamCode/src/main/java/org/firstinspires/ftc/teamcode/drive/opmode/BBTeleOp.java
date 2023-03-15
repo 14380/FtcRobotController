@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -31,6 +33,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawReturnCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.ClawSlowReturnCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.groups.LinkageOutSlideCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretLeftUpCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearDownCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.groups.TurretRearOutTopCommand;
@@ -53,17 +56,18 @@ public class BBTeleOp extends CommandOpMode {
     private GamepadEx gp2;
     private BotBuildersMecanumDrive mecDrive;
     private RobotStateSubsytem rState;
-    private ArmSubsystem arm;
+
 
 
     @Override
     public void initialize() {
         CommandScheduler.getInstance().reset();
 
-
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         mecDrive = new BotBuildersMecanumDrive(hardwareMap);
         mecDrive.PitchUp();
         mecDrive.ReadyForCone();
+        mecDrive.LinkageIn();
 
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
@@ -86,10 +90,10 @@ public class BBTeleOp extends CommandOpMode {
                 telemetry
         );
 
-        arm = new ArmSubsystem(
+       /* arm = new ArmSubsystem(
                 hardwareMap,
                 telemetry
-        );
+        );*/
 
         rState = new RobotStateSubsytem(hardwareMap);
 
@@ -116,39 +120,39 @@ public class BBTeleOp extends CommandOpMode {
 
             gp1.getGamepadButton(GamepadKeys.Button.Y).toggleWhenPressed(
 
-                    new LinkageOutCommand(claw, arm, slide, rState),
-                    new LinkageInCommand(claw, arm, slide, rState)
+                    new LinkageOutSlideCommand(mecDrive.arm, slide, claw, rState),
+                    new LinkageInCommand(claw, mecDrive.arm, slide, rState)
 
             );
 
             gp1.getGamepadButton(GamepadKeys.Button.X).toggleWhenPressed(
 
-                    new ClawGrabCommand(arm, slide, claw, turret, rState),
-                    new ClawReturnCommand(arm, slide, claw, rState)
+                    new ClawGrabCommand(mecDrive.arm, slide, claw, turret, rState),
+                    new ClawReturnCommand(mecDrive.arm, slide, claw, rState)
 
             );
 
         }
 
         gp1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new ClawSlowReturnCommand(arm, turret, claw, rState));
+                .whenPressed(new ClawSlowReturnCommand(mecDrive.arm, turret, claw, rState));
 
         gp1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new ArmMidCommand(arm,claw));
+                .whenPressed(new ArmMidCommand(mecDrive.arm,claw));
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-                new TurretRearOutTopCommand(arm, slide, turret, claw, rState)
+                new TurretRearOutTopCommand(mecDrive.arm, slide, turret, claw, rState)
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-                new TurretRearDownCommand(arm, slide, turret,claw, rState)
+                new TurretRearDownCommand(mecDrive.arm, slide, turret,claw, rState)
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                new TurretLeftUpCommand(arm, slide, turret,claw, rState)
+                new TurretLeftUpCommand(mecDrive.arm, slide, turret,claw, rState)
         );
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
-                new TurretRightUpCommand(arm, slide, turret, claw, rState)
+                new TurretRightUpCommand(mecDrive.arm, slide, turret, claw, rState)
         );
 
         gp1.getGamepadButton(GamepadKeys.Button.A).whenPressed(
@@ -163,50 +167,61 @@ public class BBTeleOp extends CommandOpMode {
             public boolean getAsBoolean() {
                 return gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
             }
-        }).whenActive(new ManualSlideUpCommand(slide, arm, rState));
+        }).whenActive(new ManualSlideUpCommand(slide, mecDrive.arm, rState));
 
         new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
                 return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
             }
-        }).whenActive(new ManualSlideDownCommand(slide, arm, rState));
+        }).whenActive(new ManualSlideDownCommand(slide, mecDrive.arm, rState));
 
         new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
                 return gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) < 0.5 && gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) < 0.5;
             }
-        }).whenActive(new ManualSlideHoldCommand(slide, arm, rState));
+        }).whenActive(new ManualSlideHoldCommand(slide, mecDrive.arm, rState));
 
         new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
                 return gp2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5;
             }
-        }).whenActive(new ManualTurretRightCommand(slide, arm, turret, rState));
+        }).whenActive(new ManualTurretRightCommand(slide, mecDrive.arm, turret, rState));
 
         new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
                 return gp2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5;
             }
-        }).whenActive(new ManualTurretLeftCommand(slide, arm, turret, rState));
+        }).whenActive(new ManualTurretLeftCommand(slide, mecDrive.arm, turret, rState));
 
         new Trigger(new BooleanSupplier() {
             @Override
             public boolean getAsBoolean() {
                 return gp2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) < 0.5 && gp2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) < 0.5;
             }
-        }).whenActive(new ManualTurretHoldCommand(slide, arm, turret, rState));
+        }).whenActive(new ManualTurretHoldCommand(slide, mecDrive.arm, turret, rState));
 
 
         // update telemetry every loop
-        schedule(new RunCommand(telemetry::update));
+        //schedule(new RunCommand(telemetry::update));
 
         rState.setDefaultCommand(new PerpetualCommand(new BlinkinCommand(rState)));
 
-        register(claw, driveSystem, slide, turret, arm);
+        register(claw, driveSystem, slide, turret, mecDrive.arm);
+    }
+
+    @Override
+    public void run(){
+        //super.run();
+        mecDrive.arm.loop();
+        CommandScheduler.getInstance().run();
+        telemetry.addData("Pos", mecDrive.arm.getPosition());
+        telemetry.addData("Target", mecDrive.arm.target);
+        telemetry.update();
+
     }
 
 

@@ -62,6 +62,11 @@ public class DriveSubsystem extends SubsystemBase {
          driveBase.followTrajectorySequence(seq);
     }
 
+
+    public void followTrajectorySequenceAsync(TrajectorySequence seq){
+        driveBase.followTrajectorySequenceAsync(seq);
+    }
+
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
         return driveBase.trajectoryBuilder(startPose, reversed);
     }
