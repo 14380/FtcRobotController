@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.commands.groups;
 
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
@@ -24,9 +25,17 @@ public class LinkageOutSlideCommand extends SequentialCommandGroup {
     {
 
 
-        addCommands(    new LinkageOutCommand(claw, arm, slide,robotState),
-                        new SlideToLinkageOutCommand(slide, arm)
-        );
+
+        addCommands(    new ConditionalCommand(
+                            new SequentialCommandGroup(
+                                    new LinkageOutCommand(claw, arm,slide, robotState),
+                                    new SlideToLinkageOutCommand(slide, arm)
+                            ),
+                            new WaitCommand(10),
+                            () -> {
+                                return slide.IsSlideAtMid() || slide.IsSlideAtTop();
+                            })
+                    );
 
 
 

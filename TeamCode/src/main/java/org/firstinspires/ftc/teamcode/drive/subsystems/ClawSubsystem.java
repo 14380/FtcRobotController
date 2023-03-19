@@ -47,6 +47,9 @@ public class ClawSubsystem extends SubsystemBase {
     public void PitchMid(){
         pitchClaw.setPosition(0.7); //up pos pitch
     }
+    public void PitchAuto(double position){
+        pitchClaw.setPosition(position);
+    }
     public void LinkageIn(){
 
         linkageServo.setPosition(1);

@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHigherPitchCommand;
@@ -21,6 +25,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStar
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpCloseAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpCloseFastAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
@@ -31,13 +36,15 @@ import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.util.HashMap;
+
 @Autonomous(group = "drive")
 public class RightMidStackAuto extends AutoOpBase {
 
     private DriveSubsystem drive;
     private SlideSubsystem slide;
     private ClawSubsystem claw;
-    private ArmSubsystem arm;
+    //private ArmSubsystem arm;
     private TurretSubsystem turret;
     private VisionSubsystem vision;
     private RobotStateSubsytem rState;
@@ -46,88 +53,104 @@ public class RightMidStackAuto extends AutoOpBase {
     private TrajectorySequenceFollowerCommand parkFollower;
     private TrajectorySequenceFollowerCommand traj2Follower;
 
+    private BotBuildersMecanumDrive robot;
 
     @Override
     public void initialize() {
+        robot = new BotBuildersMecanumDrive(hardwareMap);
         drive = new DriveSubsystem(
-                new BotBuildersMecanumDrive(hardwareMap), null, telemetry);
+                robot, null, telemetry);
+
+       // robot.OpenClaw();
+        robot.PitchUp();
+        //robot.ReadyForCone();
+        robot.LinkageIn();
 
         slide = new SlideSubsystem(hardwareMap, telemetry);
 
         claw = new ClawSubsystem(hardwareMap, telemetry);
 
-        arm = new ArmSubsystem(hardwareMap);
-
         turret = new TurretSubsystem(hardwareMap, telemetry);
 
-       // vision = new VisionSubsystem(hardwareMap,telemetry);
+        vision = new VisionSubsystem(hardwareMap,telemetry);
 
         rState = new RobotStateSubsytem(hardwareMap);
-
-        //drive.setPoseEstimate(new Pose2d(-35, 0, Math.toRadians(-90)));
-
-
         drive.setPoseEstimate(new Pose2d(72, 0, Math.toRadians(0)));
 
         TrajectorySequence traj = drive.trajectorySequenceBuilder(new Pose2d(72, 0, Math.toRadians(0)))
 
-                //.setConstraints(BotBuildersMecanumDrive.getVelocityConstraint(44, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                //        BotBuildersMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setReversed(true)
-                .lineToSplineHeading(new Pose2d(26, 0, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(62, 0, Math.toRadians(-93)))
+                .lineToSplineHeading(new Pose2d(13, 0, Math.toRadians(-93)))
+                .lineToSplineHeading(new Pose2d(13, 11, Math.toRadians(-93)))
                 .build();
 
-        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(traj.end())
-                .setReversed(true)
-                .lineToSplineHeading(new Pose2d(26, 4, Math.toRadians(0)))
-                .turn(Math.toRadians(-90))
+        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
+                .back(22)
+                .build();
+
+        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(traj.end())
+
+                //.turn(Math.toRadians(90))
+                .back(4)
+                .build();
+
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
+                .forward(20)
+                //.turn(Math.toRadians(90))
                 .build();
 
 
 
         parkFollower = new TrajectorySequenceFollowerCommand(drive, traj);
-        traj2Follower = new TrajectorySequenceFollowerCommand(drive, traj2);
 
 
-        schedule(new WaitUntilCommand(this::isStarted).andThen(
+        CommandScheduler.getInstance().schedule(
+                new WaitUntilCommand(this::isStarted).andThen(
 
 
                         new ParallelCommandGroup(
-                                new AutoClawGrabStartRightMedCommand(arm, slide, claw, turret, rState),
-                                parkFollower).andThen(
+                                new AutoClawGrabStartRightMedCommand(robot.arm, slide, claw, turret, rState),
 
-                                        new SequentialCommandGroup(
-                                                traj2Follower,
-                                               // new TurretLeftUpCloseAutoCommand(arm, slide, turret, claw, rState),
-
-                                               // new WaitCommand(200),
-                                                new RobotClawHigherPitchCommand(claw,rState),
-                                                 new WaitCommand(200),
+                                parkFollower
 
 
-                                                new RobotClawOpen(claw, arm, slide, rState),
 
-                                                new WaitCommand(250),
-                                               // new LinkageInCommand(claw,arm,slide,rState),
-                                                new RobotClawHighPitchCommand(claw, rState),
-                                                new TurretRearDownAutoCommand(arm, slide, turret, claw, rState),
-                                                // new WaitCommand(500),
-                                                new ArmHighAuto5Command(800, arm)
-                                        ),
+                                ).andThen(
+
+
 
                                         //This is the start of the cycling
-                                        new Stack5RightCloseClawGrabCommand(1050,0.3, arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(1030,0.3,arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(990,0.25,arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(950,0.2, arm, slide, claw, turret, rState),
-                                        new Stack5RightCloseClawGrabCommand(940,0.1, arm, slide, claw, turret, rState)
-                                                )
+                                        new Stack5RightCloseClawGrabCommand(1270,0.5, robot.arm, slide, claw, turret, rState),
+                                        new Stack5RightCloseClawGrabCommand(1220,0.5, robot.arm, slide, claw, turret, rState),
+                                        new Stack5RightCloseClawGrabCommand(1180,0.48, robot.arm, slide, claw, turret, rState),
+                                        new Stack5RightCloseClawGrabCommand(1120,0.43, robot.arm, slide, claw, turret, rState),
+                                        new Stack5RightCloseClawGrabCommand(1080,0.41, robot.arm, slide, claw, turret, rState),
+                                        new SelectCommand(
+                                                // the first parameter is a map of commands
+                                                new HashMap<Object, Command>() {{
+                                                    put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos1));
+                                                    put(VisionSubsystem.ConePos.ONE, new TrajectorySequenceFollowerCommand(drive, pos1));
+                                                    put(VisionSubsystem.ConePos.TWO, new TrajectorySequenceFollowerCommand(drive, pos2));
+                                                    put(VisionSubsystem.ConePos.THREE, new TrajectorySequenceFollowerCommand(drive, pos3));
+                                                }},
+                                                // the selector
+                                                vision::getConePosition
+                                        )
+
+                        ))
+    );
 
 
+    }
 
-
-                ));
-
+    @Override
+    public void run(){
+        telemetry.addData("Arm Pos", robot.arm.getPosition());
+        telemetry.addData("Target", robot.arm.getTarget());
+        telemetry.update();
+        CommandScheduler.getInstance().run();
+        robot.arm.loop();
     }
 
     @Override

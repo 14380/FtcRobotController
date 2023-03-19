@@ -23,6 +23,7 @@ public class ArmSubsystem extends SubsystemBase {
     private VoltageSensor voltageSensor;
     private PIDController controller;
     private ElapsedTime voltageTimer;
+    private Servo helperServo;
 
     private double voltage;
     public static double
@@ -40,6 +41,9 @@ public class ArmSubsystem extends SubsystemBase {
     {
 
         armMotor = map.get(DcMotorEx.class, "armMotor");
+
+        helperServo = map.get(Servo.class, "helperServo");
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         voltageSensor = map.voltageSensor.iterator().next();
         controller = new PIDController(p,i,d);
         this.voltage = voltageSensor.getVoltage();
@@ -70,6 +74,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
+    public void HelperIn(){
+        helperServo.setPosition(1);
+    }
+    public void HelperOut(){
+        helperServo.setPosition(0);
+    }
+
     public void TopAuto(){
 
     }
@@ -91,12 +102,12 @@ public class ArmSubsystem extends SubsystemBase {
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         armMotor.setPower(0.9);*/
-        target = 600;
+        target = 1700;
     }
 
     public void MidStack5(int position){
 
-
+        target = position;
 
     }
 
@@ -122,14 +133,15 @@ public class ArmSubsystem extends SubsystemBase {
     {
         // Return when the mid point is located
 
-        return armMotor.getCurrentPosition()   > 500 && armMotor.getCurrentPosition() < 700;
+        return armMotor.getCurrentPosition()   > 1500 && armMotor.getCurrentPosition() < 1800;
     }
 
     public boolean isAtMid5(int position)
     {
         // Return when the mid point is located
+        double percentOfMovement = Math.abs(position) * 0.20;
 
-        return armMotor.getCurrentPosition()  > position - 30 && armMotor.getCurrentPosition() < position + 30;
+        return armMotor.getCurrentPosition()  > (position - percentOfMovement) && armMotor.getCurrentPosition() < (position + percentOfMovement);
     }
 
     public boolean isAtMidStack1()
@@ -155,6 +167,8 @@ public class ArmSubsystem extends SubsystemBase {
     public void ReadyForCone(){
 
         target = 50;
+        //always make sure the helper is in when at the cone
+        HelperIn();
     }
     public void SlowDown(){
 
@@ -164,6 +178,8 @@ public class ArmSubsystem extends SubsystemBase {
     public int getPosition(){
         return armMotor.getCurrentPosition();
     }
+
+    public int getTarget() {return target;}
 
 }
 

@@ -33,14 +33,14 @@ public class TurretRearDownCommand extends SequentialCommandGroup {
                         new LinkageInCommand(claw, arm, slide, rState),
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
-                      //  new ParallelCommandGroup(
+                        new ParallelCommandGroup(
                                 new TurretFrontOut(turret),
                                 new WaitCommand(350),
                                 new SlideToConeCommand(slide, arm)
 
-                       // )//,
-                     //   new WaitCommand(350),
-                       // new ArmClawReadyCommand(arm)
+                        )//,
+                       // new WaitCommand(350),
+                       // new ArmClawReadyCommand(arm, turret,rState)
 
         );
 

@@ -201,6 +201,11 @@ public class SlideSubsystem extends SubsystemBase {
         return leftSlide.getCurrentPosition() >  400 && rightSlide.getCurrentPosition() > 400 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
     }
 
+    public boolean IsSlideAtGrasp(){
+        return leftSlide.getCurrentPosition() >  300 && rightSlide.getCurrentPosition() > 300 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
+
+    }
+
     public boolean IsSlideAtMidAuto(){
 
         return leftSlide.getCurrentPosition() >  550 && rightSlide.getCurrentPosition() > 550 && leftSlide.getCurrentPosition() <  800 && rightSlide.getCurrentPosition() < 800;
