@@ -30,25 +30,19 @@ public class AutoClawGrabStartRightMedCommand extends SequentialCommandGroup {
     {
 
 
-        addCommands(    //new ArmClawReadyCommand(arm, turret,robotState),
+        addCommands(
                         new RobotClawClose(claw, arm, slide ),
-                        new WaitCommand(250),
+                        new WaitCommand(150),
                         new RobotAutoSlideGraspCommand(slide, arm, claw, robotState),
-                        new TurretLeftUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                        new ArmHighAuto5Command(2650, arm),
-                        new SlideToConeCommand(slide, arm),
 
-                        new LinkageMoveCommand(0.35, claw, arm, slide, robotState),
-                        new ArmHelperOutCommand(arm),
+
+                        new TurretLeftUpFirstCloseAutoCommand(arm, slide, turret, claw, robotState),
+
+                        new SlideToConeCommand(slide, arm),
                         new RobotAutoPitchCommand(0.8,claw,robotState),
-                        new WaitCommand(850),
-                        new RobotClawOpen(claw,arm,slide, robotState),
-                        new WaitCommand(250),
-                        new ArmHelperInCommand(arm),
-                        new LinkageInCommand(claw, arm, slide, robotState),
-                        new TurretRearDownAutoCommand(arm, slide, turret, claw, robotState),
-                        new ArmHighAuto5Command(1250, arm),
-                        new WaitCommand(100)
+
+
+                        new LinkageMoveCommand(0.3, claw, arm, slide, robotState)
 
 
         );

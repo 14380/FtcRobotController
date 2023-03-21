@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImpl;
@@ -47,6 +48,7 @@ public class ArmTest extends OpMode {
         controller = new PIDController(p,i,d);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         armMotor = hardwareMap.get(DcMotorEx.class, "armMotor");
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         pitchServo = hardwareMap.get(Servo.class, "clawVertServo");
         linkageServo = hardwareMap.get(ServoImplEx.class, "linkageServo");
         linkageServo2 = hardwareMap.get(ServoImplEx.class, "linkage2Servo");

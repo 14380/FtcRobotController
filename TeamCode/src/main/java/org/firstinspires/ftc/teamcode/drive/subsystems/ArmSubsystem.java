@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImpl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,14 +24,14 @@ public class ArmSubsystem extends SubsystemBase {
     private VoltageSensor voltageSensor;
     private PIDController controller;
     private ElapsedTime voltageTimer;
-    private Servo helperServo;
+    private ServoImplEx helperServo;
 
     private double voltage;
     public static double
-            p=0.00099,
-            i=0.0019,
-            d=0.00000001;
-    public static double f = 0.109;
+            p=0.00099   ,    //0.00099,
+            i=  0.0019,
+            d= 0.00000001;
+    public static double f = 0.109; //f = 0.109
 
     public static int target = 0;
 
@@ -42,7 +43,9 @@ public class ArmSubsystem extends SubsystemBase {
 
         armMotor = map.get(DcMotorEx.class, "armMotor");
 
-        helperServo = map.get(Servo.class, "helperServo");
+        helperServo = map.get(ServoImplEx.class, "helperServo");
+        helperServo.setPwmRange(new PwmControl.PwmRange(505, 2495));
+        helperServo.setDirection(Servo.Direction.REVERSE);
         armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         voltageSensor = map.voltageSensor.iterator().next();
         controller = new PIDController(p,i,d);
@@ -75,10 +78,10 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void HelperIn(){
-        helperServo.setPosition(1);
+        helperServo.setPosition(0);
     }
     public void HelperOut(){
-        helperServo.setPosition(0);
+        helperServo.setPosition(0.9);
     }
 
     public void TopAuto(){
@@ -97,11 +100,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void Mid(){
-        /*armMotor.setTargetPosition(980);
 
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        armMotor.setPower(0.9);*/
         target = 1700;
     }
 
@@ -133,13 +132,13 @@ public class ArmSubsystem extends SubsystemBase {
     {
         // Return when the mid point is located
 
-        return armMotor.getCurrentPosition()   > 1500 && armMotor.getCurrentPosition() < 1800;
+        return armMotor.getCurrentPosition()   > 1200 && armMotor.getCurrentPosition() < 1800;
     }
 
     public boolean isAtMid5(int position)
     {
         // Return when the mid point is located
-        double percentOfMovement = Math.abs(position) * 0.20;
+        double percentOfMovement = Math.abs(position) * 0.30;
 
         return armMotor.getCurrentPosition()  > (position - percentOfMovement) && armMotor.getCurrentPosition() < (position + percentOfMovement);
     }
@@ -160,7 +159,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public boolean isAtCone(){
         // Return true when the arm is at the bottom.
-        return armMotor.getCurrentPosition() < 120;
+        return armMotor.getCurrentPosition() < 300;
     }
 
 

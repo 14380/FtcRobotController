@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.drive.commands.autogroups;
 
+import com.arcrobotics.ftclib.command.ConditionalCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
@@ -33,41 +36,56 @@ public class Stack5RightCloseClawGrabCommand extends SequentialCommandGroup {
             SlideSubsystem slide,
             ClawSubsystem claw,
             TurretSubsystem turret,
-            RobotStateSubsytem robotState)
+            RobotStateSubsytem robotState, boolean isFinal)
     {
 
 
         addCommands(
-
+                        new WaitCommand(50),
                         new RobotClawOpen(claw, arm,slide, robotState),
-                       new ArmHighAuto5Command(armPos, arm),
-                       new RobotAutoPitchCommand(0.6,claw,robotState),
+                        new ArmHighAuto5Command(armPos, arm),
+                        new WaitCommand(100),
+                        new RobotAutoPitchCommand(0.6,claw,robotState),
                         new LinkageMoveCommand(linkagePos, claw, arm, slide, robotState),
-                        new WaitCommand(550),
+                        new WaitCommand(350),
                         new RobotClawClose(claw, arm, slide ),
                         new WaitCommand(250),
                         new RobotClawHomePitchCommand(claw,robotState),
-                        new WaitCommand(200),
-                        new LinkageInCommand(claw, arm, slide, robotState),
                         new WaitCommand(100),
-                        new ArmHighAuto5Command(3450, arm),
+                        new LinkageInCommand(claw, arm, slide, robotState),
+                        new ArmHighAuto5Command(2700, arm),
                         new TurretLeftUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
                         new TurretLeftUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                        new ArmHighAuto5Command(2600, arm),
-                        new WaitCommand(300),
+                        new ArmHighAuto5Command(2750, arm),
+
+
                         new LinkageMoveCommand(0.35, claw, arm, slide, robotState),
+                        new WaitCommand(100),
+                        new RobotAutoPitchCommand(0.6, claw, robotState),
+                        //new RobotClawHighPitchCommand(claw, robotState),
+                        new WaitCommand(450),
                         new ArmHelperOutCommand(arm),
-                        //new RobotAutoPitchCommand(0.8,claw,robotState),
-                        new RobotClawHighPitchCommand(claw, robotState),
-                        new WaitCommand(550),
+                        new WaitCommand(100),
                         new RobotClawOpen(claw,arm,slide, robotState),
-                        new LinkageInCommand(claw, arm, slide, robotState),
-                        new WaitCommand(150),
+
+                        new WaitCommand(500),
                         new ArmHelperInCommand(arm),
+                        new LinkageInCommand(claw, arm, slide, robotState),
+
+                        new TurretRearDownAutoFastCommand(arm, slide, turret, claw, robotState),
+
                         new TurretRearDownAutoCommand(arm, slide, turret, claw, robotState),
                         new ArmHighAuto5Command(armPos, arm),
-                        new WaitCommand(100)
+
+                        new ConditionalCommand(
+
+                                new WaitCommand(10),// ArmClawReadyCommand(arm,turret, robotState),
+                                new ArmHighAuto5Command(armPos, arm),
+                                () -> {return isFinal;}
+                        )
+
         );
+
 
 
 

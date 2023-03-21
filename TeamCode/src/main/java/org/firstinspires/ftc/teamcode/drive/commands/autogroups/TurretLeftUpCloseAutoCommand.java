@@ -35,8 +35,7 @@ public class TurretLeftUpCloseAutoCommand extends SequentialCommandGroup {
         addCommands(
                 new AutoSlideModeCommand(rState),
                 new AutoTurretModeCommand(rState),
-               // new ArmHighAuto5Command(2200,arm),
-               // new RobotClawHighPitchCommand(claw,rState),
+
                 new TurretAutoLeftClose(turret)
 
 

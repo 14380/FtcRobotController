@@ -26,7 +26,20 @@ public class TurretSubsystem extends SubsystemBase {
         //need to make sure we rotate the correct way
         telemetry.addData("ROTATE", "FRONT");
 
-        turretEnc.setTargetPosition(0);
+        turretEnc.setTargetPosition(-10);
+
+        turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        turretEnc.setPower(0.6);
+
+    }
+
+    public void RotateToFrontFast()
+    {
+        //need to make sure we rotate the correct way
+        telemetry.addData("ROTATE", "FRONT");
+
+        turretEnc.setTargetPosition(100);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -65,11 +78,11 @@ public class TurretSubsystem extends SubsystemBase {
 
         telemetry.addData("ROTATE", "LEFT");
 
-        turretEnc.setTargetPosition(820);
+        turretEnc.setTargetPosition(832);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        turretEnc.setPower(0.6);
+        turretEnc.setPower(0.5);
 
     }
 
@@ -77,7 +90,7 @@ public class TurretSubsystem extends SubsystemBase {
 
         telemetry.addData("ROTATE", "LEFT");
 
-        turretEnc.setTargetPosition(720);
+        turretEnc.setTargetPosition(500);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -148,13 +161,13 @@ public class TurretSubsystem extends SubsystemBase {
 
     public boolean IsAtAutoLeftClose(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 810 && Math.abs(turretEnc.getCurrentPosition()) < 830;
+        return Math.abs(turretEnc.getCurrentPosition()) > 790 && Math.abs(turretEnc.getCurrentPosition()) < 850;
     }
 
 
     public boolean IsAtAutoLeftCloseFast(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 720 && Math.abs(turretEnc.getCurrentPosition()) < 750;
+        return Math.abs(turretEnc.getCurrentPosition()) > 480 && Math.abs(turretEnc.getCurrentPosition()) < 750;
     }
 
     public boolean IsAtAutoRightClose(){
@@ -164,7 +177,13 @@ public class TurretSubsystem extends SubsystemBase {
 
     public boolean IsAtFront(){
 
-        return    (Math.abs(turretEnc.getCurrentPosition()) >= 0 && Math.abs(turretEnc.getCurrentPosition()) < 20);
+        return    Math.abs(turretEnc.getCurrentPosition()) < 20;
+
+    }
+
+    public boolean IsAtFrontFast(){
+
+        return    Math.abs(turretEnc.getCurrentPosition()) < 100;
 
     }
 
