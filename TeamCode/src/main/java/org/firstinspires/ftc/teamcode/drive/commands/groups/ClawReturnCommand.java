@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.drive.commands.groups;
 
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
@@ -28,12 +30,16 @@ public class ClawReturnCommand extends SequentialCommandGroup {
         addCommands(
 
                 new ConditionalCommand(
+                        new SequentialCommandGroup(
                         new RobotClawOpen(claw, arm, slide, robotState ),
+                        new WaitCommand(200),
+                        new ArmHelperInCommand(arm)),
                         new SequentialCommandGroup(
 
                                 new RobotClawOpen(claw, arm, slide, robotState),
                                 new WaitCommand(200),
-                                new LinkageInCommand(claw, arm, slide, robotState)
+                                new LinkageInCommand(claw, arm, slide, robotState),
+                                new ArmHelperInCommand(arm)
                         ),
                         () -> {
 

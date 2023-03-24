@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHigherPitchCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHomePitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
@@ -156,6 +157,7 @@ public class RightMidStackAuto extends AutoOpBase {
                                                 // the selector
                                                 vision::getConePosition
                                         ),
+                                        new RobotClawHomePitchCommand(claw, rState),
                                         new ArmHighAuto5Command(50,robot.arm))
 
                         ))

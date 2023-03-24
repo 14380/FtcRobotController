@@ -4,6 +4,8 @@ import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
@@ -35,6 +37,7 @@ public class TurretLeftUpCommand extends SequentialCommandGroup {
                 new AutoTurretModeCommand(rState),
                 new ArmHighCommand(arm),
                 new RobotClawHighPitchCommand(claw,rState),
+                new ArmHelperTeleOpOutCommand(arm),
                 new ParallelCommandGroup(
                         new ConditionalCommand(
                                 new SlideUpTopCommand(slide),

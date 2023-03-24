@@ -5,6 +5,8 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
@@ -36,6 +38,7 @@ public class TurretRearOutTopCommand extends SequentialCommandGroup {
                         new AutoTurretModeCommand(rState),
                         new ArmHighCommand(arm),
                         new RobotClawHighPitchCommand(claw, rState),
+                        new ArmHelperTeleOpOutCommand(arm),
                         new WaitCommand(200),
                         new ParallelCommandGroup(
                                 new ConditionalCommand(

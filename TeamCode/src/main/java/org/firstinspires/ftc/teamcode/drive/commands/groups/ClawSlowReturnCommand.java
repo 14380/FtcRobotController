@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawHitCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawSlowCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmResetCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHomePitchCommand;
@@ -31,15 +32,12 @@ public class ClawSlowReturnCommand extends SequentialCommandGroup {
 
         addCommands(
 
-                //new ArmClawSlowCommand( arm,claw, turret, robotState ),
-                //new WaitCommand(300),
+
                 new RobotClawHomePitchCommand(claw, robotState),
+                new ArmHelperInCommand(arm),
                 new WaitCommand(300),
                 new ArmClawReadyCommand(arm, turret,robotState)//,
-                //new ArmClawHitCommand(arm, turret, robotState),
-                //new WaitCommand(300),
-                //new ArmResetCommand(arm,claw,turret,robotState),
-                //new ArmClawReadyCommand(arm, turret,robotState)
+
                );
 
 

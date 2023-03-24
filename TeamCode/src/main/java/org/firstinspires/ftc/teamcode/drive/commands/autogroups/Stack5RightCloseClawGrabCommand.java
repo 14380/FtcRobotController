@@ -53,23 +53,25 @@ public class Stack5RightCloseClawGrabCommand extends SequentialCommandGroup {
                         new RobotClawHomePitchCommand(claw,robotState),
                         new WaitCommand(100),
                         new LinkageInCommand(claw, arm, slide, robotState),
-                        new ArmHighAuto5Command(2700, arm),
+                        new ArmHighAuto5Command(2550, arm),
                         new TurretLeftUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
                         new TurretLeftUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                        new ArmHighAuto5Command(2750, arm),
+                        new ArmHighAuto5Command(2700, arm),
 
-
+                        new ArmHelperOutCommand(arm),
+                        new WaitCommand(400),
                         new LinkageMoveCommand(0.35, claw, arm, slide, robotState),
                         new WaitCommand(100),
-                        new RobotAutoPitchCommand(0.6, claw, robotState),
+                        new RobotAutoPitchCommand(0.7, claw, robotState),
                         //new RobotClawHighPitchCommand(claw, robotState),
-                        new WaitCommand(450),
-                        new ArmHelperOutCommand(arm),
-                        new WaitCommand(100),
-                        new RobotClawOpen(claw,arm,slide, robotState),
 
                         new WaitCommand(500),
+
+                        new RobotClawOpen(claw,arm,slide, robotState),
+
+                        new WaitCommand(100),
                         new ArmHelperInCommand(arm),
+                        new WaitCommand(200),
                         new LinkageInCommand(claw, arm, slide, robotState),
 
                         new TurretRearDownAutoFastCommand(arm, slide, turret, claw, robotState),
