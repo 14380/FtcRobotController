@@ -126,8 +126,8 @@ public class SlideSubsystem extends SubsystemBase {
 
         //WP: Mid Auto second and third cone
 
-        leftSlide.setTargetPosition(1200);
-        rightSlide.setTargetPosition(1200);
+        leftSlide.setTargetPosition(900);
+        rightSlide.setTargetPosition(900);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -213,7 +213,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     public boolean IsSlideAtMidAuto2(){
 
-        return leftSlide.getCurrentPosition() >  950 && rightSlide.getCurrentPosition() > 950 && leftSlide.getCurrentPosition() <  1200 && rightSlide.getCurrentPosition() < 1200;
+        return leftSlide.getCurrentPosition() >  800 && rightSlide.getCurrentPosition() > 800 && leftSlide.getCurrentPosition() <  950 && rightSlide.getCurrentPosition() < 950;
     }
 
     public boolean IsSlideAtMidStack1(){

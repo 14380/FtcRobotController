@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHigherPitchCommand;
@@ -121,16 +122,18 @@ public class RightMidStackAuto extends AutoOpBase {
 
 
                                 ).andThen(
-                                        new WaitCommand(250),
-                                        new ArmHelperOutCommand(robot.arm),
-                                        new WaitCommand(200),
+                                        new WaitCommand(50),
+                                        //new ArmHelperOutCommand(robot.arm),
+                                        new ArmHelperTeleOpOutCommand(robot.arm),
+                                        //new WaitCommand(250),
                                         new RobotClawOpen(claw,robot.arm,slide, rState),
-                                        new WaitCommand(150),
                                         new ArmHelperInCommand(robot.arm),
+                                        //new WaitCommand(100),
+
                                         new LinkageInCommand(claw, robot.arm, slide, rState),
                                         new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
-                                        new ArmHighAuto5Command(1400, robot.arm),
-                                        new WaitCommand(100)
+                                        new ArmHighAuto5Command(1400, robot.arm)//,
+                                       // new WaitCommand(100)
 
                                 )
 
@@ -139,10 +142,10 @@ public class RightMidStackAuto extends AutoOpBase {
 
 
                                         //This is the start of the cycling
-                                        new Stack5RightCloseClawGrabCommand(1400,0.5, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1300,0.5, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1220,0.48, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1140,0.45, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1350,0.53, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1250,0.55, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1190,0.48, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1140,0.48, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5RightCloseClawGrabCommand(1120,0.45, robot.arm, slide, claw, turret, rState, true),
 
                                         new ParallelCommandGroup(

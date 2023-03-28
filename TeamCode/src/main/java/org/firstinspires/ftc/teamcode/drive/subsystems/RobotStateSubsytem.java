@@ -26,10 +26,17 @@ public class RobotStateSubsytem extends SubsystemBase {
         OUT
     }
 
+    public enum ArmHeightPosition{
+        UP,
+        DOWN
+    }
+
     private ArmCollectionState armState = ArmCollectionState.NORMAL;
     private SlideControlMode slideState = SlideControlMode.AUTO;
     private TurretControlMode turretMode = TurretControlMode.AUTO;
     private ExtenoState extendoMode = ExtenoState.IN;
+    private ArmHeightPosition armHightPosition = ArmHeightPosition.DOWN;
+
 
     private RevBlinkinLedDriver blinkinLedDriver;
 
@@ -75,6 +82,11 @@ public class RobotStateSubsytem extends SubsystemBase {
         this.extendoMode = mode;
     }
 
+    public void setArmHightPosition(ArmHeightPosition mode)
+    {
+        this.armHightPosition = mode;
+    }
+
     public ArmCollectionState getArmState(){
         return this.armState;
     }
@@ -86,5 +98,7 @@ public class RobotStateSubsytem extends SubsystemBase {
     public TurretControlMode getTurretState() {return this.turretMode;}
 
     public ExtenoState getExtendoState() {return this.extendoMode;}
+
+    public ArmHeightPosition getArmHightPosition(){return this.armHightPosition;}
 
 }

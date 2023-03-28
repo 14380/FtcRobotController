@@ -26,7 +26,7 @@ public class ManualTurretRightCommand extends CommandBase {
     @Override
     public void execute() {
         robotStateSys.setTurretMode(RobotStateSubsytem.TurretControlMode.MANUAL);
-        turretSubsystem.ManualRight(0.5);
+        turretSubsystem.ManualRight(0.4);
     }
 
     @Override

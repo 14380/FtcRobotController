@@ -79,11 +79,6 @@ public class LeftHighStackAuto extends AutoOpBase {
                 new Stack5RightCloseClawGrabCommand(500,0.8,arm, slide, claw, turret, rState),
                 new Stack5RightCloseClawGrabCommand(490,0.85, arm, slide, claw, turret, rState),
                 new Stack5RightCloseClawGrabCommand(480,0.9, arm, slide, claw, turret, rState),*/
-                new Stack5RightCloseHighCommand(560,0.7,arm, slide, claw, turret, rState),
-                new Stack5RightCloseHighCommand(540,0.75,arm, slide, claw, turret, rState),
-                new Stack5RightCloseHighCommand(500,0.8,arm, slide, claw, turret, rState),
-                new Stack5RightCloseHighCommand(490,0.85,arm, slide, claw, turret, rState),
-                new Stack5RightCloseHighCommand(480,0.9,arm, slide, claw, turret, rState),
 
                 new WaitCommand(3000)
 

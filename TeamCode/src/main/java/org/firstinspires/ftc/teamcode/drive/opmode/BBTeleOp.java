@@ -5,9 +5,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.PerpetualCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -134,11 +136,44 @@ public class BBTeleOp extends CommandOpMode {
 
         }
 
+        /*gp1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(
+                        new ClawSlowReturnCommand(mecDrive.arm, turret, claw, rState));*/
+
         gp1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new ClawSlowReturnCommand(mecDrive.arm, turret, claw, rState));
+                .whenPressed(
+                        new ConditionalCommand(
+                                new ManualTurretRightCommand(slide, mecDrive.arm, turret, rState),
+                                new ClawSlowReturnCommand(mecDrive.arm, turret, claw, rState),
+                                () -> {
+                                    return rState.getArmHightPosition() == RobotStateSubsytem.ArmHeightPosition.UP;
+                                })
+                ).whenReleased(
+                  new ConditionalCommand(
+                          new ManualTurretHoldCommand(slide, mecDrive.arm, turret, rState),
+                          new ClawSlowReturnCommand(mecDrive.arm, turret, claw, rState),
+                          () -> {
+                              return rState.getArmHightPosition() == RobotStateSubsytem.ArmHeightPosition.UP;
+                          })
+                  );
+
 
         gp1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new ArmMidCommand(mecDrive.arm,claw));
+                .whenPressed(
+                        new ConditionalCommand(
+                                new ManualTurretLeftCommand(slide, mecDrive.arm, turret, rState),
+                                new ArmMidCommand(mecDrive.arm,claw),
+                                () -> {
+                                    return rState.getArmHightPosition() == RobotStateSubsytem.ArmHeightPosition.UP;
+                                })
+                ).whenReleased(
+                        new ConditionalCommand(
+                                new ManualTurretHoldCommand(slide, mecDrive.arm, turret, rState),
+                                new ArmMidCommand(mecDrive.arm,claw),
+                                () -> {
+                                    return rState.getArmHightPosition() == RobotStateSubsytem.ArmHeightPosition.UP;
+                                })
+                );
 
         gp1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
                 new TurretRearOutTopCommand(mecDrive.arm, slide, turret, claw, rState)
@@ -221,6 +256,10 @@ public class BBTeleOp extends CommandOpMode {
         telemetry.addData("Pos", mecDrive.arm.getPosition());
         telemetry.addData("Target", mecDrive.arm.target);
         telemetry.update();
+
+        if(gp1.isDown(GamepadKeys.Button.X) && gp1.isDown(GamepadKeys.Button.Y)) {
+           mecDrive.ReAlignIMU();
+        }
 
     }
 

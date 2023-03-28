@@ -4,9 +4,14 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotAutoPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotSlideGraspCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidAuto2Command;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
@@ -24,12 +29,21 @@ public class AutoClawGrabStartRightHighCommand extends SequentialCommandGroup {
     {
 
 
-        addCommands(    //new ArmClawReadyCommand(arm, turret,robotState),
-                        new RobotClawClose(claw, arm, slide ),
-                        new WaitCommand(250),
-                        new RobotAutoSlideGraspCommand(slide, arm, claw, robotState),
-                        new TurretFrontUpAutoCommand(arm, slide, turret,claw, robotState),
-                        new RobotClawOpen(claw, arm, slide,robotState)
+        addCommands(
+                new RobotClawClose(claw, arm, slide ),
+                new WaitCommand(150),
+                new RobotAutoSlideGraspCommand(slide, arm, claw, robotState),
+
+
+                new TurretLeftUpFirstCloseAutoCommand(arm, slide, turret, claw, robotState),
+                new SlideToMidAuto2Command(slide),
+               // new SlideToConeCommand(slide, arm),
+                new RobotAutoPitchCommand(0.8,claw,robotState),
+
+
+                new LinkageMoveCommand(0.3, claw, arm, slide, robotState)
+
+
 
         );
 

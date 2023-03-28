@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOut;
+import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOutAuto;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
@@ -32,7 +33,7 @@ public class TurretRearDownAutoCommand extends SequentialCommandGroup {
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
                         new ParallelCommandGroup(
-                                new TurretFrontOut(turret),
+                                new TurretFrontOutAuto(turret),
                                 new SlideToConeCommand(slide, arm)
 
                         )

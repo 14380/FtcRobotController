@@ -8,6 +8,8 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmMoveHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.AutoArmHeightModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
@@ -38,9 +40,8 @@ public class TurretRightUpCommand extends SequentialCommandGroup {
 
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
-                        new ArmHighCommand(arm),
+                        new ArmMoveHighCommand(arm),
                         new RobotClawHighPitchCommand(claw, rState),
-                        new ArmHelperTeleOpOutCommand(arm),
                         new WaitCommand(150),
                 new ParallelCommandGroup(
                         new ConditionalCommand(
@@ -52,7 +53,12 @@ public class TurretRightUpCommand extends SequentialCommandGroup {
                                         return slide.IsSlideAtTop() || slide.IsSlideAtBottom() || slide.IsAtGrasp();
                                     }
                                 }),
-                        new TurretRight(turret)
+
+                        new SequentialCommandGroup(
+                                new TurretRight(turret),
+                                new ArmHighCommand(arm),
+                                new ArmHelperTeleOpOutCommand(arm),
+                                new AutoArmHeightModeCommand(RobotStateSubsytem.ArmHeightPosition.UP, rState))
 
                 )
 

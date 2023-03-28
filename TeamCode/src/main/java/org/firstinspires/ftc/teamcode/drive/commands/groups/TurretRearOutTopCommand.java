@@ -8,12 +8,15 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmMoveHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.AutoArmHeightModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideMid1StackCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideUpTopCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretRear;
+import org.firstinspires.ftc.teamcode.drive.commands.TurretRight;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
@@ -36,10 +39,9 @@ public class TurretRearOutTopCommand extends SequentialCommandGroup {
         addCommands(
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
-                        new ArmHighCommand(arm),
+                        new ArmMoveHighCommand(arm),
                         new RobotClawHighPitchCommand(claw, rState),
-                        new ArmHelperTeleOpOutCommand(arm),
-                        new WaitCommand(200),
+                        new WaitCommand(150),
                         new ParallelCommandGroup(
                                 new ConditionalCommand(
                                         new SlideUpTopCommand(slide),
@@ -50,7 +52,11 @@ public class TurretRearOutTopCommand extends SequentialCommandGroup {
                                                 return slide.IsSlideAtTop() || slide.IsSlideAtBottom() || slide.IsAtGrasp();
                                             }
                                         }),
-                                new TurretRear(turret)
+                                new SequentialCommandGroup(
+                                        new TurretRear(turret),
+                                        new ArmHighCommand(arm),
+                                        new ArmHelperTeleOpOutCommand(arm),
+                                        new AutoArmHeightModeCommand(RobotStateSubsytem.ArmHeightPosition.UP, rState))
                         ));
 
         addRequirements( arm, slide, turret);

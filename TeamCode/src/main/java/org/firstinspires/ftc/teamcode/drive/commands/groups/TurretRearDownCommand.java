@@ -5,7 +5,10 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmMoveHighCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.AutoArmHeightModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
@@ -33,12 +36,16 @@ public class TurretRearDownCommand extends SequentialCommandGroup {
                         new LinkageInCommand(claw, arm, slide, rState),
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
+                        new ArmHelperInCommand(arm),
+                        new ArmMoveHighCommand(arm),
                         new ParallelCommandGroup(
                                 new TurretFrontOut(turret),
                                 new WaitCommand(350),
                                 new SlideToConeCommand(slide, arm)
 
-                        )//,
+
+                        ),
+                        new AutoArmHeightModeCommand(RobotStateSubsytem.ArmHeightPosition.DOWN, rState)
                        // new WaitCommand(350),
                        // new ArmClawReadyCommand(arm, turret,rState)
 

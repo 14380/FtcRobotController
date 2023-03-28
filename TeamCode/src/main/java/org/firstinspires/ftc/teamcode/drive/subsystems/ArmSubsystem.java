@@ -77,6 +77,17 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
+    public void MoveTop()
+    {
+
+        target = 3200;
+
+    }
+
+    public boolean isAtMoveTop(){
+        return  armMotor.getCurrentPosition()   > 2900;
+    }
+
     public void HelperIn(){
         helperServo.setPosition(0.2);
     }
