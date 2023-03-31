@@ -25,12 +25,14 @@ import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightMedCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpCloseAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpCloseFastAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
@@ -56,6 +58,7 @@ public class RightMidStackAuto extends AutoOpBase {
 
 
     private TrajectorySequenceFollowerCommand parkFollower;
+    private TrajectorySequenceFollowerCommand revFollower;
 
 
     private BotBuildersMecanumDrive robot;
@@ -90,6 +93,12 @@ public class RightMidStackAuto extends AutoOpBase {
                 .lineToSplineHeading(new Pose2d(13, 10.5, Math.toRadians(-93)))
                 .build();
 
+        /*TrajectorySequence traj2 = drive.trajectorySequenceBuilder(traj.end())
+
+                .setReversed(true)
+                .lineToSplineHeading(new Pose2d(13, 10.5, Math.toRadians(-93)))
+                .build();*/
+
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
                 .forward(34)
                 .build();
@@ -108,6 +117,7 @@ public class RightMidStackAuto extends AutoOpBase {
 
 
         parkFollower = new TrajectorySequenceFollowerCommand(drive, traj);
+        //revFollower = new TrajectorySequenceFollowerCommand(drive, traj2);
 
 
         CommandScheduler.getInstance().schedule(
@@ -122,17 +132,23 @@ public class RightMidStackAuto extends AutoOpBase {
 
 
                                 ).andThen(
-                                        new WaitCommand(50),
-                                        //new ArmHelperOutCommand(robot.arm),
-                                        new ArmHelperTeleOpOutCommand(robot.arm),
-                                        //new WaitCommand(250),
-                                        new RobotClawOpen(claw,robot.arm,slide, rState),
-                                        new ArmHelperInCommand(robot.arm),
-                                        //new WaitCommand(100),
 
+
+                                        //new ArmHelperOutCommand(robot.arm),
+                                        new ArmHighAuto5Command(2650, robot.arm),
+                                        new ArmHelperTeleOpOutCommand(robot.arm),
+                                        new WaitCommand(200),
+                                        new LinkageMoveCommand(0.31, claw, robot.arm, slide, rState),
+
+                                        new WaitCommand(440),
+                                        new RobotClawOpen(claw,robot.arm,slide, rState),
+                                        new WaitCommand(130),
+                                        new ArmHelperInCommand(robot.arm),
                                         new LinkageInCommand(claw, robot.arm, slide, rState),
-                                        new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
-                                        new ArmHighAuto5Command(1400, robot.arm)//,
+                                        new TurretRearDownAutoArmCommand(robot.arm, slide, turret, claw, rState)//,
+
+                                        )
+
                                        // new WaitCommand(100)
 
                                 )
@@ -142,13 +158,19 @@ public class RightMidStackAuto extends AutoOpBase {
 
 
                                         //This is the start of the cycling
-                                        new Stack5RightCloseClawGrabCommand(1350,0.53, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1250,0.55, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1350,0.52, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1230,0.50, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5RightCloseClawGrabCommand(1190,0.48, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5RightCloseClawGrabCommand(1140,0.48, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5RightCloseClawGrabCommand(1120,0.45, robot.arm, slide, claw, turret, rState, true),
 
                                         new ParallelCommandGroup(
+                                                new SequentialCommandGroup(
+                                                        new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
+                                                        new RobotClawHomePitchCommand(claw, rState),
+                                                        new RobotClawOpen(claw, robot.arm,slide, rState),
+                                                        new ArmHighAuto5Command(50,robot.arm)
+                                                ),
                                          new SelectCommand(
                                                 // the first parameter is a map of commands
                                                 new HashMap<Object, Command>() {{
@@ -159,11 +181,10 @@ public class RightMidStackAuto extends AutoOpBase {
                                                 }},
                                                 // the selector
                                                 vision::getConePosition
-                                        ),
-                                        new RobotClawHomePitchCommand(claw, rState),
-                                        new ArmHighAuto5Command(50,robot.arm))
+                                        ))
 
-                        ))
+
+                        )
     );
 
 

@@ -211,7 +211,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
 
     public void PitchUp(){
 
-        verticalClaw.setPosition(0.43);
+        verticalClaw.setPosition(0.48);
     }
 
 

@@ -35,12 +35,10 @@ public class AutoClawGrabStartRightHighCommand extends SequentialCommandGroup {
                 new RobotAutoSlideGraspCommand(slide, arm, claw, robotState),
 
 
-                new TurretLeftUpFirstCloseAutoCommand(arm, slide, turret, claw, robotState),
+                new TurretRightUpContestedAutoCommand(arm, slide, turret, claw, robotState),
                 new SlideToMidAuto2Command(slide),
                // new SlideToConeCommand(slide, arm),
                 new RobotAutoPitchCommand(0.8,claw,robotState),
-
-
                 new LinkageMoveCommand(0.3, claw, arm, slide, robotState)
 
 

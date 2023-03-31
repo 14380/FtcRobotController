@@ -75,13 +75,23 @@ public class TurretSubsystem extends SubsystemBase {
 
         telemetry.addData("ROTATE", "LEFT");
 
-        turretEnc.setTargetPosition(700);
+        turretEnc.setTargetPosition(800);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         turretEnc.setPower(0.8);
 
     }
+
+
+
+    public boolean IsAtLeft(){
+
+        return Math.abs(turretEnc.getCurrentPosition()) > 750 && Math.abs(turretEnc.getCurrentPosition()) < 840;
+    }
+
+
+
 
     public boolean IsAtAutoRight(){
         return true;//turretMotor.getPosition() > 0.25 && turretMotor.getPosition() < 0.4;
@@ -104,6 +114,23 @@ public class TurretSubsystem extends SubsystemBase {
         return Math.abs(turretEnc.getCurrentPosition()) > 830 && Math.abs(turretEnc.getCurrentPosition()) < 845;
     }
 
+    public void RotatePosition(int position){
+
+        telemetry.addData("ROTATE", "LEFT");
+
+        turretEnc.setTargetPosition(position);
+
+        turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        turretEnc.setPower(0.5);
+
+    }
+
+    public boolean IsAtPosition(int lowpos, int highpos){
+
+        return Math.abs(turretEnc.getCurrentPosition()) > lowpos && Math.abs(turretEnc.getCurrentPosition()) < highpos;
+    }
+
     public void RotateAutoLeftCloseFast(){
 
         telemetry.addData("ROTATE", "LEFT");
@@ -117,11 +144,30 @@ public class TurretSubsystem extends SubsystemBase {
     }
     public void RotateAutoRightClose(){
 
-        turretEnc.setTargetPosition(-500);
+        turretEnc.setTargetPosition(-805);
+
+        turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        turretEnc.setPower(0.6);
+    }
+
+    public boolean IsAtAutoRightClose(){
+
+        return Math.abs(turretEnc.getCurrentPosition()) > 800;
+    }
+
+    public void RotateAutoRightCloseFast(){
+
+        turretEnc.setTargetPosition(-750);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         turretEnc.setPower(1);
+    }
+
+    public boolean IsAtAutoRightCloseFast(){
+
+        return Math.abs(turretEnc.getCurrentPosition()) > 720;
     }
 
     public void ManualLeft(double speed){
@@ -153,17 +199,12 @@ public class TurretSubsystem extends SubsystemBase {
         telemetry.addData("ROTATE", "RIGHT");
 
 
-        turretEnc.setTargetPosition(-805);
+        turretEnc.setTargetPosition(-790);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         turretEnc.setPower(0.8);
 
-    }
-
-    public boolean IsAtRear(){
-
-        return Math.abs(turretEnc.getCurrentPosition()) > 900 && Math.abs(turretEnc.getCurrentPosition()) < 1100;
     }
 
     public boolean IsAtRight(){
@@ -172,12 +213,10 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
 
-    public boolean IsAtLeft(){
+    public boolean IsAtRear(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 600 && Math.abs(turretEnc.getCurrentPosition()) < 800;
+        return Math.abs(turretEnc.getCurrentPosition()) > 900 && Math.abs(turretEnc.getCurrentPosition()) < 1100;
     }
-
-
 
 
     public boolean IsAtAutoLeftCloseFast(){
@@ -185,10 +224,7 @@ public class TurretSubsystem extends SubsystemBase {
         return Math.abs(turretEnc.getCurrentPosition()) > 480 && Math.abs(turretEnc.getCurrentPosition()) < 750;
     }
 
-    public boolean IsAtAutoRightClose(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 1300;
-    }
 
     public boolean IsAtFront(){
 

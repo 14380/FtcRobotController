@@ -1,29 +1,39 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotAutoPitchCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHigherPitchCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHomePitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidAuto2Command;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightMedCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseHighCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpFirstCloseAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightContestedAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpCloseAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretLeftUpCloseFastAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoHighCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.DriveSubsystem;
@@ -33,40 +43,28 @@ import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.VisionSubsystem;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.util.HashMap;
+
 @Autonomous(group = "drive")
 public class RightHighStackAuto extends AutoOpBase {
 
     private DriveSubsystem drive;
     private SlideSubsystem slide;
     private ClawSubsystem claw;
+    //private ArmSubsystem arm;
     private TurretSubsystem turret;
     private VisionSubsystem vision;
     private RobotStateSubsytem rState;
 
+
+    private TrajectorySequenceFollowerCommand parkFollower;
+
+
     private BotBuildersMecanumDrive robot;
-
-
-    private TrajectorySequenceFollowerCommand toHighJunctionFollower;
-
-
-
-    private TrajectorySequenceFollowerCommand toJuncFollower;
-    private TrajectorySequenceFollowerCommand toJuncFollower1;
-    private TrajectorySequenceFollowerCommand toJuncFollower2;
-    private TrajectorySequenceFollowerCommand toJuncFollower3;
-
-    private TrajectorySequenceFollowerCommand toParkFollower;
-    private TrajectorySequenceFollowerCommand toParkFollower1;
-    private TrajectorySequenceFollowerCommand toParkFollower2;
-    private TrajectorySequenceFollowerCommand toParkFollower3;
-
-
 
     @Override
     public void initialize() {
-
         robot = new BotBuildersMecanumDrive(hardwareMap);
-
         drive = new DriveSubsystem(
                 robot, null, telemetry);
 
@@ -79,157 +77,94 @@ public class RightHighStackAuto extends AutoOpBase {
 
         claw = new ClawSubsystem(hardwareMap, telemetry);
 
-
         turret = new TurretSubsystem(hardwareMap, telemetry);
 
         vision = new VisionSubsystem(hardwareMap,telemetry);
 
         rState = new RobotStateSubsytem(hardwareMap);
-
         drive.setPoseEstimate(new Pose2d(72, 0, Math.toRadians(0)));
 
-        TrajectorySequence toHighJunc = drive.trajectorySequenceBuilder(new Pose2d(72, 0, Math.toRadians(0)))
+        TrajectorySequence traj = drive.trajectorySequenceBuilder(new Pose2d(72, 0, Math.toRadians(0)))
 
                 .setReversed(true)
                 .lineToSplineHeading(new Pose2d(62, 0, Math.toRadians(-93)))
-                .lineToSplineHeading(new Pose2d(13, 0, Math.toRadians(-93)))
-                .lineToSplineHeading(new Pose2d(10, -12.5, Math.toRadians(-93)))
+                .lineToSplineHeading(new Pose2d(12.5, 0, Math.toRadians(-93)))
+                .lineToSplineHeading(new Pose2d(12.5, 10.5, Math.toRadians(-93)))
                 .build();
 
-        TrajectorySequence toParkSpot = drive.trajectorySequenceBuilder(toHighJunc.end())
-
-                .setReversed(true)
-
-                .lineToSplineHeading(new Pose2d(10, 10, Math.toRadians(-93)))
+        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
+                .forward(34)
                 .build();
 
-        TrajectorySequence toJuncSpot = drive.trajectorySequenceBuilder(toParkSpot.end())
-                .setReversed(true)
-                .lineToSplineHeading(new Pose2d(10, -12.5, Math.toRadians(-93)))
+        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(traj.end())
+
+                //.turn(Math.toRadians(90))
+                .forward(12)
+                .build();
+
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
+                .back(15)
+                //.turn(Math.toRadians(90))
                 .build();
 
 
-        toHighJunctionFollower = new TrajectorySequenceFollowerCommand(drive, toHighJunc);
 
-        toParkFollower = new TrajectorySequenceFollowerCommand(drive, toParkSpot );
-        toParkFollower1 = new TrajectorySequenceFollowerCommand(drive, toParkSpot);
-        toParkFollower2 = new TrajectorySequenceFollowerCommand(drive, toParkSpot);
-        toParkFollower3 = new TrajectorySequenceFollowerCommand(drive, toParkSpot);
-
-        toJuncFollower = new TrajectorySequenceFollowerCommand(drive, toJuncSpot);
-        toJuncFollower1 = new TrajectorySequenceFollowerCommand(drive, toJuncSpot);
-        toJuncFollower2 = new TrajectorySequenceFollowerCommand(drive, toJuncSpot);
-        toJuncFollower3 = new TrajectorySequenceFollowerCommand(drive, toJuncSpot);
-
+        parkFollower = new TrajectorySequenceFollowerCommand(drive, traj);
 
 
         CommandScheduler.getInstance().schedule(
                 new WaitUntilCommand(this::isStarted).andThen(
 
-                new ParallelCommandGroup(
-                        new AutoClawGrabStartRightHighCommand(robot.arm, slide, claw, turret, rState),
 
-                        toHighJunctionFollower
-
-
-
-                ).andThen(
                         new ParallelCommandGroup(
-                            new SequentialCommandGroup(
-                                    new ArmHelperOutCommand(robot.arm),
-                                    new WaitCommand(250),
-                                    new RobotClawOpen(claw,robot.arm,slide, rState),
-                                    new WaitCommand(150),
-                                    new ArmHelperInCommand(robot.arm),
-                                    new LinkageInCommand(claw, robot.arm, slide, rState),
-                                    new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
-                                    new ArmHighAuto5Command(1400, robot.arm),
-                                    new WaitCommand(100)
-                            ),
-                                toParkFollower
-                        )
+                                new AutoClawGrabStartRightHighCommand(robot.arm, slide, claw, turret, rState),
 
-                .andThen(
-                //This is the start of the cycling
-                        new SequentialCommandGroup(
-                            new Stack5RightCloseHighCommand(1400,0.55, robot.arm, slide, claw, turret, rState, false, toJuncFollower),
-                            new TurretLeftUpFirstCloseAutoCommand(robot.arm, slide, turret, claw, rState),//,
-                            new SlideToMidAuto2Command(slide),
-                            new RobotAutoPitchCommand(0.8,claw,rState),
-                            new ArmHelperOutCommand(robot.arm),
-                            new LinkageMoveCommand(0.3, claw, robot.arm, slide, rState),
+                                parkFollower
 
-                            new WaitCommand(250),
-                            new RobotClawOpen(claw,robot.arm,slide, rState),
-                            new WaitCommand(150),
-                            new ArmHelperInCommand(robot.arm),
-                            new LinkageInCommand(claw, robot.arm, slide, rState),
-                                new ParallelCommandGroup(
-                                        new SequentialCommandGroup(
-                                            new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
-                                            new ArmHighAuto5Command(1400, robot.arm)
-                                        ),
-                                toParkFollower1
-                                )
 
-                            )
-                ).andThen(
-                        //cycle 2
-                                        new SequentialCommandGroup(
-                                                new Stack5RightCloseHighCommand(1400,0.55, robot.arm, slide, claw, turret, rState, false, toJuncFollower1),
-                                                new TurretLeftUpFirstCloseAutoCommand(robot.arm, slide, turret, claw, rState),//,
-                                                new SlideToMidAuto2Command(slide),
-                                                new RobotAutoPitchCommand(0.8,claw,rState),
-                                                new LinkageMoveCommand(0.3, claw, robot.arm, slide, rState),
-                                                new ArmHelperOutCommand(robot.arm),
-                                                new WaitCommand(250),
-                                                new RobotClawOpen(claw,robot.arm,slide, rState),
-                                                new WaitCommand(150),
-                                                new ArmHelperInCommand(robot.arm),
-                                                new LinkageInCommand(claw, robot.arm, slide, rState),
-                                                new ParallelCommandGroup(
-                                                        new SequentialCommandGroup(
-                                                                new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
-                                                                new ArmHighAuto5Command(1400, robot.arm)
-                                                        ),
-                                                        toParkFollower2
-                                                )
-
-                                        )
 
                         ).andThen(
-                                //cycle 3
+                                        //new WaitCommand(50),
+                                        //new ArmHelperOutCommand(robot.arm),
+                                        new ArmHelperTeleOpOutCommand(robot.arm),
+                                        //new WaitCommand(250),
+                                        new RobotClawOpen(claw,robot.arm,slide, rState),
+                                        new ArmHelperInCommand(robot.arm),
+                                        //new WaitCommand(100),
 
-                                        new SequentialCommandGroup(
-                                                new Stack5RightCloseHighCommand(1400,0.55, robot.arm, slide, claw, turret, rState, false, toJuncFollower2),
-                                                new TurretLeftUpFirstCloseAutoCommand(robot.arm, slide, turret, claw, rState),//,
-                                                new SlideToMidAuto2Command(slide),
-                                                new RobotAutoPitchCommand(0.8,claw,rState),
-                                                new LinkageMoveCommand(0.3, claw, robot.arm, slide, rState),
-                                                new ArmHelperOutCommand(robot.arm),
-                                                new WaitCommand(250),
-                                                new RobotClawOpen(claw,robot.arm,slide, rState),
-                                                new WaitCommand(150),
-                                                new ArmHelperInCommand(robot.arm),
-                                                new LinkageInCommand(claw, robot.arm, slide, rState),
-                                                new ParallelCommandGroup(
-                                                        new SequentialCommandGroup(
-                                                                new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
-                                                                new ArmHighAuto5Command(1700, robot.arm)
-                                                        ),
-                                                        toParkFollower3
-                                                )
-
-                                        )
-
+                                        new LinkageInCommand(claw, robot.arm, slide, rState),
+                                        new TurretRearDownAutoHighCommand(robot.arm, slide, turret, claw, rState),
+                                        new ArmHighAuto5Command(1400, robot.arm)//,
+                                        // new WaitCommand(100)
 
                                 )
 
+                                .andThen(
+                                        new Stack5RightContestedAutoCommand(1350, 0.53, robot.arm, slide, claw, turret, rState,false),
+                                        new Stack5RightContestedAutoCommand(1250, 0.55, robot.arm, slide, claw, turret, rState,false),
+                                        new Stack5RightContestedAutoCommand(1190, 0.48, robot.arm, slide, claw, turret, rState,false),
+                                        new Stack5RightContestedAutoCommand(1140, 0.48, robot.arm, slide, claw, turret, rState,false),
+                                        new Stack5RightContestedAutoCommand(1120, 0.45, robot.arm, slide, claw, turret, rState,true),
 
-                //)
 
+                                        new ParallelCommandGroup(
+                                                new SelectCommand(
+                                                        // the first parameter is a map of commands
+                                                        new HashMap<Object, Command>() {{
+                                                            put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos1));
+                                                            put(VisionSubsystem.ConePos.ONE, new TrajectorySequenceFollowerCommand(drive, pos1));
+                                                            put(VisionSubsystem.ConePos.TWO, new TrajectorySequenceFollowerCommand(drive, pos2));
+                                                            put(VisionSubsystem.ConePos.THREE, new TrajectorySequenceFollowerCommand(drive, pos3));
+                                                        }},
+                                                        // the selector
+                                                        vision::getConePosition
+                                                ),
+                                                new RobotClawHomePitchCommand(claw, rState),
+                                                new ArmHighAuto5Command(50,robot.arm))
 
-                )));
+                                ))
+        );
+
 
     }
 

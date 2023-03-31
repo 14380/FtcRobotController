@@ -4,8 +4,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoLeftClose;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoRightClose;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
@@ -28,8 +26,7 @@ public class TurretRightUpCloseAutoCommand extends SequentialCommandGroup {
         addCommands(
                 new AutoSlideModeCommand(rState),
                 new AutoTurretModeCommand(rState),
-                new ArmHighAuto5Command(1550,arm),
-                new RobotClawHighPitchCommand(claw,rState),
+
                 new TurretAutoRightClose(turret)
 
 

@@ -5,18 +5,19 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOutAuto;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoLeftClose;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoPosition;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
-public class TurretLeftUpFirstCloseAutoCommand extends SequentialCommandGroup {
+public class TurretRearDownAutoArmCommand extends SequentialCommandGroup {
 
-    public TurretLeftUpFirstCloseAutoCommand(
+    public TurretRearDownAutoArmCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
             TurretSubsystem turret,
@@ -26,13 +27,15 @@ public class TurretLeftUpFirstCloseAutoCommand extends SequentialCommandGroup {
 
 
         addCommands(
-                new AutoSlideModeCommand(rState),
-                new AutoTurretModeCommand(rState),
-                new ParallelCommandGroup(
-                        new ArmHighAuto5Command(2800, arm),
-                        new TurretAutoPosition(830,turret)
+                        new LinkageInCommand(claw, arm, slide, rState),
+                        new AutoSlideModeCommand(rState),
+                        new AutoTurretModeCommand(rState),
+                        new ParallelCommandGroup(
+                                new ArmHighAuto5Command(1800, arm),
+                                new TurretFrontOutAuto(turret),
+                                new SlideToConeCommand(slide, arm)
 
-                )
+                        )
 
 
         );

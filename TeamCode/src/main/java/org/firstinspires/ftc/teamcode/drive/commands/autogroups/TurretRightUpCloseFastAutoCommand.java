@@ -1,22 +1,20 @@
 package org.firstinspires.ftc.teamcode.drive.commands.autogroups;
 
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoLeftClose;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoPosition;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoLeftCloseFast;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.TurretAutoRightCloseFast;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
-public class TurretLeftUpFirstCloseAutoCommand extends SequentialCommandGroup {
+public class TurretRightUpCloseFastAutoCommand extends SequentialCommandGroup {
 
-    public TurretLeftUpFirstCloseAutoCommand(
+    public TurretRightUpCloseFastAutoCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
             TurretSubsystem turret,
@@ -28,11 +26,9 @@ public class TurretLeftUpFirstCloseAutoCommand extends SequentialCommandGroup {
         addCommands(
                 new AutoSlideModeCommand(rState),
                 new AutoTurretModeCommand(rState),
-                new ParallelCommandGroup(
-                        new ArmHighAuto5Command(2800, arm),
-                        new TurretAutoPosition(830,turret)
-
-                )
+               // new ArmHighAuto5Command(2200,arm),
+               // new RobotClawHighPitchCommand(claw,rState),
+                new TurretAutoRightCloseFast(turret)
 
 
         );

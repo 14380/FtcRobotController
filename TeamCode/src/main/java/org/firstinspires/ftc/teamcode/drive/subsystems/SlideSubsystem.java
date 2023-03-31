@@ -54,14 +54,18 @@ public class SlideSubsystem extends SubsystemBase {
 
     public void SlideToLinkageOut(){
         telemetry.addData("SLIDE", "Out");
-        leftSlide.setTargetPosition(1400);
-        rightSlide.setTargetPosition(1400);
+        leftSlide.setTargetPosition(1150);
+        rightSlide.setTargetPosition(1150);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftSlide.setPower(0.9);
         rightSlide.setPower(0.9);
+    }
+
+    public boolean IsSlideToLinkageOut(){
+        return leftSlide.getCurrentPosition() >  1000 && rightSlide.getCurrentPosition() > 1200;
     }
 
     public void SlideToBottom(){
@@ -126,8 +130,8 @@ public class SlideSubsystem extends SubsystemBase {
 
         //WP: Mid Auto second and third cone
 
-        leftSlide.setTargetPosition(900);
-        rightSlide.setTargetPosition(900);
+        leftSlide.setTargetPosition(1000);
+        rightSlide.setTargetPosition(1000);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -135,6 +139,12 @@ public class SlideSubsystem extends SubsystemBase {
         leftSlide.setPower(0.8);
         rightSlide.setPower(0.8);
 
+    }
+
+
+    public boolean IsSlideAtMidAuto2(){
+
+        return leftSlide.getCurrentPosition() >  990 && rightSlide.getCurrentPosition() > 990 && leftSlide.getCurrentPosition() <  1080 && rightSlide.getCurrentPosition() < 1080;
     }
 
     public void SlideToMidAuto() {
@@ -188,9 +198,6 @@ public class SlideSubsystem extends SubsystemBase {
         return leftSlide.getCurrentPosition() >  1500 && rightSlide.getCurrentPosition() > 1500;
     }
 
-    public boolean IsSlideToLinkageOut(){
-        return leftSlide.getCurrentPosition() >  1300 && rightSlide.getCurrentPosition() > 1300;
-    }
     public boolean IsSlideAtBottom(){
         // Is at the bottom
         return leftSlide.getCurrentPosition() < 100 && rightSlide.getCurrentPosition() < 100;
@@ -211,10 +218,6 @@ public class SlideSubsystem extends SubsystemBase {
         return leftSlide.getCurrentPosition() >  550 && rightSlide.getCurrentPosition() > 550 && leftSlide.getCurrentPosition() <  800 && rightSlide.getCurrentPosition() < 800;
     }
 
-    public boolean IsSlideAtMidAuto2(){
-
-        return leftSlide.getCurrentPosition() >  800 && rightSlide.getCurrentPosition() > 800 && leftSlide.getCurrentPosition() <  950 && rightSlide.getCurrentPosition() < 950;
-    }
 
     public boolean IsSlideAtMidStack1(){
         return leftSlide.getCurrentPosition() >  700 && rightSlide.getCurrentPosition() > 700 && leftSlide.getCurrentPosition() <  900 && rightSlide.getCurrentPosition() < 900;
