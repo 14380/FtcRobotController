@@ -232,7 +232,7 @@ public class BotBuildersMecanumDrive extends MecanumDrive {
     }
 
     public void OpenClaw(){
-        claw.setPosition(0.8);
+        claw.setPosition(0.9);
     }
 
     public void ReadyForCone(){

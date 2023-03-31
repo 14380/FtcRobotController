@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.drive.commands.AutoSlideModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.AutoTurretModeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOut;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOutFast;
 import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOutFastLeft;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
@@ -17,9 +16,9 @@ import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
-public class TurretRearDownAutoFastCommand extends SequentialCommandGroup {
+public class TurretRearDownAutoFastLeftCommand extends SequentialCommandGroup {
 
-    public TurretRearDownAutoFastCommand(
+    public TurretRearDownAutoFastLeftCommand(
             ArmSubsystem arm,
             SlideSubsystem slide,
             TurretSubsystem turret,
@@ -33,7 +32,7 @@ public class TurretRearDownAutoFastCommand extends SequentialCommandGroup {
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
                         new ParallelCommandGroup(
-                                new TurretFrontOutFast(turret),
+                                new TurretFrontOutFastLeft(turret),
                                 new SlideToConeCommand(slide, arm),
                                 new ArmHighAuto5Command(1800, arm)
 

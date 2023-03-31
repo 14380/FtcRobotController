@@ -36,13 +36,12 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
                         new RobotClawOpen(claw, arm,slide, robotState),
                         new ArmHighAuto5Command(armPos, arm),
                         new WaitCommand(100),
-                        new RobotAutoPitchCommand(0.6,claw,robotState),
+                        new RobotAutoPitchCommand(0.65,claw,robotState), //0.6
                         new LinkageMoveCommand(linkagePos, claw, arm, slide, robotState),
                         new WaitCommand(320),
                         new RobotClawClose(claw, arm, slide ),
                         new WaitCommand(340),
-                        //new RobotClawHomePitchCommand(claw,robotState),
-                        new RobotAutoPitchCommand(0.3,claw,robotState),
+                        new RobotAutoPitchCommand(0.45,claw,robotState), //0.3
                         new WaitCommand(100),
                         new LinkageInCommand(claw, arm, slide, robotState),
                         new ArmHighAuto5Command(2550, arm),
@@ -54,7 +53,7 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
                         new WaitCommand(300),
                         new LinkageMoveCommand(0.28, claw, arm, slide, robotState),
                         new WaitCommand(100),
-                        new RobotAutoPitchCommand(0.7, claw, robotState), //0.7
+                        new RobotAutoPitchCommand(0.8, claw, robotState), //0.7
 
                         new WaitCommand(500),
 
@@ -65,17 +64,13 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
                         new WaitCommand(200),
                         new LinkageInCommand(claw, arm, slide, robotState),
 
-                        //new TurretRearDownAutoFastCommand(arm, slide, turret, claw, robotState),
-
-                       // new TurretRearDownAutoCommand(arm, slide, turret, claw, robotState),
-                       // new ArmHighAuto5Command(armPos, arm),
 
                         new ConditionalCommand(
 
                                 new WaitCommand(1),// ArmClawReadyCommand(arm,turret, robotState),
                                 new SequentialCommandGroup(
-                                    new TurretRearDownAutoFastCommand(arm, slide, turret, claw, robotState),
-                                    new TurretRearDownAutoCommand(arm, slide, turret, claw, robotState),
+                                    new TurretRearDownAutoFastLeftCommand(arm, slide, turret, claw, robotState),
+                                    new TurretRearDownAutoLeftCommand(arm, slide, turret, claw, robotState),
                                     new ArmHighAuto5Command(armPos, arm)
                                 ),
                                 () -> {return isFinal;}

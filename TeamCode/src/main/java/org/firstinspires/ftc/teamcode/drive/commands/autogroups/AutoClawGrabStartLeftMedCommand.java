@@ -33,7 +33,7 @@ public class AutoClawGrabStartLeftMedCommand extends SequentialCommandGroup {
 
                         new SlideToConeCommand(slide, arm),
 
-                        new RobotAutoPitchCommand(0.7,claw,robotState)//,
+                        new RobotAutoPitchCommand(0.8,claw,robotState)//,
 
 
 

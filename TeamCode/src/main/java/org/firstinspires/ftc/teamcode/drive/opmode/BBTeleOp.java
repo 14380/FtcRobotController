@@ -68,6 +68,7 @@ public class BBTeleOp extends CommandOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         mecDrive = new BotBuildersMecanumDrive(hardwareMap);
         mecDrive.PitchUp();
+        mecDrive.OpenClaw();
         mecDrive.ReadyForCone();
         mecDrive.LinkageIn();
 

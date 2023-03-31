@@ -19,10 +19,13 @@ import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoArmCollapseCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartLeftMedCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightMedCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5LeftCloseClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmLeftCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.DriveSubsystem;
@@ -78,8 +81,8 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                 .setReversed(true)
                 .lineToSplineHeading(new Pose2d(62, 0, Math.toRadians(93)))
-                .lineToSplineHeading(new Pose2d(13, 0, Math.toRadians(93)))
-                .lineToSplineHeading(new Pose2d(13, -10.5, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(11, 0, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(11, -11.5, Math.toRadians(93)))
                 .build();
 
 
@@ -106,7 +109,7 @@ public class LeftMidStackAuto extends AutoOpBase {
 
 
                         new ParallelCommandGroup(
-                                new AutoClawGrabStartRightMedCommand(robot.arm, slide, claw, turret, rState),
+                                new AutoClawGrabStartLeftMedCommand(robot.arm, slide, claw, turret, rState),
 
                                 parkFollower
 
@@ -126,7 +129,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                                         new WaitCommand(130),
                                         new ArmHelperInCommand(robot.arm),
                                         new LinkageInCommand(claw, robot.arm, slide, rState),
-                                        new TurretRearDownAutoArmCommand(robot.arm, slide, turret, claw, rState)//,
+                                        new TurretRearDownAutoArmLeftCommand(robot.arm, slide, turret, claw, rState)//,
 
                                         )
 
@@ -144,6 +147,15 @@ public class LeftMidStackAuto extends AutoOpBase {
                                         new Stack5LeftCloseClawGrabCommand(1190,0.48, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5LeftCloseClawGrabCommand(1140,0.48, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5LeftCloseClawGrabCommand(1120,0.45, robot.arm, slide, claw, turret, rState, true),
+
+                                        new SelectCommand(
+                                                // the first parameter is a map of commands
+                                                new HashMap<Object, Command>() {{
+                                                    put(VisionSubsystem.ConePos.ONE, new AutoArmCollapseCommand(robot.arm, slide, claw, turret, rState));
+                                                }},
+                                                // the selector
+                                                vision::getConePosition
+                                        ),
 
                                         new ParallelCommandGroup(
                                                 new SequentialCommandGroup(

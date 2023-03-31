@@ -32,7 +32,7 @@ public class ClawSubsystem extends SubsystemBase {
     public void Open(){
         telemetry.addData("CLAW", "OPEN");
         //pitchClaw.setPosition(0);
-        clawServo.setPosition(1);
+        clawServo.setPosition(0.9);
     }
 
     public void Close(){

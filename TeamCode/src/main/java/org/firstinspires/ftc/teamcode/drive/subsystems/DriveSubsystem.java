@@ -107,8 +107,8 @@ public class DriveSubsystem extends SubsystemBase {
         double velocity = 0.5;
 
         Vector2d input = new Vector2d(
-                -gp1.gamepad.left_stick_y * 0.85,
-                -gp1.gamepad.left_stick_x * 0.85
+                -gp1.gamepad.left_stick_y * 0.95,
+                -gp1.gamepad.left_stick_x * 0.95
 
         ).rotated(-poseEstimate.getHeading());
 

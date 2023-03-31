@@ -23,6 +23,6 @@ public class TurretAutoPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return turret.IsAtPosition(turretPosition - 20, turretPosition + 20);
+        return turret.IsAtPosition(Math.abs(turretPosition) - 20, Math.abs(turretPosition)  + 20);
     }
 }

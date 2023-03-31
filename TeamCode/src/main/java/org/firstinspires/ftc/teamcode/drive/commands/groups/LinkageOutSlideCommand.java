@@ -33,7 +33,7 @@ public class LinkageOutSlideCommand extends SequentialCommandGroup {
                             ),
                             new WaitCommand(10),
                             () -> {
-                                return slide.IsSlideAtMid() || slide.IsSlideAtTop();
+                                return  slide.IsSlideAtTop();
                             })
                     );
 
