@@ -3,30 +3,30 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHomePitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
-import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoArmCollapseCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightMedCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabSlides;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.opmode.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
@@ -38,8 +38,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.HashMap;
 
 @Autonomous(group = "drive")
-@Disabled
-public class RightMidStackAutoSlides extends AutoOpBase {
+public class RightMidStackPark extends AutoOpBase {
 
     private DriveSubsystem drive;
     private SlideSubsystem slide;
@@ -93,7 +92,7 @@ public class RightMidStackAutoSlides extends AutoOpBase {
                 .build();
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
-                .back(15)
+                .back(12)
                 .build();
 
 
@@ -109,16 +108,19 @@ public class RightMidStackAutoSlides extends AutoOpBase {
                                 new AutoClawGrabStartRightMedCommand(robot.arm, slide, claw, turret, rState),
 
                                 parkFollower
+
                                 ).andThen(
 
 
-                                        //new ArmHelperOutCommand(robot.arm),
-                                        new ArmHighAuto5Command(2650, robot.arm),
+
+                                        new InstantCommand(() -> {
+                                            PoseStorage.currentPose = new Pose2d(0,0, Math.toRadians(93));
+                                        }),
                                         new ArmHelperTeleOpOutCommand(robot.arm),
                                         new WaitCommand(200),
-                                        new LinkageMoveCommand(0.31, claw, robot.arm, slide, rState),
+                                        new LinkageMoveCommand(0.32, claw, robot.arm, slide, rState),
 
-                                        new WaitCommand(440),
+                                        new WaitCommand(240),
                                         new RobotClawOpen(claw,robot.arm,slide, rState),
                                         new WaitCommand(130),
                                         new ArmHelperInCommand(robot.arm),
@@ -127,18 +129,13 @@ public class RightMidStackAutoSlides extends AutoOpBase {
 
                                         )
 
-                                       // new WaitCommand(100)
 
                                 )
 
                                 .andThen(
 
-                                        //This is the start of the cycling
-                                        new Stack5RightCloseClawGrabSlides(300,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabSlides(300,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabSlides(300,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabSlides(300,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabSlides(300,0.52, robot.arm, slide, claw, turret, rState, true),
+
+
 
 
                                         new SelectCommand(
@@ -152,11 +149,10 @@ public class RightMidStackAutoSlides extends AutoOpBase {
 
                                         new ParallelCommandGroup(
                                                 new SequentialCommandGroup(
-                                                        new SlideToConeCommand(slide, robot.arm),
                                                         new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
                                                         new RobotClawHomePitchCommand(claw, rState),
                                                         new RobotClawOpen(claw, robot.arm,slide, rState),
-                                                        new ArmHighAuto5Command(50,robot.arm)
+                                                        new ArmClawReadyAutoCommand(robot.arm, rState)
 
                                                 ),
                                          new SelectCommand(

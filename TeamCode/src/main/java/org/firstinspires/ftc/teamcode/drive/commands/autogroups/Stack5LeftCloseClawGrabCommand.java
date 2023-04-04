@@ -35,35 +35,55 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
                         new WaitCommand(50),
                         new RobotClawOpen(claw, arm,slide, robotState),
                         new ArmHighAuto5Command(armPos, arm),
-                        new WaitCommand(100),
-                        new RobotAutoPitchCommand(0.65,claw,robotState), //0.6
-                        new LinkageMoveCommand(linkagePos, claw, arm, slide, robotState),
-                        new WaitCommand(320),
-                        new RobotClawClose(claw, arm, slide ),
-                        new WaitCommand(340),
-                        new RobotAutoPitchCommand(0.45,claw,robotState), //0.3
-                        new WaitCommand(100),
-                        new LinkageInCommand(claw, arm, slide, robotState),
-                        new ArmHighAuto5Command(2580, arm),
-                        new TurretRightUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
-                        new TurretRightUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                        new ArmHighAuto5Command(2680, arm),
+                        new ConditionalCommand(
+                                new WaitCommand(350),
+                                new WaitCommand(690),
+                                ()->{
+                                    return isFinal;
+                                }
+                        ),
+                        new RobotAutoPitchCommand(0.70,claw,robotState), //higher value, more parrell ot ground .this angle is the angle the claw comes into the cone
 
-                        new ArmHelperOutCommand(arm),
-                        new WaitCommand(300),
-                        new LinkageMoveCommand(0.28, claw, arm, slide, robotState),
-                        new WaitCommand(100),
-                        new RobotAutoPitchCommand(0.8, claw, robotState), //0.7
+                new LinkageMoveCommand(linkagePos, claw, arm, slide, robotState), //linkage out, into the cone
 
-                        new WaitCommand(500),
-
-                        new RobotClawOpen(claw,arm,slide, robotState),
-
-                        new WaitCommand(100),
-                        new ArmHelperInCommand(arm),
-                        new RobotAutoPitchCommand(0.4, claw, robotState),
+                //picking up off the stack
+                new WaitCommand(290),
+                new RobotClawClose(claw, arm, slide ),
+                new ConditionalCommand(
                         new WaitCommand(200),
-                        new LinkageInCommand(claw, arm, slide, robotState),
+                        new WaitCommand(250),
+                        ()->{
+                            return isFinal;
+                        }
+                ),
+
+                new RobotAutoPitchCommand(0.65,claw,robotState), //this is a slight incline as we move up to avoid the wall
+                new WaitCommand(100),
+                //start pulling the linkage in as the arm moves up
+                new LinkageInCommand(claw, arm, slide, robotState),
+                //lift the arm up to almost the height we want, so it can wobble
+                new ArmHighAuto5Command(2550, arm),
+
+                new TurretRightUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
+                        new TurretRightUpCloseAutoCommand(arm, slide, turret, claw, robotState),
+                new ArmHighAuto5Command(2650, arm), //this is the arm height over the junction
+
+                new ArmHelperOutCommand(arm),
+                //give time for the junction tool to come out
+                new WaitCommand(250),
+                //move the linkage out - extendo to push the tool into the junction
+                new LinkageMoveCommand(0.30, claw, arm, slide, robotState), //smaller = longer
+                new WaitCommand(100),
+                new RobotAutoPitchCommand(0.83, claw, robotState), //0.75 - higher is more aligned to the cone
+                //stablisation amount - this adds up
+                new WaitCommand(310),
+                //drop the cone
+                new RobotClawOpen(claw,arm,slide, robotState),
+
+                new WaitCommand(100),
+                new ArmHelperInCommand(arm),
+                new WaitCommand(200),
+                new LinkageInCommand(claw, arm, slide, robotState),
 
 
                         new ConditionalCommand(

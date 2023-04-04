@@ -153,18 +153,8 @@ public class RightMidStackAuto extends AutoOpBase {
                                         new Stack5RightCloseClawGrabCommand( 1280,0.55, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5RightCloseClawGrabCommand(1200,0.52, robot.arm, slide, claw, turret, rState, false),
                                         new Stack5RightCloseClawGrabCommand(1160,0.50, robot.arm, slide, claw, turret, rState, false),
-
-                                        new ConditionalCommand(
-                                                new Stack5RightCloseClawGrabCommand(1140,0.49, robot.arm, slide, claw, turret, rState, true),
-                                                new SequentialCommandGroup(
-                                                    new Stack5RightCloseClawGrabCommand(1140,0.49, robot.arm, slide, claw, turret, rState, false),
-                                                    new Stack5RightCloseClawGrabCommand(1110,0.47, robot.arm, slide, claw, turret, rState, true)
-                                                ),
-
-                                                        () ->{
-                                                    return vision.getConePosition() == VisionSubsystem.ConePos.ONE;
-                                                    }
-                                                ),
+                                        new Stack5RightCloseClawGrabCommand(1140,0.49, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1110,0.47, robot.arm, slide, claw, turret, rState, true),
 
 
                                         new SelectCommand(

@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotAutoPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
@@ -33,7 +34,9 @@ public class AutoClawGrabStartLeftMedCommand extends SequentialCommandGroup {
 
                         new SlideToConeCommand(slide, arm),
 
-                        new RobotAutoPitchCommand(0.8,claw,robotState)//,
+                        new RobotAutoPitchCommand(0.80,claw,robotState),
+
+                        new ArmHighAuto5Command(2600, arm)
 
 
 

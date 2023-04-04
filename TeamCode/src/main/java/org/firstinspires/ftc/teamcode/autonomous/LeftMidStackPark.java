@@ -21,9 +21,9 @@ import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoArmCollapseCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightMedCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5Right4SlowCloseClawGrabCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartLeftMedCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5LeftCloseClawGrabCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmLeftCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.opmode.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
@@ -37,7 +37,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.HashMap;
 
 @Autonomous(group = "drive")
-public class RightMidSlowStackAuto extends AutoOpBase {
+public class LeftMidStackPark extends AutoOpBase {
 
     private DriveSubsystem drive;
     private SlideSubsystem slide;
@@ -49,6 +49,8 @@ public class RightMidSlowStackAuto extends AutoOpBase {
 
 
     private TrajectorySequenceFollowerCommand parkFollower;
+
+
 
     private BotBuildersMecanumDrive robot;
 
@@ -77,21 +79,23 @@ public class RightMidSlowStackAuto extends AutoOpBase {
         TrajectorySequence traj = drive.trajectorySequenceBuilder(new Pose2d(72, 0, Math.toRadians(0)))
 
                 .setReversed(true)
-                .lineToSplineHeading(new Pose2d(62, 0, Math.toRadians(-93)))
-                .lineToSplineHeading(new Pose2d(13, 0, Math.toRadians(-93)))
-                .lineToSplineHeading(new Pose2d(13, 10.5, Math.toRadians(-93)))
+                .lineToSplineHeading(new Pose2d(62, 0, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(11, 0, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(11, -11.5, Math.toRadians(93)))
                 .build();
 
-        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
+
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
                 .forward(34)
                 .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(traj.end())
-                .forward(12)
+
+                .forward(11)
                 .build();
 
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
-                .back(12)
+        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
+                .back(15)
                 .build();
 
 
@@ -104,47 +108,41 @@ public class RightMidSlowStackAuto extends AutoOpBase {
 
 
                         new ParallelCommandGroup(
-                                new AutoClawGrabStartRightMedCommand(robot.arm, slide, claw, turret, rState),
+                                new AutoClawGrabStartLeftMedCommand(robot.arm, slide, claw, turret, rState),
 
                                 parkFollower
 
+
+
                                 ).andThen(
 
-
-
                                         new InstantCommand(() -> {
-                                            PoseStorage.currentPose = new Pose2d(0,0, Math.toRadians(93));
+                                            PoseStorage.currentPose = new Pose2d(0,0, Math.toRadians(-93));
                                         }),
+
                                         new ArmHelperTeleOpOutCommand(robot.arm),
                                         new WaitCommand(200),
-                                        new LinkageMoveCommand(0.34, claw, robot.arm, slide, rState),
+                                        new LinkageMoveCommand(0.32, claw, robot.arm, slide, rState),
 
                                         new WaitCommand(240),
                                         new RobotClawOpen(claw,robot.arm,slide, rState),
                                         new WaitCommand(130),
                                         new ArmHelperInCommand(robot.arm),
+                                        new WaitCommand(400),
                                         new LinkageInCommand(claw, robot.arm, slide, rState),
-                                        new TurretRearDownAutoArmCommand(robot.arm, slide, turret, claw, rState)//,
+                                        new TurretRearDownAutoArmLeftCommand(robot.arm, slide, turret, claw, rState)//,
 
                                         )
-
 
                                 )
 
                                 .andThen(
 
 
-
-                                        //This is the start of the cycling
-                                        new Stack5Right4SlowCloseClawGrabCommand(vision.getConePosition() != VisionSubsystem.ConePos.THREE,1280,0.55, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5Right4SlowCloseClawGrabCommand(vision.getConePosition() != VisionSubsystem.ConePos.THREE,1200,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5Right4SlowCloseClawGrabCommand(vision.getConePosition() != VisionSubsystem.ConePos.THREE,1160,0.50, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5Right4SlowCloseClawGrabCommand(vision.getConePosition() != VisionSubsystem.ConePos.THREE,1140,0.49, robot.arm, slide, claw, turret, rState, true),
-
                                         new SelectCommand(
                                                 // the first parameter is a map of commands
                                                 new HashMap<Object, Command>() {{
-                                                     put(VisionSubsystem.ConePos.THREE, new AutoArmCollapseCommand(robot.arm, slide, claw, turret, rState));
+                                                    put(VisionSubsystem.ConePos.ONE, new AutoArmCollapseCommand(robot.arm, slide, claw, turret, rState));
                                                 }},
                                                 // the selector
                                                 vision::getConePosition
@@ -156,7 +154,6 @@ public class RightMidSlowStackAuto extends AutoOpBase {
                                                         new RobotClawHomePitchCommand(claw, rState),
                                                         new RobotClawOpen(claw, robot.arm,slide, rState),
                                                         new ArmClawReadyAutoCommand(robot.arm, rState)
-
                                                 ),
                                          new SelectCommand(
                                                 // the first parameter is a map of commands
@@ -171,8 +168,8 @@ public class RightMidSlowStackAuto extends AutoOpBase {
                                         ))
 
 
-                                ));
-
+                        )
+    );
 
 
     }

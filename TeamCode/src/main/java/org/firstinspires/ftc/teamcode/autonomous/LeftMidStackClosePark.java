@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SelectCommand;
@@ -19,14 +20,10 @@ import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHomePitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
+import org.firstinspires.ftc.teamcode.drive.commands.TurretFrontOut;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoArmCollapseCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartLeftMedCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.AutoClawGrabStartRightMedCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5LeftCloseClawGrabCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightCloseClawGrabCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmLeftCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.opmode.PoseStorage;
@@ -41,7 +38,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.HashMap;
 
 @Autonomous(group = "drive")
-public class LeftMidStackAuto extends AutoOpBase {
+public class LeftMidStackClosePark extends AutoOpBase {
 
     private DriveSubsystem drive;
     private SlideSubsystem slide;
@@ -84,22 +81,26 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                 .setReversed(true)
                 .lineToSplineHeading(new Pose2d(62, 0, Math.toRadians(93)))
-                .lineToSplineHeading(new Pose2d(11, 0, Math.toRadians(93)))
-                .lineToSplineHeading(new Pose2d(11, -11.5, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(13, 0, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(13, -10.5, Math.toRadians(93)))
                 .build();
 
 
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
-                .forward(34)
-                .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(traj.end())
 
-                .forward(11)
+                .forward(9)
+                .strafeRight(29)
                 .build();
 
-        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
-                .back(15)
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(pos2.end())
+
+                .forward(25)
+                .build();
+
+
+        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(pos2.end())
+                .back(22)
                 .build();
 
 
@@ -132,9 +133,9 @@ public class LeftMidStackAuto extends AutoOpBase {
                                         new RobotClawOpen(claw,robot.arm,slide, rState),
                                         new WaitCommand(130),
                                         new ArmHelperInCommand(robot.arm),
-                                        new WaitCommand(250), // this helps avoid the battery
+                                        new WaitCommand(400),
                                         new LinkageInCommand(claw, robot.arm, slide, rState),
-                                        new TurretRearDownAutoArmLeftCommand(robot.arm, slide, turret, claw, rState)//,
+                                        new TurretFrontOut(turret)
 
                                         )
 
@@ -142,44 +143,49 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                                 .andThen(
 
-                                        //This is the start of the cycling
-                                        new Stack5LeftCloseClawGrabCommand(1280,0.55, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1200,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1190,0.50, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1140,0.49, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1110,0.47, robot.arm, slide, claw, turret, rState, true),
-
                                         new SelectCommand(
                                                 // the first parameter is a map of commands
                                                 new HashMap<Object, Command>() {{
-                                                    put(VisionSubsystem.ConePos.ONE, new AutoArmCollapseCommand(robot.arm, slide, claw, turret, rState));
+
+                                                    put(VisionSubsystem.ConePos.ONE,
+                                                            new SequentialCommandGroup(
+                                                                new TrajectorySequenceFollowerCommand(drive, pos2),
+                                                                new AutoArmCollapseCommand(robot.arm, slide, claw, turret, rState),
+                                                                new TrajectorySequenceFollowerCommand(drive, pos1)
+
+                                                            ));
+                                                    put(VisionSubsystem.ConePos.TWO, new TrajectorySequenceFollowerCommand(drive, pos2));
+                                                    put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos2));
+                                                    put(VisionSubsystem.ConePos.THREE,
+                                                            new SequentialCommandGroup(
+                                                                new TrajectorySequenceFollowerCommand(drive, pos2),
+                                                                new TrajectorySequenceFollowerCommand(drive, pos3)
+                                                            ));
                                                 }},
                                                 // the selector
                                                 vision::getConePosition
                                         ),
 
-                                        new ParallelCommandGroup(
+
+                                            new ConditionalCommand(
+                                                    new WaitCommand(10),
+
                                                 new SequentialCommandGroup(
+                                                        new TurretRearDownAutoArmLeftCommand(robot.arm, slide, turret, claw, rState),
                                                         new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
                                                         new RobotClawHomePitchCommand(claw, rState),
                                                         new RobotClawOpen(claw, robot.arm,slide, rState),
                                                         new ArmClawReadyAutoCommand(robot.arm, rState)
                                                 ),
-                                         new SelectCommand(
-                                                // the first parameter is a map of commands
-                                                new HashMap<Object, Command>() {{
-                                                    put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos1));
-                                                    put(VisionSubsystem.ConePos.ONE, new TrajectorySequenceFollowerCommand(drive, pos1));
-                                                    put(VisionSubsystem.ConePos.TWO, new TrajectorySequenceFollowerCommand(drive, pos2));
-                                                    put(VisionSubsystem.ConePos.THREE, new TrajectorySequenceFollowerCommand(drive, pos3));
-                                                }},
-                                                // the selector
-                                                vision::getConePosition
-                                        ))
+                                                    () -> {
+                                                        return vision.getConePosition() == VisionSubsystem.ConePos.ONE;
+                                                    })
+
+                                )
 
 
-                        )
-    );
+                        );
+
 
 
     }
