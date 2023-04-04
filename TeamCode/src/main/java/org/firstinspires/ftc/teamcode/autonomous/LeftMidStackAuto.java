@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -11,6 +12,7 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.BotBuildersMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
@@ -27,6 +29,7 @@ import org.firstinspires.ftc.teamcode.drive.commands.autogroups.Stack5RightClose
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoArmLeftCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.autogroups.TurretRearDownAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.opmode.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
@@ -86,7 +89,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                 .build();
 
 
-        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
                 .forward(34)
                 .build();
 
@@ -95,7 +98,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                 .forward(12)
                 .build();
 
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
+        TrajectorySequence pos1 = drive.trajectorySequenceBuilder(traj.end())
                 .back(15)
                 .build();
 
@@ -117,7 +120,9 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                                 ).andThen(
 
-
+                                        new InstantCommand(() -> {
+                                            PoseStorage.currentPose = new Pose2d(0,0, Math.toRadians(-93));
+                                        }),
                                         //new ArmHelperOutCommand(robot.arm),
                                         new ArmHighAuto5Command(2650, robot.arm),
                                         new ArmHelperTeleOpOutCommand(robot.arm),
@@ -142,11 +147,11 @@ public class LeftMidStackAuto extends AutoOpBase {
 
 
                                         //This is the start of the cycling
-                                        new Stack5LeftCloseClawGrabCommand(1350,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1230,0.50, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1190,0.48, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1140,0.48, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1120,0.45, robot.arm, slide, claw, turret, rState, true),
+                                        new Stack5LeftCloseClawGrabCommand(1330,0.50, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1230,0.48, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1190,0.45, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1140,0.44, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1120,0.43, robot.arm, slide, claw, turret, rState, true),
 
                                         new SelectCommand(
                                                 // the first parameter is a map of commands
@@ -162,7 +167,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                                                         new TurretRearDownAutoCommand(robot.arm, slide, turret, claw, rState),
                                                         new RobotClawHomePitchCommand(claw, rState),
                                                         new RobotClawOpen(claw, robot.arm,slide, rState),
-                                                        new ArmHighAuto5Command(50,robot.arm)
+                                                        new ArmClawReadyAutoCommand(robot.arm, rState)
                                                 ),
                                          new SelectCommand(
                                                 // the first parameter is a map of commands

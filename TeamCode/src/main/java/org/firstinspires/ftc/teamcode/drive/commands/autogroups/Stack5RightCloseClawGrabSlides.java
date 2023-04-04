@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotAutoPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidAuto2Command;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
@@ -18,9 +20,9 @@ import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
 
-public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
+public class Stack5RightCloseClawGrabSlides extends SequentialCommandGroup {
 
-    public Stack5LeftCloseClawGrabCommand(
+    public Stack5RightCloseClawGrabSlides(
             int armPos,
             double linkagePos,
             ArmSubsystem arm,
@@ -33,6 +35,7 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
 
         addCommands(
                         new WaitCommand(50),
+                        new SlideToMidAuto2Command(slide),
                         new RobotClawOpen(claw, arm,slide, robotState),
                         new ArmHighAuto5Command(armPos, arm),
                         new WaitCommand(100),
@@ -42,18 +45,17 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
                         new RobotClawClose(claw, arm, slide ),
                         new WaitCommand(340),
                         new RobotAutoPitchCommand(0.45,claw,robotState), //0.3
-                        new WaitCommand(100),
                         new LinkageInCommand(claw, arm, slide, robotState),
-                        new ArmHighAuto5Command(2580, arm),
-                        new TurretRightUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
-                        new TurretRightUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                        new ArmHighAuto5Command(2680, arm),
-
+                        new WaitCommand(100),
+                        new ArmHighAuto5Command(1700, arm),
+                        new TurretLeftUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
+                        new TurretLeftUpCloseAutoCommand(arm, slide, turret, claw, robotState),
+                        new ArmHighAuto5Command(1800, arm),
                         new ArmHelperOutCommand(arm),
                         new WaitCommand(300),
-                        new LinkageMoveCommand(0.28, claw, arm, slide, robotState),
+                        new LinkageMoveCommand(0.31, claw, arm, slide, robotState),
                         new WaitCommand(100),
-                        new RobotAutoPitchCommand(0.8, claw, robotState), //0.7
+                        new RobotAutoPitchCommand(0.75, claw, robotState), //0.7
 
                         new WaitCommand(500),
 
@@ -61,7 +63,6 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
 
                         new WaitCommand(100),
                         new ArmHelperInCommand(arm),
-                        new RobotAutoPitchCommand(0.4, claw, robotState),
                         new WaitCommand(200),
                         new LinkageInCommand(claw, arm, slide, robotState),
 
@@ -70,8 +71,8 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
 
                                 new WaitCommand(1),// ArmClawReadyCommand(arm,turret, robotState),
                                 new SequentialCommandGroup(
-                                    new TurretRearDownAutoFastLeftCommand(arm, slide, turret, claw, robotState),
-                                    new TurretRearDownAutoLeftCommand(arm, slide, turret, claw, robotState),
+                                    new TurretRearDownAutoFastCommand(arm, slide, turret, claw, robotState),
+                                    new TurretRearDownAutoCommand(arm, slide, turret, claw, robotState),
                                     new ArmHighAuto5Command(armPos, arm)
                                 ),
                                 () -> {return isFinal;}

@@ -22,7 +22,7 @@ public class RobotClawHomePitchCommand extends CommandBase {
     @Override
     public void initialize() {
 
-        clawSubsystem.PitchAuto(0.48);
+        clawSubsystem.PitchAuto(0.42); //smaller takes it closer to the ground at rest
     }
 
     @Override

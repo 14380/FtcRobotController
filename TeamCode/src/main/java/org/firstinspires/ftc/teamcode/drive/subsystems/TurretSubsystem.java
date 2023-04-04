@@ -39,7 +39,7 @@ public class TurretSubsystem extends SubsystemBase {
         //need to make sure we rotate the correct way
         telemetry.addData("ROTATE", "FRONT");
 
-        turretEnc.setTargetPosition(-10);
+        turretEnc.setTargetPosition(3);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

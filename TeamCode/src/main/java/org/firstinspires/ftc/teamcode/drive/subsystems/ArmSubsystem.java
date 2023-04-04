@@ -66,7 +66,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         double pid = controller.calculate(armPos, target);// / (this.voltage * 12);
         double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
-        double power = pid + ff / voltage * 12.0;
+        double power = pid + ff / voltage * 13;
         armMotor.setPower(power);
 
     }
@@ -89,13 +89,13 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void HelperIn(){
-        helperServo.setPosition(0.2);
+        helperServo.setPosition(0.13);
     }
     public void HelperOut(){
-        helperServo.setPosition(0.9);
+        helperServo.setPosition(0.93);
     }
     public void HelperOutTeleOp(){
-        helperServo.setPosition(0.8);
+        helperServo.setPosition(0.9);
     }
     public void TopAuto(){
 
@@ -182,6 +182,11 @@ public class ArmSubsystem extends SubsystemBase {
         //always make sure the helper is in when at the cone
         HelperIn();
     }
+
+    public boolean isAtConeAutoCheck(){
+        return armMotor.getCurrentPosition() < 400;
+    }
+
     public void SlowDown(){
 
 

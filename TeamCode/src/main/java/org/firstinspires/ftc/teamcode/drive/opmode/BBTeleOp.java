@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
@@ -93,12 +94,13 @@ public class BBTeleOp extends CommandOpMode {
                 telemetry
         );
 
-       /* arm = new ArmSubsystem(
-                hardwareMap,
-                telemetry
-        );*/
 
         rState = new RobotStateSubsytem(hardwareMap);
+
+        if(PoseStorage.currentPose != null){
+            mecDrive.setPoseEstimate(PoseStorage.currentPose);
+        }
+
 
         driveCommand = new DriveCommand(
                 driveSystem, () -> -gp1.getLeftY(),
@@ -107,15 +109,6 @@ public class BBTeleOp extends CommandOpMode {
 
         schedule(driveCommand);
 
-        //realign IMU
-        /*gp1.getGamepadButton(GamepadKeys.Button.X).and(
-                new GamepadButton(gp1, GamepadKeys.Button.Y)
-        ).whenActive(
-                new InstantCommand(driveSystem::Realign)
-        );
-        gp1.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
-                new InstantCommand(driveSystem::Realign)
-        );*/
 
         if(gp1.isDown(GamepadKeys.Button.X) && gp1.isDown(GamepadKeys.Button.Y)){
             new InstantCommand(driveSystem::Realign);

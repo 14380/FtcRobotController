@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.commands.autogroups;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
@@ -35,7 +36,7 @@ public class AutoArmCollapseCommand extends SequentialCommandGroup {
                 new TurretRearDownAutoCommand(arm, slide, turret, claw, rState),
                 new RobotClawHomePitchCommand(claw, rState),
                 new RobotClawOpen(claw, arm,slide, rState),
-                new ArmHighAuto5Command(50,arm)
+                new ArmClawReadyAutoCommand(arm, rState)
         );
 
 

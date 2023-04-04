@@ -33,8 +33,8 @@ public class TurretRearDownAutoCommand extends SequentialCommandGroup {
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
                         new ParallelCommandGroup(
-                                new TurretFrontOutAuto(turret),
-                                new SlideToConeCommand(slide, arm)
+                                new TurretFrontOutAuto(turret)
+
 
                         )
 

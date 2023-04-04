@@ -1,0 +1,118 @@
+package org.firstinspires.ftc.teamcode.drive.commands.autogroups;
+
+import com.arcrobotics.ftclib.command.ConditionalCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
+
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyAutoCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotAutoPitchCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHomePitchCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
+import org.firstinspires.ftc.teamcode.drive.commands.SlideToMidAuto2Command;
+import org.firstinspires.ftc.teamcode.drive.commands.TrajectorySequenceFollowerCommand;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
+import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
+import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.SlideSubsystem;
+import org.firstinspires.ftc.teamcode.drive.subsystems.TurretSubsystem;
+
+public class Stack5RightContestedDriveAutoCommand extends SequentialCommandGroup {
+
+    public Stack5RightContestedDriveAutoCommand(
+            int armPos,
+            double linkagePos,
+            ArmSubsystem arm,
+            SlideSubsystem slide,
+            ClawSubsystem claw,
+            TurretSubsystem turret,
+            RobotStateSubsytem robotState,
+            TrajectorySequenceFollowerCommand movertoJunc,
+            TrajectorySequenceFollowerCommand movertoCones,
+            boolean isFinal)
+    {
+
+
+        addCommands(
+                        new WaitCommand(50),
+
+                        new ParallelCommandGroup(
+                                movertoCones,
+                                new SequentialCommandGroup(
+                                        new RobotClawOpen(claw, arm,slide, robotState),
+                                        new RobotAutoPitchCommand(0.1,claw,robotState),
+                                        new WaitCommand(200),
+                                        new ArmClawReadyAutoCommand(arm, robotState)
+                                )
+                        ),
+
+
+
+                        new RobotClawClose(claw, arm, slide ),
+                        new WaitCommand(250),
+                        new ParallelCommandGroup(
+                            movertoJunc,
+                            new SequentialCommandGroup(
+                                    //new RobotClawHomePitchCommand(claw,robotState),
+                                    new RobotAutoPitchCommand(0.3,claw,robotState),
+                                    new WaitCommand(100),
+                                    new LinkageInCommand(claw, arm, slide, robotState),
+                                    new ParallelCommandGroup(
+                                            new SlideToMidAuto2Command(slide),
+                                            new ArmHighAuto5Command(2500, arm)
+                                    )
+                            )
+                        ),
+
+
+                        new TurretRightUpContestedFastAutoCommand(arm, slide, turret, claw, robotState),
+
+                        new ArmHelperTeleOpOutCommand(arm),
+                        new WaitCommand(330),
+                        new LinkageMoveCommand(0.22, claw, arm, slide, robotState),
+
+                        new RobotAutoPitchCommand(0.7, claw, robotState), //0.7
+
+                        new WaitCommand(400),
+
+                        new RobotClawOpen(claw,arm,slide, robotState),
+
+                        new WaitCommand(100),
+                        new ArmHelperInCommand(arm),
+                        new LinkageInCommand(claw, arm, slide, robotState),
+
+                        new TurretRearDownAutoHighCommand(arm, slide, turret, claw, robotState),
+
+                        new RobotAutoPitchCommand(0.1,claw,robotState),
+                        new WaitCommand(200),
+                        new ArmClawReadyAutoCommand(arm, robotState),
+
+                        new ConditionalCommand(
+
+                                new WaitCommand(1),// ArmClawReadyCommand(arm,turret, robotState),
+                                new SequentialCommandGroup(
+                                        new RobotAutoPitchCommand(0.1,claw,robotState),
+                                        new WaitCommand(200),
+                                        new ArmClawReadyAutoCommand(arm, robotState)
+                                ) ,
+                               // new ArmHighAuto5Command(armPos, arm),
+                                () -> {return isFinal;}
+                        )
+
+        );
+
+
+
+
+        addRequirements( arm, slide, claw);
+    }
+
+
+}

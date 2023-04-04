@@ -31,9 +31,10 @@ public class ClawReturnCommand extends SequentialCommandGroup {
 
                 new ConditionalCommand(
                         new SequentialCommandGroup(
-                        new RobotClawOpen(claw, arm, slide, robotState ),
-                        new WaitCommand(200),
-                        new ArmHelperInCommand(arm)),
+                            new RobotClawOpen(claw, arm, slide, robotState ),
+                            new WaitCommand(200),
+                            new ArmHelperInCommand(arm)
+                        ),
                         new SequentialCommandGroup(
 
                                 new RobotClawOpen(claw, arm, slide, robotState),
