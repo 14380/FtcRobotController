@@ -65,14 +65,14 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
                 new ArmHighAuto5Command(2550, arm),
 
                 new TurretRightUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
-                        new TurretRightUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                new ArmHighAuto5Command(2650, arm), //this is the arm height over the junction
+                new TurretRightUpCloseAutoCommand(arm, slide, turret, claw, robotState),
+                new ArmHighAuto5Command(2670, arm), //this is the arm height over the junction
 
                 new ArmHelperOutCommand(arm),
                 //give time for the junction tool to come out
                 new WaitCommand(250),
                 //move the linkage out - extendo to push the tool into the junction
-                new LinkageMoveCommand(0.30, claw, arm, slide, robotState), //smaller = longer
+                new LinkageMoveCommand(0.36, claw, arm, slide, robotState), //smaller = longer
                 new WaitCommand(100),
                 new RobotAutoPitchCommand(0.83, claw, robotState), //0.75 - higher is more aligned to the cone
                 //stablisation amount - this adds up
@@ -82,7 +82,7 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
 
                 new WaitCommand(100),
                 new ArmHelperInCommand(arm),
-                new WaitCommand(200),
+                new WaitCommand(250),
                 new LinkageInCommand(claw, arm, slide, robotState),
 
 

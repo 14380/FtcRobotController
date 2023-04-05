@@ -36,7 +36,7 @@ public class AutoClawGrabStartLeftMedCommand extends SequentialCommandGroup {
 
                         new RobotAutoPitchCommand(0.80,claw,robotState),
 
-                        new ArmHighAuto5Command(2600, arm)
+                        new ArmHighAuto5Command(2680, arm)
 
 
 

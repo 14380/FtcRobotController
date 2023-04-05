@@ -76,7 +76,7 @@ public class Stack5RightCloseClawGrabCommand extends SequentialCommandGroup {
                         //give time for the junction tool to come out
                         new WaitCommand(250),
                         //move the linkage out - extendo to push the tool into the junction
-                        new LinkageMoveCommand(0.30, claw, arm, slide, robotState), //smaller = longer
+                        new LinkageMoveCommand(0.33, claw, arm, slide, robotState), //smaller = longer
                         new WaitCommand(100),
                         new RobotAutoPitchCommand(0.83, claw, robotState), //0.75 - higher is more aligned to the cone
                         //stablisation amount - this adds up

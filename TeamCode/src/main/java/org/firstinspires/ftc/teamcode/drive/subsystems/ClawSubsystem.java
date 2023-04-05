@@ -59,8 +59,8 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void LinkageOut(){
-        linkageServo.setPosition(0.3);
-        linkageServo2.setPosition(0.3);
+        linkageServo.setPosition(0.4);
+        linkageServo2.setPosition(0.4);
     }
 
     public void LinkageInSmall(){

@@ -34,7 +34,7 @@ public class TurretRearDownAutoFastLeftCommand extends SequentialCommandGroup {
                         new ParallelCommandGroup(
                                 new TurretFrontOutFastLeft(turret),
                                 new SlideToConeCommand(slide, arm),
-                                new ArmHighAuto5Command(1800, arm)
+                                new ArmHighAuto5Command(1900, arm)
 
                         )
 

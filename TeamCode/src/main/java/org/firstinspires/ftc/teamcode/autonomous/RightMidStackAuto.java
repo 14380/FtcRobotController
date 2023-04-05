@@ -131,12 +131,13 @@ public class RightMidStackAuto extends AutoOpBase {
                                         }),
                                         new ArmHelperTeleOpOutCommand(robot.arm),
                                         new WaitCommand(200),
-                                        new LinkageMoveCommand(0.32, claw, robot.arm, slide, rState),
+                                        new LinkageMoveCommand(0.33, claw, robot.arm, slide, rState),
 
                                         new WaitCommand(240),
                                         new RobotClawOpen(claw,robot.arm,slide, rState),
                                         new WaitCommand(130),
                                         new ArmHelperInCommand(robot.arm),
+                                        new WaitCommand(150),
                                         new LinkageInCommand(claw, robot.arm, slide, rState),
                                         new TurretRearDownAutoArmCommand(robot.arm, slide, turret, claw, rState)//,
 
@@ -150,11 +151,11 @@ public class RightMidStackAuto extends AutoOpBase {
 
 
                                         //This is the start of the cycling
-                                        new Stack5RightCloseClawGrabCommand( 1280,0.55, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1200,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1160,0.50, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1140,0.49, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5RightCloseClawGrabCommand(1110,0.47, robot.arm, slide, claw, turret, rState, true),
+                                        new Stack5RightCloseClawGrabCommand( 1280,0.52, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1200,0.50, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1160,0.49, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1140,0.48, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5RightCloseClawGrabCommand(1120,0.46, robot.arm, slide, claw, turret, rState, true),
 
 
                                         new SelectCommand(
