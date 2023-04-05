@@ -84,8 +84,8 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                 .setReversed(true)
                 .lineToSplineHeading(new Pose2d(62, 0, Math.toRadians(93)))
-                .lineToSplineHeading(new Pose2d(11, 0, Math.toRadians(93)))
-                .lineToSplineHeading(new Pose2d(11, -11.5, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(13, 0, Math.toRadians(93)))
+                .lineToSplineHeading(new Pose2d(13, -10.5, Math.toRadians(93)))
                 .build();
 
 

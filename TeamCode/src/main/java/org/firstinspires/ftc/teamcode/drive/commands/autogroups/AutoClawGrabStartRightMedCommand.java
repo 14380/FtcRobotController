@@ -3,17 +3,10 @@ package org.firstinspires.ftc.teamcode.drive.commands.autogroups;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperTeleOpOutCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotAutoPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.SlideToConeCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAutoCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.RobotStateSubsytem;
@@ -43,7 +36,7 @@ public class AutoClawGrabStartRightMedCommand extends SequentialCommandGroup {
 
                         new RobotAutoPitchCommand(0.80,claw,robotState),
 
-                        new ArmHighAuto5Command(2600, arm)
+                        new ArmHighAuto5Command(2650, arm)
 
 
 

@@ -99,6 +99,7 @@ public class BBTeleOp extends CommandOpMode {
 
         if(PoseStorage.currentPose != null){
             mecDrive.setPoseEstimate(PoseStorage.currentPose);
+            mecDrive.setPoseEstimate(null);
         }
 
 

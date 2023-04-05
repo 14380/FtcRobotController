@@ -39,7 +39,7 @@ public class TurretRearOutTopCommand extends SequentialCommandGroup {
         addCommands(
                         new AutoSlideModeCommand(rState),
                         new AutoTurretModeCommand(rState),
-                        new ArmMoveHighCommand(arm),
+                        new ArmMoveHighCommand(arm), //move the arm really high to avoid hitting the cones
                         new RobotClawHighPitchCommand(claw, rState),
                         new WaitCommand(150),
                         new ParallelCommandGroup(
@@ -53,10 +53,10 @@ public class TurretRearOutTopCommand extends SequentialCommandGroup {
                                             }
                                         }),
                                 new SequentialCommandGroup(
-                                        new TurretRear(turret),
-                                        new ArmHighCommand(arm),
-                                        new ArmHelperTeleOpOutCommand(arm),
-                                        new AutoArmHeightModeCommand(RobotStateSubsytem.ArmHeightPosition.UP, rState))
+                                        new TurretRear(turret), //move turret
+                                        new ArmHighCommand(arm), //move the arm to the height above the junction
+                                        new ArmHelperTeleOpOutCommand(arm), //helper goes out
+                                        new AutoArmHeightModeCommand(RobotStateSubsytem.ArmHeightPosition.UP, rState)) //set the state, the arm is now up
                         ));
 
         addRequirements( arm, slide, turret);

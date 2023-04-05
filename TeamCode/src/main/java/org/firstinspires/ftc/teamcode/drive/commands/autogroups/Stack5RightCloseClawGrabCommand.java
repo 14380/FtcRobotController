@@ -1,26 +1,16 @@
 package org.firstinspires.ftc.teamcode.drive.commands.autogroups;
 
 import com.arcrobotics.ftclib.command.ConditionalCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.drive.commands.ArmClawReadyCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperInCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.ArmHelperOutCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.ArmHighCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.LinkageInCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.LinkageInSmallCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.LinkageOutCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotAutoPitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawClose;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHighPitchCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHigherPitchCommand;
-import org.firstinspires.ftc.teamcode.drive.commands.RobotClawHomePitchCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.RobotClawOpen;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAuto5Command;
-import org.firstinspires.ftc.teamcode.drive.commands.auto.ArmHighAutoCommand;
 import org.firstinspires.ftc.teamcode.drive.commands.auto.LinkageMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.drive.subsystems.ClawSubsystem;
@@ -55,9 +45,9 @@ public class Stack5RightCloseClawGrabCommand extends SequentialCommandGroup {
                         ),
 
 
-                        new RobotAutoPitchCommand(0.70,claw,robotState), //higher value, more parrell ot ground .this angle is the angle the claw comes into the cone
+                        new RobotAutoPitchCommand(0.70,claw,robotState), //higher value, more parallel ot ground .this angle is the angle the claw comes into the cone
                         new LinkageMoveCommand(linkagePos, claw, arm, slide, robotState), //linkage out, into the cone
-                        //new WaitCommand(290), //stabilistion amount - remember this is done 5 times .. so it adds up
+                        //stabilisation amount - remember this is done 5 times .. so it adds up
                         //picking up off the stack
                         new WaitCommand(290),
                         new RobotClawClose(claw, arm, slide ),

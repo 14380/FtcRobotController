@@ -103,6 +103,8 @@ public class RightMidStackPark extends AutoOpBase {
         CommandScheduler.getInstance().schedule(
                 new WaitUntilCommand(this::isStarted).andThen(
 
+                        //if we need to wait first up
+                        //new WaitCommand(3000), //three seconds
 
                         new ParallelCommandGroup(
                                 new AutoClawGrabStartRightMedCommand(robot.arm, slide, claw, turret, rState),
