@@ -28,15 +28,13 @@ public class AutoClawGrabStartRightMedCommand extends SequentialCommandGroup {
                         new RobotClawClose(claw, arm, slide ),
                         new WaitCommand(150),
                         new RobotAutoSlideGraspCommand(slide, arm, claw, robotState),
-
-
                         new TurretLeftUpFirstCloseAutoCommand(arm, slide, turret, claw, robotState),
 
                         new SlideToConeCommand(slide, arm),
 
                         new RobotAutoPitchCommand(0.80,claw,robotState),
 
-                        new ArmHighAuto5Command(2650, arm)
+                        new ArmHighAuto5Command(2750, arm) //2650
 
 
 

@@ -39,7 +39,7 @@ public class TurretSubsystem extends SubsystemBase {
         //need to make sure we rotate the correct way
         telemetry.addData("ROTATE", "FRONT");
 
-        turretEnc.setTargetPosition(-5);
+        turretEnc.setTargetPosition(-15);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -132,7 +132,7 @@ public class TurretSubsystem extends SubsystemBase {
 
         telemetry.addData("ROTATE", "LEFT");
 
-        turretEnc.setTargetPosition(838);
+        turretEnc.setTargetPosition(828); //838
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -142,7 +142,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     public boolean IsAtAutoLeftClose(){
 
-        return Math.abs(turretEnc.getCurrentPosition()) > 830 && Math.abs(turretEnc.getCurrentPosition()) < 845;
+        return Math.abs(turretEnc.getCurrentPosition()) > 825 && Math.abs(turretEnc.getCurrentPosition()) < 845;
     }
 
     public void RotatePosition(int position){
@@ -175,7 +175,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
     public void RotateAutoRightClose(){
 
-        turretEnc.setTargetPosition(-790);
+        turretEnc.setTargetPosition(-800);
 
         turretEnc.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

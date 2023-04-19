@@ -37,7 +37,7 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
                         new ArmHighAuto5Command(armPos, arm),
                         new ConditionalCommand(
                                 new WaitCommand(350),
-                                new WaitCommand(690),
+                                new WaitCommand(590),
                                 ()->{
                                     return isFinal;
                                 }
@@ -66,7 +66,7 @@ public class Stack5LeftCloseClawGrabCommand extends SequentialCommandGroup {
 
                 new TurretRightUpCloseFastAutoCommand(arm, slide, turret, claw, robotState),
                 new TurretRightUpCloseAutoCommand(arm, slide, turret, claw, robotState),
-                new ArmHighAuto5Command(2670, arm), //this is the arm height over the junction
+                new ArmHighAuto5Command(2700, arm), //this is the arm height over the junction
 
                 new ArmHelperOutCommand(arm),
                 //give time for the junction tool to come out

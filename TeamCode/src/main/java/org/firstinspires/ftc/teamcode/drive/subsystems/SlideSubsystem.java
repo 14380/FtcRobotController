@@ -84,8 +84,8 @@ public class SlideSubsystem extends SubsystemBase {
     public void SlideToMid(){
         telemetry.addData("SLIDE", "MID");
 
-        leftSlide.setTargetPosition(460);
-        rightSlide.setTargetPosition(460);
+        leftSlide.setTargetPosition(520);
+        rightSlide.setTargetPosition(520);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -205,7 +205,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     public boolean IsSlideAtMid(){
 
-        return leftSlide.getCurrentPosition() >  400 && rightSlide.getCurrentPosition() > 400 && leftSlide.getCurrentPosition() <  520 && rightSlide.getCurrentPosition() < 520;
+        return leftSlide.getCurrentPosition() >  450 && rightSlide.getCurrentPosition() > 450 && leftSlide.getCurrentPosition() <  540 && rightSlide.getCurrentPosition() < 540;
     }
 
     public boolean IsSlideAtGrasp(){

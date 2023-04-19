@@ -29,7 +29,7 @@ public class TurretLeftUpFirstCloseAutoCommand extends SequentialCommandGroup {
                 new AutoSlideModeCommand(rState),
                 new AutoTurretModeCommand(rState),
                 new ParallelCommandGroup(
-                        new ArmHighAuto5Command(2800, arm),
+                        new ArmHighAuto5Command(2900, arm), // 2800
                         new TurretAutoPosition(828,turret)
 
                 )

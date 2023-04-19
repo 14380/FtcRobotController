@@ -90,7 +90,7 @@ public class LeftMidStackAuto extends AutoOpBase {
 
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(traj.end())
-                .forward(34)
+                .forward(35)
                 .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(traj.end())
@@ -126,7 +126,7 @@ public class LeftMidStackAuto extends AutoOpBase {
 
                                         new ArmHelperTeleOpOutCommand(robot.arm),
                                         new WaitCommand(200),
-                                        new LinkageMoveCommand(0.36, claw, robot.arm, slide, rState),
+                                        new LinkageMoveCommand(0.33, claw, robot.arm, slide, rState),
 
                                         new WaitCommand(240),
                                         new RobotClawOpen(claw,robot.arm,slide, rState),
@@ -143,11 +143,11 @@ public class LeftMidStackAuto extends AutoOpBase {
                                 .andThen(
 
                                         //This is the start of the cycling
-                                        new Stack5LeftCloseClawGrabCommand(1280,0.52, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1220,0.50, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1180,0.49, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1160,0.48, robot.arm, slide, claw, turret, rState, false),
-                                        new Stack5LeftCloseClawGrabCommand(1120,0.46, robot.arm, slide, claw, turret, rState, true),
+                                        new Stack5LeftCloseClawGrabCommand(1280,0.48, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1200,0.47, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1180,0.46, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1160,0.45, robot.arm, slide, claw, turret, rState, false),
+                                        new Stack5LeftCloseClawGrabCommand(1120,0.44, robot.arm, slide, claw, turret, rState, true),
 
                                         new SelectCommand(
                                                 // the first parameter is a map of commands
@@ -168,7 +168,7 @@ public class LeftMidStackAuto extends AutoOpBase {
                                          new SelectCommand(
                                                 // the first parameter is a map of commands
                                                 new HashMap<Object, Command>() {{
-                                                    put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos1));
+                                                    put(VisionSubsystem.ConePos.NONE, new TrajectorySequenceFollowerCommand(drive, pos2));
                                                     put(VisionSubsystem.ConePos.ONE, new TrajectorySequenceFollowerCommand(drive, pos1));
                                                     put(VisionSubsystem.ConePos.TWO, new TrajectorySequenceFollowerCommand(drive, pos2));
                                                     put(VisionSubsystem.ConePos.THREE, new TrajectorySequenceFollowerCommand(drive, pos3));

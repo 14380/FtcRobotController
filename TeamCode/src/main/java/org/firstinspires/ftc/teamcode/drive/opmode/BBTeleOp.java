@@ -99,7 +99,7 @@ public class BBTeleOp extends CommandOpMode {
 
         if(PoseStorage.currentPose != null){
             mecDrive.setPoseEstimate(PoseStorage.currentPose);
-            mecDrive.setPoseEstimate(null);
+           // mecDrive.setPoseEstimate(null);
         }
 
 
@@ -130,10 +130,6 @@ public class BBTeleOp extends CommandOpMode {
             );
 
         }
-
-        /*gp1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(
-                        new ClawSlowReturnCommand(mecDrive.arm, turret, claw, rState));*/
 
         gp1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(

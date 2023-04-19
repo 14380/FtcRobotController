@@ -69,7 +69,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void Top(){
 
-        target = 2600;
+        target = 2500;//2600;
 
     }
 
@@ -81,17 +81,17 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public boolean isAtMoveTop(){
-        return  armMotor.getCurrentPosition()   > 2900;
+        return  armMotor.getCurrentPosition()   > 2500;
     }
 
     public void HelperIn(){
         helperServo.setPosition(0.13);
     }
     public void HelperOut(){
-        helperServo.setPosition(0.93);
+        helperServo.setPosition(0.83);
     }
     public void HelperOutTeleOp(){
-        helperServo.setPosition(0.9);
+        helperServo.setPosition(0.8);
     }
     public void TopAuto(){
 
@@ -174,7 +174,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void ReadyForCone(){
 
-        target = 150;
+        target = 50;
         //always make sure the helper is in when at the cone
         HelperIn();
     }
